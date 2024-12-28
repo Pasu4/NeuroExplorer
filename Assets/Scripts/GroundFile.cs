@@ -9,6 +9,8 @@ namespace Assets.Scripts
 {
     public class GroundFile : GroundObject
     {
+        public long fileSize;
+
         Card card;
 
         // Use this for initialization
@@ -32,9 +34,6 @@ namespace Assets.Scripts
         {
             base.Init(room, realPath);
 
-            // Generate card
-            card = new Card(realPath);
-
             // Set sprite
             string extension = Path.GetExtension(realPath);
             IEnumerable<Sprite> possibleSprites = GameManager.Instance.fileSprites
@@ -46,6 +45,13 @@ namespace Assets.Scripts
 
             Sprite sprite = random.Choose(possibleSprites);
             GetComponent<SpriteRenderer>().sprite = sprite;
+
+            // Set file size
+            FileInfo info = new FileInfo(realPath);
+            fileSize = info.Length;
+
+            // Generate card
+            card = new Card(displayPath, fileSize);
         }
 
         protected override void InitRandom()

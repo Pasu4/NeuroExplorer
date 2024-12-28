@@ -8,10 +8,15 @@ namespace Assets.Scripts
 {
     public abstract class CardEffect
     {
+        public static readonly string nameStyleOpen = "<color=#d00>";
+        public static readonly string nameStyleClose = "</color>";
+        public abstract string Description { get; }
+
         public virtual void OnDeckChanged(BattleContext ctx) { }
         public virtual void OnTurnStart(BattleContext ctx) { }
         public virtual void OnTurnEnd(BattleContext ctx) { }
         public virtual void OnEnterHand(BattleContext ctx) { }
+        public virtual void OnErase(BattleContext ctx) { }
         public virtual void OnPlay(BattleContext ctx) { }
     }
 }

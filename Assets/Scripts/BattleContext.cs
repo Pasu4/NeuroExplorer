@@ -8,5 +8,6 @@ namespace Assets.Scripts
 {
     public class BattleContext
     {
+        public BattleUI BattleUI { get; set; }
     }
 }

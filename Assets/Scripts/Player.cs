@@ -20,6 +20,8 @@ namespace Assets.Scripts
         // Update is called once per frame
         void Update()
         {
+            if(GameManager.Instance.gameMode != GameMode.Room) return;
+
             Vector2 moveInput = moveAction.ReadValue<Vector2>();
 
             if(moveInput != Vector2.zero)

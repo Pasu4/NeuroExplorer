@@ -1,5 +1,7 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -20,6 +22,7 @@ namespace Assets.Scripts
         public int gameSeed;
 
         public Player player;
+        public List<Card> deck;
 
         public FileSprite[] fileSprites;
         public Sprite[] defaultSprites;
@@ -99,8 +102,8 @@ namespace Assets.Scripts
 
             if(split.Length == 0) return ext;
 
-            StringBuilder obfuscatedPathBuilder = new StringBuilder(split[0]);
-            StringBuilder realPathBuilder = new StringBuilder(split[0]);
+            StringBuilder obfuscatedPathBuilder = new(split[0]);
+            StringBuilder realPathBuilder = new(split[0]);
 
             foreach(string s in split[1..])
             {

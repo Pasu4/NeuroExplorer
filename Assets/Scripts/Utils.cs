@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -57,6 +58,30 @@ namespace Assets.Scripts
                 return false;
             }
             return true;
+        }
+
+        public static string FileSizeString(long fileSize)
+        {
+            return fileSize switch
+            {
+                >= 1_000_000_000_000L => (fileSize / 1_000_000_000_000f).ToString("F2", CultureInfo.InvariantCulture) + " TB",
+                >=     1_000_000_000L => (fileSize /     1_000_000_000f).ToString("F2", CultureInfo.InvariantCulture) + " GB",
+                >=         1_000_000L => (fileSize /         1_000_000f).ToString("F2", CultureInfo.InvariantCulture) + " MB",
+                >=             1_000L => (fileSize /             1_000f).ToString("F2", CultureInfo.InvariantCulture) + " kB",
+                _                     => fileSize + " B"
+            };
+        }
+
+        public static T ChooseWeighted<T>(System.Random random, params (int Weight, T Obj)[] weightedActions)
+        {
+            int totalWeight = weightedActions.Sum(a => a.Weight);
+            int selection = random.Next(totalWeight);
+            foreach(var (weight, obj) in weightedActions)
+            {
+                selection -= weight;
+                if(selection < 0) return obj;
+            }
+            throw new Exception("Unreachable");
         }
     }
 }
