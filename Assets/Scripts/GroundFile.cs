@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -30,6 +31,33 @@ namespace Assets.Scripts
             base.OnMouseEnter();
         }
 
+        protected override void OnMouseDown()
+        {
+            base.OnMouseDown();
+
+            base.OnMouseDown();
+
+            GameManager gm = GameManager.Instance;
+            Player player = gm.player;
+            if(Vector2.Distance(player.transform.position, transform.position) > player.interactionRange)
+                return;
+
+            if(gm.deck.Any(c => c.FilePath == displayPath))
+            {
+                gm.CreateTextEffect("Already copied", Color.red, transform.position);
+                return;
+            }
+
+            if(gm.FreeStorage < card.FileSize)
+            {
+                gm.CreateTextEffect("File too large", Color.red, transform.position);
+                return;
+            }
+
+            gm.deck.Add(card);
+            gm.CreateTextEffect("Copied", Color.green, transform.position);
+        }
+
         public override void Init(Room room, string realPath)
         {
             base.Init(room, realPath);
@@ -51,7 +79,7 @@ namespace Assets.Scripts
             fileSize = info.Length;
 
             // Generate card
-            card = new Card(displayPath, fileSize);
+            card = new Card(displayPath, fileSize, sprite);
         }
 
         protected override void InitRandom()

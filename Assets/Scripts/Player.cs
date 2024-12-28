@@ -8,7 +8,9 @@ namespace Assets.Scripts
     {
         InputAction moveAction;
         Animator animator;
-        [SerializeField] float speed = 1f;
+
+        public float speed = 1f;
+        public float interactionRange = 4.0f;
 
         // Use this for initialization
         void Start()

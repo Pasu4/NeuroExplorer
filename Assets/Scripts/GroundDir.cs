@@ -25,8 +25,18 @@ namespace Assets.Scripts
         protected override void OnMouseDown()
         {
             base.OnMouseDown();
-            if(!locked)
-                room.ChangeRoom(realPath); // TODO: Transition
+
+            Player player = GameManager.Instance.player;
+            if(Vector2.Distance(player.transform.position, transform.position) > player.interactionRange)
+                return;
+
+            if(locked)
+            {
+                GameManager.Instance.CreateTextEffect("Locked", Color.red, transform.position);
+                return;
+            }
+
+            room.ChangeRoom(realPath); // TODO: Transition
         }
 
         public override void Init(Room room, string realPath)

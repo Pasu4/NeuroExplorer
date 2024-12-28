@@ -11,8 +11,14 @@ namespace Assets.Scripts
 {
     public class Card
     {
+        public enum CardType
+        {
+            Attack, Defense, Tool, Resource, Trojan
+        }
+
         private System.Random random;
 
+        public string FilePath { get; private set; }
         public long FileSize { get; private set; } = 0;
         public long Attack { get; private set; } = 0;
         public long Defense { get; private set; } = 0;
@@ -21,9 +27,10 @@ namespace Assets.Scripts
         public bool Erase { get; private set; } = false;
         public bool Volatile { get; private set; } = false;
 
-        public Card(string path, long fileSize)
+        public Card(string path, long fileSize, Sprite sprite)
         {
             random = GameManager.Instance.CreatePathRandom(path, "CardStats");
+            FilePath = path;
             FileSize = fileSize;
 
             long mainValue = (long) Mathf.Sqrt(FileSize); // Main attack or defense value
@@ -43,21 +50,54 @@ namespace Assets.Scripts
                 points += 2;
             }
 
-            switch(random.NextDouble())
+            CardType type = random.NextDouble() switch
             {
-                case <.30: // (30%) Attack card
+                <.30 => CardType.Attack, // (30%) Attack card
+                <.60 => CardType.Defense, // (30%) Defense card
+                <.90 => CardType.Tool, // (30%) Tool card
+                _ => CardType.Resource // (10%) Resource card
+            };
+
+            // Based on file extension
+            switch(Path.GetExtension(path))
+            {
+                case ".exe": // Weapon (Always attack, +25% attack)
+                    type = CardType.Attack;
+                    mainValue += mainValue / 4;
+                    break;
+
+                case ".zip": // Shield (Always defense, +25% defense)
+                case ".tar":
+                case ".gz":
+                case ".7z":
+                    type = CardType.Defense;
+                    mainValue += mainValue / 4;
+                    break;
+
+                case ".dll": // Spell (Always tool, +2 pts)
+                    type = CardType.Tool;
+                    points += 2;
+                    break;
+
+                default: break;
+            }
+            
+            // Init
+            switch(type)
+            {
+                case CardType.Attack:
                     InitAttack(mainValue, points);
                     break;
 
-                case <.60: // (30%) Defense card
+                case CardType.Defense:
                     InitDefense(mainValue, points);
                     break;
 
-                case <.90: // (30%) Tool card
+                case CardType.Tool:
                     InitTool(points);
                     break;
 
-                default: // (10%) Resource card
+                case CardType.Resource:
                     InitResource(points);
                     break;
             }

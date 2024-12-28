@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using TMPro;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -22,10 +23,18 @@ namespace Assets.Scripts
         public int gameSeed;
 
         public Player player;
-        public List<Card> deck;
+        public long hp;
+        public long maxHp;
+        public long mp;
+        public long maxMp;
+        public List<Card> deck = new();
+        public long inventorySpace;
+        public long FreeStorage => inventorySpace - deck.Sum(c => c.FileSize);
 
         public FileSprite[] fileSprites;
         public Sprite[] defaultSprites;
+
+        public GameObject textEffectPrefab;
 
         private readonly SHA1 sha1 = SHA1.Create();
         private Regex allowedFolderPathRegex;
@@ -141,6 +150,15 @@ namespace Assets.Scripts
                     .ToLowerInvariant();
 
             return hashStr[..str.Length];
+        }
+
+        public void CreateTextEffect(string text, Color color, Vector2 position)
+        {
+            GameObject textEffect = Instantiate(textEffectPrefab);
+            TextMeshProUGUI tmp = textEffect.GetComponentInChildren<TextMeshProUGUI>();
+            tmp.text = text;
+            tmp.color = color;
+            textEffect.transform.position = position;
         }
     }
 }

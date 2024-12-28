@@ -35,7 +35,11 @@ namespace Assets.Scripts
 
         protected virtual void OnMouseDown()
         {
-            Debug.Log("Clicked " + displayPath);
+            Player player = GameManager.Instance.player;
+            if(Vector2.Distance(player.transform.position, transform.position) > player.interactionRange)
+            {
+                GameManager.Instance.CreateTextEffect("Too far", Color.red, transform.position);
+            }
         }
 
         protected virtual void OnMouseEnter()
