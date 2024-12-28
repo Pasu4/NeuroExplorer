@@ -9,6 +9,8 @@ namespace Assets.Scripts
 {
     public class Room : MonoBehaviour
     {
+        public Player player;
+
         public float cellSize = 2.0f;
         [Range(0, 1)]
         public float placementRandomness = 0.8f;
@@ -135,9 +137,9 @@ namespace Assets.Scripts
             GameObject fromObj = groundObjects
                 .FirstOrDefault(go => go.GetComponent<GroundObject>().realPath == fromPath);
             if(fromObj != null)
-                GameManager.Instance.player.transform.position = fromObj.transform.position;
+                player.transform.position = fromObj.transform.position;
             else
-                GameManager.Instance.player.transform.position = Vector2.zero;
+                player.transform.position = Vector2.zero;
         }
 
         public GameObject CreateFile(string path)

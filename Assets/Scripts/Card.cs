@@ -71,11 +71,13 @@ namespace Assets.Scripts
 
             List<CardEffect> effectList = new();
 
-            while(points > 0)
+            int failsafe = 100;
+            while(points > 0 && failsafe > 0)
             {
                 if(random.NextDouble() < 0.5f) // (50%) Increase damage by 10% for 1 point
                 {
                     Attack += Attack / 10;
+                    points--;
                 }
                 else // (50%) Add a random effect
                 {
@@ -89,7 +91,9 @@ namespace Assets.Scripts
                         }))
                     )();
                 }
+                failsafe--;
             }
+            if(failsafe <= 0) Debug.LogWarning("Failsafe hit");
 
             CardEffects = effectList.ToArray();
         }
@@ -101,11 +105,13 @@ namespace Assets.Scripts
 
             List<CardEffect> effectList = new();
 
-            while(points > 0)
+            int failsafe = 100;
+            while(points > 0 & failsafe > 0)
             {
                 if(random.NextDouble() < 0.5f) // (50%) Increase defense by 10% for 1 point
                 {
                     Defense += Defense / 10;
+                    points--;
                 }
                 else // (50%) Add a random effect
                 {
@@ -119,7 +125,9 @@ namespace Assets.Scripts
                         }))
                     )();
                 }
+                failsafe--;
             }
+            if(failsafe <= 0) Debug.LogWarning("Failsafe hit");
 
             CardEffects = effectList.ToArray();
         }
@@ -144,6 +152,8 @@ namespace Assets.Scripts
                 )();
                 failsafe--;
             }
+
+            if(failsafe <= 0) Debug.LogWarning("Failsafe hit");
 
             CardEffects = effectList.ToArray();
         }
