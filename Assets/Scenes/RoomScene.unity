@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c07c73aef9036748a6e6fdb4dbb259c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
+  speed: 5
 --- !u!212 &390417042
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -197,7 +197,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.57169807, b: 0.91053754, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -249,7 +249,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &390417045
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -832,8 +832,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95ea24ab85d074b468011f454aea4959, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameMode: 3
   startPath: 
   obfuscate: 0
+  gameSeed: 0
+  player: {fileID: 0}
   fileSprites:
   - fileExtension: .txt
     sprite: {fileID: 602895466, guid: 1f23447eab72e184898c6f3b39ce6ab1, type: 3}
@@ -842,7 +845,7 @@ MonoBehaviour:
   - fileExtension: .exe
     sprite: {fileID: 702914797, guid: 1f23447eab72e184898c6f3b39ce6ab1, type: 3}
   defaultSprites:
-  - {fileID: 0}
+  - {fileID: 702914797, guid: 1f23447eab72e184898c6f3b39ce6ab1, type: 3}
 --- !u!4 &775382105
 Transform:
   m_ObjectHideFlags: 0
@@ -1096,10 +1099,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc18c156e034dae4aa6a934e879b0b13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  avgItemsPerUnit: 0.1
+  cellSize: 3
+  placementRandomness: 0.8
   maxRoomAspectRatio: 4
   filePrefab: {fileID: 7692058437814042887, guid: 10dc05140085bc444a3d002897debaf5, type: 3}
   dirPrefab: {fileID: 695065937936220920, guid: fd0bad764b2758443b1c81f116eb1806, type: 3}
+  chestPrefab: {fileID: 695065937936220920, guid: 8aade47c9a08a8c4680e44706bc8480a, type: 3}
   wallTop: {fileID: 489632245}
   wallBottom: {fileID: 545521343}
   wallLeft: {fileID: 889401748}

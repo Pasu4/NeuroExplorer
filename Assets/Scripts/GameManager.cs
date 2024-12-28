@@ -13,17 +13,19 @@ namespace Assets.Scripts
     {
         public static GameManager Instance { get; private set; }
 
-        [HideInInspector]
+        public GameMode gameMode = GameMode.MainMenu;
+
         public string startPath;
         public bool obfuscate;
+        public int gameSeed;
+
+        public Player player;
 
         public FileSprite[] fileSprites;
         public Sprite[] defaultSprites;
 
-        private SHA1 sha1 = SHA1.Create();
+        private readonly SHA1 sha1 = SHA1.Create();
         private Regex allowedFolderPathRegex;
-
-        private const string obfuscateLetters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
         private void Awake()
         {
@@ -34,9 +36,16 @@ namespace Assets.Scripts
         void Start()
         {
             startPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            if(gameSeed < 0)
+            {
+                RandomNumberGenerator secureRng = RandomNumberGenerator.Create();
+                byte[] b = new byte[4];
+                secureRng.GetBytes(b);
+                gameSeed = Mathf.Abs(BitConverter.ToInt32(b, 0));
+            }
 
             allowedFolderPathRegex = new Regex(@"
-                C:(?:
+                ^C:(?:
                     \\Windows
                     | \\Users (?:
                         \\\w+ (?:
@@ -46,6 +55,7 @@ namespace Assets.Scripts
                             | \\Downloads
                             | \\Games
                             | \\Videos
+                            | \\OneDrive
                             | (?:\\OneDrive)? (?: # OneDrive folder may or may not be above these
                                 \\Desktop
                                 | \\Music
@@ -61,7 +71,7 @@ namespace Assets.Scripts
                     | \\Program\sFiles
                     | \\Program\sFiles\s\(x86\)
                     | \\Temp
-                )
+                )$
             ", RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase);
         }
 
@@ -89,11 +99,8 @@ namespace Assets.Scripts
 
             if(split.Length == 0) return ext;
 
-            StringBuilder obfuscatedPathBuilder = new StringBuilder();
-            StringBuilder realPathBuilder = new StringBuilder();
-            obfuscatedPathBuilder.Append(split[0]);
-
-            System.Random random = CreatePathRandom(realPath, "Obfuscate");
+            StringBuilder obfuscatedPathBuilder = new StringBuilder(split[0]);
+            StringBuilder realPathBuilder = new StringBuilder(split[0]);
 
             foreach(string s in split[1..])
             {
@@ -105,18 +112,32 @@ namespace Assets.Scripts
                 // Obfuscate only if the folder path is not on the list
                 if(allowedFolderPathRegex.IsMatch(realPathBuilder.ToString()))
                 {
-                    Debug.Log(realPathBuilder + " matches ");
                     obfuscatedPathBuilder.Append(s);
                 }
                 else
-                    obfuscatedPathBuilder.Append(new string(random.ChooseMany(obfuscateLetters, s.Length).ToArray()));
+                {
+                    obfuscatedPathBuilder.Append(ObfuscateString(s));
+                }
             }
 
             obfuscatedPathBuilder.Append(ext);
 
-            Debug.Log(obfuscatedPathBuilder.ToString());
-
             return obfuscatedPathBuilder.ToString();
+        }
+
+        private string ObfuscateString(string str)
+        {
+            string hashStr = BitConverter.ToString(
+                    sha1.ComputeHash(Encoding.UTF8.GetBytes($"{str}:{gameSeed}"))
+                ).Replace("-", "")
+                .ToLowerInvariant();
+            while(str.Length > hashStr.Length)
+                hashStr += BitConverter.ToString(
+                        sha1.ComputeHash(Encoding.UTF8.GetBytes(hashStr))
+                    ).Replace("-", "")
+                    .ToLowerInvariant();
+
+            return hashStr[..str.Length];
         }
     }
 }

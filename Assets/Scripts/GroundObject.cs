@@ -8,13 +8,18 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
+    [RequireComponent(typeof(Collider2D))]
     public abstract class GroundObject : MonoBehaviour
     {
         public string realPath;
         public string displayPath;
+
+        public GameObject label;
+
         public string DisplayName => Path.GetFileName(displayPath);
 
         protected System.Random random;
+        protected Room room;
 
         // Use this for initialization
         protected virtual void Start()
@@ -28,18 +33,34 @@ namespace Assets.Scripts
 
         }
 
+        protected virtual void OnMouseDown()
+        {
+            Debug.Log("Clicked " + displayPath);
+        }
+
+        protected virtual void OnMouseEnter()
+        {
+            label.SetActive(true);
+        }
+
+        protected virtual void OnMouseExit()
+        {
+            label.SetActive(false);
+        }
+
         public virtual void Init(Room room, string realPath)
         {
+            this.room = room;
             this.realPath = realPath;
             displayPath = GameManager.Instance.obfuscate ? GameManager.Instance.ObfuscatePath(realPath) : realPath;
 
             InitRandom();
 
-            // Generate position
-            transform.localPosition = room.RandomPosition(random);
+            //// Generate position
+            //transform.localPosition = room.RandomPosition(random);
 
             // Debug
-            GetComponentInChildren<TextMeshProUGUI>().text = Path.GetFileName(displayPath);
+            GetComponentInChildren<TextMeshProUGUI>(true).text = Path.GetFileName(displayPath);
         }
 
         protected abstract void InitRandom();

@@ -12,6 +12,8 @@ namespace Assets.Scripts
         // Use this for initialization
         void Start()
         {
+            GameManager.Instance.player = this;
+
             moveAction = InputSystem.actions.FindAction("Move");
         }
 

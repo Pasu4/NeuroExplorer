@@ -23,6 +23,11 @@ namespace Assets.Scripts
             base.Update();
         }
 
+        protected override void OnMouseEnter()
+        {
+            base.OnMouseEnter();
+        }
+
         public override void Init(Room room, string realPath)
         {
             base.Init(room, realPath);
