@@ -833,19 +833,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startPath: 
-  obfuscate: 1
-  allowedFolderPaths:
-  - C:\\Windows
-  - C:\\Users\\
-  - C:\\Users\\\w+\\source
-  - C:\\Users\\\w+\\source\\repos
-  - C:\\Users\\\w+\\Downloads
-  - C:\\Users\\\w+\\Desktop
-  - C:\\Users\\\w+\\OneDrive
-  - C:\\Users\\\w+\\OneDrive\\Desktop
-  - C:\\Program Files
-  - C:\\Program Files \(x86\)
-  - C:\\Program Files \(x86\)
+  obfuscate: 0
   fileSprites:
   - fileExtension: .txt
     sprite: {fileID: 602895466, guid: 1f23447eab72e184898c6f3b39ce6ab1, type: 3}
