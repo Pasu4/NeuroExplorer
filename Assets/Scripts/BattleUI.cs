@@ -15,11 +15,13 @@ namespace Assets.Scripts
         public Transform discardPile;
         public Transform erasePile;
 
-        public List<CardUI> handCards;
-        public List<CardUI> drawCards;
-        public List<CardUI> discardedCards;
-        public List<CardUI> erasedCards;
-        public List<CardUI> deck;
+        public GameObject battleCardPrefab;
+
+        public List<BattleCardUI> handCards;
+        public List<BattleCardUI> drawCards;
+        public List<BattleCardUI> discardedCards;
+        public List<BattleCardUI> erasedCards;
+        public List<BattleCardUI> deck;
 
         // Use this for initialization
         void Start()
@@ -43,7 +45,7 @@ namespace Assets.Scripts
             }
         }
 
-        public void Discard(CardUI card)
+        public void Discard(BattleCardUI card)
         {
             handCards.Remove(card);
             discardedCards.Add(card);
@@ -52,7 +54,7 @@ namespace Assets.Scripts
             card.SetTarget(Vector2.zero);
         }
 
-        public void Erase(CardUI card)
+        public void Erase(BattleCardUI card)
         {
             handCards.Remove(card);
             deck.Remove(card);
@@ -65,7 +67,7 @@ namespace Assets.Scripts
         public void Reshuffle()
         {
             drawCards.AddRange(discardedCards);
-            foreach(CardUI card in discardedCards)
+            foreach(BattleCardUI card in discardedCards)
             {
                 card.transform.SetParent(drawPile);
             }
@@ -93,7 +95,7 @@ namespace Assets.Scripts
                 if(drawCards.Count == 0)
                     Reshuffle();
 
-                CardUI drawnCard = drawCards[^1];
+                BattleCardUI drawnCard = drawCards[^1];
                 drawCards.Remove(drawnCard);
                 handCards.Add(drawnCard);
                 drawnCard.transform.SetParent(hand);
@@ -109,9 +111,36 @@ namespace Assets.Scripts
             }
         }
 
-        public bool InHand(CardUI card)
+        public bool InHand(BattleCardUI card)
         {
             return handCards.Contains(card);
+        }
+
+        public void StartBattle()
+        {
+            // Delete old cards
+            foreach(BattleCardUI c in deck)
+                if(c) Destroy(c);
+
+            foreach(BattleCardUI c in erasedCards)
+                if(c) Destroy(c);
+
+            handCards.Clear();
+            drawCards.Clear();
+            discardedCards.Clear();
+            erasedCards.Clear();
+            deck.Clear();
+
+            // Spawn new cards
+            foreach(Card card in GameManager.Instance.deck)
+            {
+                GameObject go = Instantiate(battleCardPrefab, drawPile);
+                BattleCardUI bc = go.GetComponent<BattleCardUI>();
+                bc.SetCard(card);
+            }
+
+            // TODO?
+            Draw(5);
         }
 
         public BattleContext GetContext()

@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Assets.Scripts
 {
@@ -21,6 +22,8 @@ namespace Assets.Scripts
         public string startPath;
         public bool obfuscate;
         public int gameSeed;
+
+        public InventoryUI inventoryUI;
 
         public Player player;
         public long hp;
@@ -39,9 +42,13 @@ namespace Assets.Scripts
         private readonly SHA1 sha1 = SHA1.Create();
         private Regex allowedFolderPathRegex;
 
+        private InputAction inventoryAction;
+
         private void Awake()
         {
             Instance = this;
+
+            inventoryAction = InputSystem.actions.FindAction("Inventory");
         }
 
         // Use this for initialization
@@ -84,13 +91,19 @@ namespace Assets.Scripts
                     | \\Program\sFiles\s\(x86\)
                     | \\Temp
                 )$
+            | desktop\.ini$
             ", RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase);
         }
 
         // Update is called once per frame
         void Update()
         {
-
+            if(inventoryAction.WasPerformedThisFrame() && gameMode == GameMode.Room)
+            {
+                gameMode = GameMode.Inventory;
+                inventoryUI.gameObject.SetActive(true);
+                inventoryUI.Init();
+            }
         }
 
         public System.Random CreatePathRandom(string path, string tag)

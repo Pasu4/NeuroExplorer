@@ -35,10 +35,10 @@ namespace Assets.Scripts
                 // Animation
                 animator.SetBool("Moving", true);
 
-                animator.SetBool("MoveUp",    moveInput.y > Mathf.Abs(moveInput.x));
-                animator.SetBool("MoveDown", -moveInput.y > Mathf.Abs(moveInput.x));
-                animator.SetBool("MoveRight", moveInput.x > Mathf.Abs(moveInput.y));
-                animator.SetBool("MoveLeft", -moveInput.x > Mathf.Abs(moveInput.y));
+                animator.SetBool("MoveUp",    moveInput.y >= Mathf.Abs(moveInput.x));
+                animator.SetBool("MoveDown", -moveInput.y >= Mathf.Abs(moveInput.x));
+                animator.SetBool("MoveRight", moveInput.x >  Mathf.Abs(moveInput.y));
+                animator.SetBool("MoveLeft", -moveInput.x >  Mathf.Abs(moveInput.y));
             }
             else
             {
