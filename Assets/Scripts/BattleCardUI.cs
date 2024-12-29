@@ -56,7 +56,11 @@ namespace Assets.Scripts
 
         public void SetTarget(Vector2 newTarget)
         {
-            target = newTarget;
+            if(Vector2.SqrMagnitude(newTarget - (Vector2) transform.position) < 0.01f)
+            {
+                transform.position = newTarget;
+                return;
+            }
             if(moveCoro != null)
             {
                 StopCoroutine(moveCoro);
@@ -78,6 +82,12 @@ namespace Assets.Scripts
         {
             this.card = card;
             cardUI.SetCard(card);
+        }
+
+        public void Reveal(bool reveal)
+        {
+            cardUI.gameObject.SetActive(reveal);
+            cardBack.SetActive(!reveal);
         }
     }
 }

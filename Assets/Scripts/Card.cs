@@ -19,7 +19,10 @@ namespace Assets.Scripts
         private System.Random random;
 
         public string FilePath { get; private set; }
+        public string Name => Path.GetFileName(FilePath);
         public long FileSize { get; private set; } = 0;
+        public Sprite Sprite { get; private set; }
+        public CardType Type { get; private set; }
         public long Attack { get; private set; } = 0;
         public long Defense { get; private set; } = 0;
         public CardEffect[] CardEffects { get; private set; } = Array.Empty<CardEffect>();
@@ -32,8 +35,9 @@ namespace Assets.Scripts
             random = GameManager.Instance.CreatePathRandom(path, "CardStats");
             FilePath = path;
             FileSize = fileSize;
+            Sprite = sprite;
 
-            long mainValue = (long) Mathf.Sqrt(FileSize); // Main attack or defense value
+            long mainValue = (long) Mathf.Sqrt(FileSize) * 1000L; // Main attack or defense value
             int points = Mathf.CeilToInt(Mathf.Log10(FileSize) - 3); // Points to spend on increasing the main value or effects
             
             // (15%) Add [Erase] and 2 points
@@ -52,10 +56,10 @@ namespace Assets.Scripts
 
             CardType type = random.NextDouble() switch
             {
-                <.30 => CardType.Attack, // (30%) Attack card
-                <.60 => CardType.Defense, // (30%) Defense card
-                <.90 => CardType.Tool, // (30%) Tool card
-                _ => CardType.Resource // (10%) Resource card
+                <.35 => CardType.Attack,  // (35%) Attack card
+                <.70 => CardType.Defense, // (35%) Defense card
+                <.95 => CardType.Tool,    // (25%) Tool card
+                _ => CardType.Resource    // ( 5%) Resource card
             };
 
             // Based on file extension
@@ -101,6 +105,8 @@ namespace Assets.Scripts
                     InitResource(points);
                     break;
             }
+
+            Type = type;
         }
 
         private void InitAttack(long mainValue, int points)
@@ -125,7 +131,7 @@ namespace Assets.Scripts
                         (100, new Action(() => {
                             if(effectList.Any(e => e is MallocEffect)) return;
 
-                            int count = random.Next(3) + 1;
+                            int count = random.Next(points) + 1;
                             effectList.Add(new MallocEffect(count));
                             points -= count;
                         }))
@@ -159,7 +165,7 @@ namespace Assets.Scripts
                         (100, new Action(() => {
                             if(effectList.Any(e => e is MallocEffect)) return;
 
-                            int count = random.Next(3) + 1;
+                            int count = random.Next(points) + 1;
                             effectList.Add(new MallocEffect(count));
                             points -= count;
                         }))
@@ -185,7 +191,7 @@ namespace Assets.Scripts
                     (100, new Action(() => {
                         if(effectList.Any(e => e is MallocEffect)) return;
 
-                        int count = random.Next(3) + 1;
+                        int count = random.Next(points) + 1;
                         effectList.Add(new MallocEffect(count));
                         points -= count;
                     }))
@@ -226,9 +232,9 @@ namespace Assets.Scripts
             StringBuilder sb = new();
 
             if(Attack > 0)
-                sb.AppendLine($"Deals <color=#fd0>{Utils.FileSizeString(Attack)}</color> of damage.");
+                sb.AppendLine($"Deals <color=#66d>{Utils.FileSizeString(Attack)}</color> of damage.");
             if(Defense > 0)
-                sb.AppendLine($"Allocates {Utils.FileSizeString(Defense)} of swap.");
+                sb.AppendLine($"Blocks <color=#66d>{Utils.FileSizeString(Defense)}</color> of damage.");
 
             if(Erase)
                 sb.AppendLine("<color=#d00>[Erase]</color>");

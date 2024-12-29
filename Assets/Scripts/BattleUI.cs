@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -9,6 +10,10 @@ namespace Assets.Scripts
     {
         public Transform hand;
         public float handCardDistance = 10f;
+        public float pileCardDistance = 2f;
+
+        public RectTransform playerHPBar;
+        public TextMeshProUGUI playerMPText;
 
         [Space(10)]
         public Transform drawPile;
@@ -17,6 +22,7 @@ namespace Assets.Scripts
 
         public GameObject battleCardPrefab;
 
+        [Space(10)]
         public List<BattleCardUI> handCards;
         public List<BattleCardUI> drawCards;
         public List<BattleCardUI> discardedCards;
@@ -34,14 +40,27 @@ namespace Assets.Scripts
         {
             if(GameManager.Instance.gameMode != GameMode.Battle) return;
 
-            // Move hand cards to their positions
+            // Move cards to their positions
+
+            // Hand
             for(int i = 0; i < handCards.Count; i++)
             {
                 Vector2 target = (i - handCards.Count / 2f) * handCardDistance * Vector2.right;
-                if(Vector2.SqrMagnitude(target - handCards[i].target) > 0.01f)
-                {
-                    handCards[i].SetTarget(target);
-                }
+                handCards[i].SetTarget(target);
+            }
+
+            // Draw pile
+            for(int i = 0; i < drawCards.Count; i++)
+            {
+                Vector2 target = i * pileCardDistance * Vector2.up;
+                drawCards[i].SetTarget(target);
+            }
+
+            // Discard pile
+            for(int i = 0; i < discardedCards.Count; i++)
+            {
+                Vector2 target = i * pileCardDistance * Vector2.up;
+                discardedCards[i].SetTarget(target);
             }
         }
 
@@ -70,6 +89,7 @@ namespace Assets.Scripts
             foreach(BattleCardUI card in discardedCards)
             {
                 card.transform.SetParent(drawPile);
+                card.Reveal(false);
             }
             discardedCards.Clear();
             Shuffle();
@@ -95,10 +115,11 @@ namespace Assets.Scripts
                 if(drawCards.Count == 0)
                     Reshuffle();
 
-                BattleCardUI drawnCard = drawCards[^1];
+                BattleCardUI drawnCard = drawCards[^1]; // Because the last card is on top
                 drawCards.Remove(drawnCard);
                 handCards.Add(drawnCard);
                 drawnCard.transform.SetParent(hand);
+                drawnCard.Reveal(true);
                 drawnCard.card.OnEnterHand(GetContext());
             }
         }
@@ -137,9 +158,11 @@ namespace Assets.Scripts
                 GameObject go = Instantiate(battleCardPrefab, drawPile);
                 BattleCardUI bc = go.GetComponent<BattleCardUI>();
                 bc.SetCard(card);
+                bc.Reveal(false);
             }
 
             // TODO?
+            Shuffle();
             Draw(5);
         }
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
@@ -23,11 +24,23 @@ namespace Assets.Scripts
 
         public void Init()
         {
+            // Delete old cards
+            foreach(Transform child in contentTransform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            // Spawn new cards
             List<Card> cards = GameManager.Instance.deck;
             foreach(Card card in cards)
             {
                 GameObject go = Instantiate(cardPrefab, contentTransform);
-                go.GetComponent<CardUI>().SetCard(card);
+                go.GetComponentInChildren<CardUI>().SetCard(card);
+                go.GetComponentInChildren<Button>().onClick.AddListener(() =>
+                {
+                    GameManager.Instance.deck.Remove(card);
+                    Destroy(go);
+                });
             }
         }
     }

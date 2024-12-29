@@ -50,7 +50,7 @@ namespace Assets.Scripts
 
             if(gm.FreeStorage < card.FileSize)
             {
-                gm.CreateTextEffect("File too large", Color.red, transform.position);
+                gm.CreateTextEffect($"File too large\n({Utils.FileSizeString(card.FileSize)})", Color.red, transform.position);
                 return;
             }
 

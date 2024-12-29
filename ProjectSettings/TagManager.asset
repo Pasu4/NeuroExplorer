@@ -41,8 +41,17 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Room
+    uniqueID: 657522511
+    locked: 0
+  - name: Items
+    uniqueID: 3660689581
+    locked: 0
   - name: Player
     uniqueID: 4130781367
+    locked: 0
+  - name: UI
+    uniqueID: 653357863
     locked: 0
   m_RenderingLayers:
   - Default

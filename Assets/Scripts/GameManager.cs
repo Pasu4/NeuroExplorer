@@ -24,6 +24,7 @@ namespace Assets.Scripts
         public int gameSeed;
 
         public InventoryUI inventoryUI;
+        public RoomUI roomUI;
 
         public Player player;
         public long hp;
@@ -36,6 +37,7 @@ namespace Assets.Scripts
 
         public FileSprite[] fileSprites;
         public Sprite[] defaultSprites;
+        public CardSprites cardSprites;
 
         public GameObject textEffectPrefab;
 
@@ -43,12 +45,14 @@ namespace Assets.Scripts
         private Regex allowedFolderPathRegex;
 
         private InputAction inventoryAction;
+        private InputAction cancelAction;
 
         private void Awake()
         {
             Instance = this;
 
             inventoryAction = InputSystem.actions.FindAction("Inventory");
+            cancelAction = InputSystem.actions.FindAction("Cancel");
         }
 
         // Use this for initialization
@@ -100,9 +104,15 @@ namespace Assets.Scripts
         {
             if(inventoryAction.WasPerformedThisFrame() && gameMode == GameMode.Room)
             {
+                
                 gameMode = GameMode.Inventory;
                 inventoryUI.gameObject.SetActive(true);
                 inventoryUI.Init();
+            }
+            else if((inventoryAction.WasPerformedThisFrame() || cancelAction.WasPerformedThisFrame()) && gameMode == GameMode.Inventory)
+            {
+                gameMode = GameMode.Room;
+                inventoryUI.gameObject.SetActive(false);
             }
         }
 
@@ -118,9 +128,8 @@ namespace Assets.Scripts
         public string ObfuscatePath(string realPath)
         {
             string ext = Path.GetExtension(realPath);
-            string pathWithoutExtension = realPath[..^ext.Length];
 
-            string[] split = pathWithoutExtension.Split(Path.DirectorySeparatorChar);
+            string[] split = realPath.Split(Path.DirectorySeparatorChar);
 
             if(split.Length == 0) return ext;
 
@@ -145,6 +154,8 @@ namespace Assets.Scripts
                 }
             }
 
+            // Correct extension
+            obfuscatedPathBuilder.Length -= ext.Length;
             obfuscatedPathBuilder.Append(ext);
 
             return obfuscatedPathBuilder.ToString();

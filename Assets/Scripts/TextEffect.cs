@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -21,7 +20,8 @@ namespace Assets.Scripts
         {
             tmp = GetComponentInChildren<TextMeshProUGUI>();
             originalColor = tmp.color;
-            targetColor = originalColor.WithAlpha(0);
+            targetColor = originalColor;
+            targetColor.a = 0;
         }
 
         // Update is called once per frame
