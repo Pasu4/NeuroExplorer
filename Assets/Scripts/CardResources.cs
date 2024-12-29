@@ -9,25 +9,34 @@ namespace Assets.Scripts
 {
     public static class CardResources
     {
-        private static readonly Dictionary<string, Card> cards = new()
+        public static Card GetCard(string id) => id switch
         {
-            ["null_pointer"] = new()
-            {
-                name = "Null Pointer",
-                erase = true,
-                fileSize = 5_000L,
-                sprite = GameManager.Instance.GetFileSprite("null_pointer")
-            },
-            ["segmentation_fault"] = new()
+            "segmentation_fault" => new()
             {
                 name = "Segmentation Fault",
+                type = Card.CardType.Trojan,
                 erase = true,
                 @volatile = true,
-                fileSize = 5_000L,
+                fileSize = GameManager.Instance.maxMp * 2 / 5,
                 sprite = GameManager.Instance.GetFileSprite("segmentation_fault"),
                 cardEffects = new[] { new SegfaultEffect() }
+            },
+            "null_pointer" => new()
+            {
+                name = "Null Pointer",
+                type = Card.CardType.Trojan,
+                erase = true,
+                fileSize = GameManager.Instance.maxMp * 1 / 5,
+                sprite = GameManager.Instance.GetFileSprite("null_pointer")
+            },
+            _ => new()
+            {
+                name = "Error",
+                type = Card.CardType.Trojan,
+                @volatile = true,
+                fileSize = 1_000_000_000_000L,
+                sprite = GameManager.Instance.GetFileSprite("null_pointer")
             }
         };
-        public static Card GetCard(string id) => cards[id];
     }
 }

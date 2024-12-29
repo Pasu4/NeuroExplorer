@@ -207,6 +207,9 @@ namespace Assets.Scripts
             BattleCardUI bc = go.GetComponent<BattleCardUI>();
             bc.SetCard(card);
             bc.Reveal(reveal);
+            pile.Add(bc);
+            deck.Add(bc);
+            bc.battleUI = this;
         }
 
         public void AttackPlayer(long damage)

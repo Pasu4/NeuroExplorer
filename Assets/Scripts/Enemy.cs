@@ -33,10 +33,8 @@ namespace Assets.Scripts
             return (Enemy) MemberwiseClone();
         }
 
-        public virtual void Init(long strength)
+        public virtual void Init()
         {
-            this.strength = strength;
-
             nextAction = Utils.ChooseWeighted<EnemyAction>(new System.Random(),
                 (attackWeight, new AttackAction((long) (strength * Random.Range(0.9f, 1.1f)), Random.value < multiChance ? Random.Range(2, maxMulti) : 1)),
                 (defenseWeight, new DefendAction((long) (strength * Random.Range(0.9f, 1.1f)))),

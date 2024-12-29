@@ -58,7 +58,7 @@ namespace Assets.Scripts
         {
             this.room = room;
             this.realPath = realPath;
-            displayPath = GameManager.Instance.obfuscate ? GameManager.Instance.ObfuscatePath(realPath) : realPath;
+            displayPath = GameManager.Instance.obfuscate ? GameManager.Instance.ObfuscatePath(realPath, this is GroundDir) : realPath;
 
             InitRandom();
 

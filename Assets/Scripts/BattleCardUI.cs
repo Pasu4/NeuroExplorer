@@ -43,6 +43,7 @@ namespace Assets.Scripts
                 return;
             }
 
+            hovered = false;
             battleUI.PlayCard(this);
         }
 

@@ -143,9 +143,9 @@ namespace Assets.Scripts
             return new System.Random(BitConverter.ToInt32(hash, 0));
         }
 
-        public string ObfuscatePath(string realPath)
+        public string ObfuscatePath(string realPath, bool isDir)
         {
-            string ext = Path.GetExtension(realPath);
+            string ext = isDir ? "" : Path.GetExtension(realPath);
 
             string[] split = realPath.Split(Path.DirectorySeparatorChar);
 

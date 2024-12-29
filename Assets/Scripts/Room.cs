@@ -149,7 +149,7 @@ namespace Assets.Scripts
             width = Mathf.Ceil(iWidth * cellSize);
             height = Mathf.Ceil(iHeight * cellSize);
 
-            SetSize(new Vector2(width, height));
+            SetSize(new Vector2(width+3, height+3)); // margin so objects are not on the wall
 
             GameObject[,] grid = new GameObject[iWidth, iHeight];
             int index = 0;
@@ -157,7 +157,6 @@ namespace Assets.Scripts
             // Place objects
             foreach(string file in files)
             {
-                // TODO: Links
                 //if(Path.GetExtension(file).ToLower() == ".lnk")
                 //    grid[index % iWidth, index / iWidth] = CreateLink(file);
                 //else
@@ -294,7 +293,7 @@ namespace Assets.Scripts
             GameObject go = Instantiate(encounterPrefab);
             encounters.Add(go);
             go.transform.position = position;
-            go.transform.position = (Vector2) transform.position + Random.insideUnitCircle * 2;
+            go.transform.position = (Vector2) go.transform.position + Random.insideUnitCircle * 2;
             go.GetComponent<Encounter>().Init(id, strength);
         }
 
@@ -318,7 +317,7 @@ namespace Assets.Scripts
                 exit.transform.position = player.transform.position = Vector2.down * 11;
 
                 GameObject dir = CreateDir(@"C:\Windows\Final\Boss");
-                dir.transform.position = Vector2.up * 11;
+                dir.transform.position = Vector2.up * 9;
             }
             else if(path == @"C:\Windows\Final\Boss")
             {
@@ -326,7 +325,7 @@ namespace Assets.Scripts
                 exit.transform.position = player.transform.position = Vector2.down * 11;
 
                 GameObject dir = CreateDir(@"C:\Windows\Final\Boss\AIris");
-                dir.transform.position = Vector2.up * 11;
+                dir.transform.position = Vector2.up * 9;
             }
             else if(path == @"C:\Windows\Final\Boss\AIris")
             {
@@ -343,8 +342,8 @@ namespace Assets.Scripts
 
         void SetWallPositions()
         {
-            wallTop.transform.localPosition     = Vector3.up    * (0.5f * spriteRenderer.size.y + 0.5f);
-            wallBottom.transform.localPosition  = Vector3.down  * (0.5f * spriteRenderer.size.y + 0.5f);
+            wallTop.transform.localPosition     = Vector3.up    * (0.5f * spriteRenderer.size.y - 0.5f);
+            wallBottom.transform.localPosition  = Vector3.down  * (0.5f * spriteRenderer.size.y - 0.25f);
             wallLeft.transform.localPosition    = Vector3.left  * (0.5f * spriteRenderer.size.x + 0.5f);
             wallRight.transform.localPosition   = Vector3.right * (0.5f * spriteRenderer.size.x + 0.5f);
         }
