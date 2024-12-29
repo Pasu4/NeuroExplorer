@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,12 +10,44 @@ namespace Assets.Scripts
     public class Enemy
     {
         public long strength;
-        public long hp;
-        public long maxHp;
-        public long block;
+        public long hp = 100000;
+        public long maxHp = 100000;
+        public long block = 0;
         public Sprite sprite;
+        public Card trojanCard;
+        public int attackWeight = 10;
+        public int defenseWeight = 10;
+        public int trojanWeight = 10;
+        public float attackFactor = 1.0f;
+        public float defendFactor = 1.0f;
+        public int trojanCount = 1;
+        [Range(0, 1)]
+        public float multiChance = 0.25f;
+        public int maxMulti = 2;
+        public string trojanId = "";
 
         public EnemyAction nextAction;
+
+        public Enemy Copy()
+        {
+            return (Enemy) MemberwiseClone();
+        }
+
+        public virtual void Init(long strength)
+        {
+            this.strength = strength;
+
+            nextAction = Utils.ChooseWeighted<EnemyAction>(new System.Random(),
+                (attackWeight, new AttackAction((long) (strength * Random.Range(0.9f, 1.1f)), Random.value < multiChance ? Random.Range(2, maxMulti) : 1)),
+                (defenseWeight, new DefendAction((long) (strength * Random.Range(0.9f, 1.1f)))),
+                (trojanWeight, new TrojanAction())
+            );
+
+            if(!string.IsNullOrEmpty(trojanId))
+            {
+                trojanCard = CardResources.GetCard(trojanId);
+            }
+        }
 
         public virtual void DoTurn(BattleContext ctx)
         {
@@ -33,32 +64,30 @@ namespace Assets.Scripts
         {
             for(int i = 0; i < action.times; i++)
             {
-                ctx.BattleUI.AttackPlayer(action.damage);
+                ctx.BattleUI.AttackPlayer((long) (action.damage * attackFactor));
             }
         }
 
         public virtual void DoDefendAction(BattleContext ctx, DefendAction action)
         {
-            block = action.block;
+            block = (long) (action.block * defendFactor);
         }
 
         public virtual void DoTrojanAction(BattleContext ctx, TrojanAction action)
         {
-            ctx.BattleUI.CreateDiscardedCard(new Card
+            for(int i = 0; i < trojanCount; i++)
             {
-                Name = "Null Pointer",
-                Erase = true,
-                FileSize = 5_000L,
-                Sprite = GameManager.Instance.GetFileSprite("Null Pointer")
-            });
+                ctx.BattleUI.CreateDiscardedCard(trojanCard);
+            }
         }
 
         public virtual EnemyAction ChooseNextAction(BattleContext context)
         {
-            if(nextAction is AttackAction)
-                return new DefendAction(strength);
-            else
-                return new AttackAction(strength);
+            return Utils.ChooseWeighted<EnemyAction>(new System.Random(),
+                (attackWeight, new AttackAction(strength)),
+                (defenseWeight, new DefendAction(strength)),
+                (trojanWeight, new TrojanAction())
+            );
         }
     }
 }

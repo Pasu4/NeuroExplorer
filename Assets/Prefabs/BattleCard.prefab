@@ -151,7 +151,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  moveTime: 0
+  moveTime: 1
   erase: 0
   cardUI: {fileID: 7116721524868734086}
   cardBack: {fileID: 3062023962185461450}

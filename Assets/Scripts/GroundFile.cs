@@ -35,22 +35,22 @@ namespace Assets.Scripts
         {
             base.OnMouseDown();
 
-            base.OnMouseDown();
+            if(GameManager.Instance.gameMode != GameMode.Room) return;
 
             GameManager gm = GameManager.Instance;
             Player player = gm.player;
             if(Vector2.Distance(player.transform.position, transform.position) > player.interactionRange)
                 return;
 
-            if(gm.deck.Any(c => c.FilePath == displayPath))
+            if(gm.deck.Any(c => c.filePath == displayPath))
             {
                 gm.CreateTextEffect("Already copied", Color.red, transform.position);
                 return;
             }
 
-            if(gm.FreeStorage < card.FileSize)
+            if(gm.FreeStorage < card.fileSize)
             {
-                gm.CreateTextEffect($"File too large\n({Utils.FileSizeString(card.FileSize)})", Color.red, transform.position);
+                gm.CreateTextEffect($"File too large\n({Utils.FileSizeString(card.fileSize)})", Color.red, transform.position);
                 return;
             }
 

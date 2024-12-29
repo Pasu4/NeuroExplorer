@@ -9,6 +9,7 @@ namespace Assets.Scripts
         [Min(0.001f)]
         public float disappearTime;
         public float disappearHeight;
+        public Vector2 direction;
 
         TextMeshProUGUI tmp;
         Color originalColor;
@@ -29,7 +30,7 @@ namespace Assets.Scripts
         {
             if(t < disappearTime)
             {
-                transform.Translate(disappearHeight * Time.deltaTime * Vector2.up / disappearTime);
+                transform.Translate(disappearHeight * Time.deltaTime * direction / disappearTime);
                 tmp.color = Color.Lerp(originalColor, targetColor, t / disappearTime);
                 t += Time.deltaTime;
             }

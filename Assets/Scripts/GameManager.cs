@@ -22,6 +22,8 @@ namespace Assets.Scripts
         public string startPath;
         public bool obfuscate;
         public int gameSeed;
+        public int difficulty;
+        public int progress = 0;
 
         public InventoryUI inventoryUI;
         public RoomUI roomUI;
@@ -35,7 +37,7 @@ namespace Assets.Scripts
         public long block;
         public List<Card> deck = new();
         public long inventorySpace;
-        public long UsedStorage => deck.Sum(c => c.FileSize);
+        public long UsedStorage => deck.Sum(c => c.fileSize);
         public long FreeStorage => inventorySpace - UsedStorage;
 
         public FileSprite[] fileSprites;
@@ -44,6 +46,7 @@ namespace Assets.Scripts
         public Sprite enemyActionAttackSprite;
         public Sprite enemyActionDefendSprite;
         public Sprite enemyActionTrojanSprite;
+        public Enemy[] enemies;
 
         public GameObject textEffectPrefab;
 
@@ -77,11 +80,16 @@ namespace Assets.Scripts
 
             allowedFolderPathRegex = new Regex(@"
                 ^C:(?:
-                    \\Windows
+                    \\Windows (?:
+                        \\AIris
+                    )?
                     | \\Users (?:
-                        \\\w+ (?:
+                        \\Vedal
+                        | \\\w+ (?:
                             \\source (?:
-                                \\repos
+                                \\repos (?:
+                                    \\FilAIn
+                                )?
                             )?
                             | \\Downloads
                             | \\Games
@@ -94,7 +102,9 @@ namespace Assets.Scripts
                             )
                             | \\AppData (?:
                                 \\Local
-                                | \\LocalLow
+                                | \\LocalLow (?:
+                                    \\AImila
+                                )?
                                 | \\Roaming
                             )?
                         )
@@ -103,7 +113,7 @@ namespace Assets.Scripts
                     | \\Program\sFiles\s\(x86\)
                     | \\Temp
                 )$
-            | desktop\.ini$
+                | .*\\desktop\.ini$
             ", RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase);
         }
 
@@ -184,13 +194,16 @@ namespace Assets.Scripts
             return hashStr[..str.Length];
         }
 
-        public void CreateTextEffect(string text, Color color, Vector2 position)
+        public void CreateTextEffect(string text, Color color, Vector2 position) => CreateTextEffect(text, color, position, Vector2.up);
+
+        public void CreateTextEffect(string text, Color color, Vector2 position, Vector2 direction)
         {
             GameObject textEffect = Instantiate(textEffectPrefab);
             TextMeshProUGUI tmp = textEffect.GetComponentInChildren<TextMeshProUGUI>();
             tmp.text = text;
             tmp.color = color;
             textEffect.transform.position = position;
+            textEffect.GetComponent<TextEffect>().direction = direction;
         }
 
         public Sprite GetFileSprite(string name, System.Random random)
@@ -223,6 +236,13 @@ namespace Assets.Scripts
         public void GameOver()
         {
             // TODO
+        }
+
+        public void BattleWin()
+        {
+            // TODO
+            defeatedEncounters.Add(battleUI.encounterId);
+            EndBattle();
         }
     }
 }

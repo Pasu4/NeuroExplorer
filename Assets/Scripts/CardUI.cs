@@ -26,11 +26,11 @@ namespace Assets.Scripts
 
         public void SetCard(Card card)
         {
-            title.text = card.Name;
+            title.text = card.name;
             description.text = card.GetDescription();
-            fileSize.text = Utils.FileSizeString(card.FileSize);
-            image.sprite = card.Sprite;
-            GetComponent<Image>().sprite = GameManager.Instance.cardSprites.GetFrontSprite(card.Type);
+            fileSize.text = Utils.FileSizeString(card.fileSize);
+            image.sprite = card.sprite;
+            GetComponent<Image>().sprite = GameManager.Instance.cardSprites.GetFrontSprite(card.type);
         }
     }
 }

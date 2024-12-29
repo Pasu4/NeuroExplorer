@@ -18,18 +18,18 @@ namespace Assets.Scripts
 
         private System.Random random;
 
-        public string FilePath { get; set; }
-        public string Name { get; set; }
-        public long FileSize { get; set; } = 0;
-        public Sprite Sprite { get; set; }
-        public CardType Type { get; set; }
-        public long Attack { get; set; } = 0;
-        public long Defense { get; set; } = 0;
-        public CardEffect[] CardEffects { get; set; } = Array.Empty<CardEffect>();
-        public bool RequiresTarget { get; set; } = false;
-        public bool Erase { get; set; } = false;
-        public bool Volatile { get; set; } = false;
-        public bool Keep { get; set; } = false;
+        public string filePath;
+        public string name;
+        public long fileSize = 0;
+        public Sprite sprite;
+        public CardType type;
+        public long attack = 0;
+        public long defense = 0;
+        public CardEffect[] cardEffects = Array.Empty<CardEffect>();
+        public bool requiresTarget = false;
+        public bool erase = false;
+        public bool @volatile = false;
+        public bool keep = false;
 
         // For object initializer
         public Card()
@@ -40,25 +40,25 @@ namespace Assets.Scripts
         public Card(string path, long fileSize, Sprite sprite)
         {
             random = GameManager.Instance.CreatePathRandom(path, "CardStats");
-            FilePath = path;
-            FileSize = fileSize;
-            Sprite = sprite;
-            Name = Path.GetFileName(FilePath);
+            filePath = path;
+            this.fileSize = fileSize;
+            this.sprite = sprite;
+            name = Path.GetFileName(filePath);
 
-            long mainValue = (long) Mathf.Sqrt(FileSize) * 1000L; // Main attack or defense value
-            int points = Mathf.CeilToInt(Mathf.Log10(FileSize) - 4); // Points to spend on increasing the main value or effects
+            long mainValue = (long) Mathf.Sqrt(this.fileSize) * 1000L; // Main attack or defense value
+            int points = Mathf.CeilToInt(Mathf.Log10(this.fileSize) - 4); // Points to spend on increasing the main value or effects
             
             // (15%) Add [Erase] and 2 points
             if(random.NextDouble() < 0.15f)
             {
-                Erase = true;
+                erase = true;
                 points += 2;
             }
             
             // (10%) Add [Volatile] and 2 points
             if(random.NextDouble() < 0.10f)
             {
-                Volatile = true;
+                @volatile = true;
                 points += 2;
             }
 
@@ -114,14 +114,14 @@ namespace Assets.Scripts
                     break;
             }
 
-            Type = type;
+            this.type = type;
         }
 
         private void InitAttack(long mainValue, int points)
         {
-            RequiresTarget = true;
+            requiresTarget = true;
             mainValue += (long) (mainValue * random.Range(-0.10f, 0.10f)); // 10% Variance
-            Attack = mainValue;
+            attack = mainValue;
 
             List<CardEffect> effectList = new();
 
@@ -130,7 +130,7 @@ namespace Assets.Scripts
             {
                 if(random.NextDouble() < 0.5f) // (50%) Increase damage by 10% for 1 point
                 {
-                    Attack += Attack / 10;
+                    attack += attack / 10;
                     points--;
                 }
                 else // (50%) Add a random effect
@@ -149,13 +149,13 @@ namespace Assets.Scripts
             }
             if(failsafe <= 0) Debug.LogWarning("Failsafe hit");
 
-            CardEffects = effectList.ToArray();
+            cardEffects = effectList.ToArray();
         }
 
         private void InitDefense(long mainValue, int points)
         {
             mainValue += (long) (mainValue * random.Range(-0.10f, 0.10f)); // 10% Variance
-            Defense = mainValue;
+            defense = mainValue;
 
             List<CardEffect> effectList = new();
 
@@ -164,7 +164,7 @@ namespace Assets.Scripts
             {
                 if(random.NextDouble() < 0.5f) // (50%) Increase defense by 10% for 1 point
                 {
-                    Defense += Defense / 10;
+                    defense += defense / 10;
                     points--;
                 }
                 else // (50%) Add a random effect
@@ -183,7 +183,7 @@ namespace Assets.Scripts
             }
             if(failsafe <= 0) Debug.LogWarning("Failsafe hit");
 
-            CardEffects = effectList.ToArray();
+            cardEffects = effectList.ToArray();
         }
 
         private void InitTool(int points)
@@ -209,41 +209,47 @@ namespace Assets.Scripts
 
             if(failsafe <= 0) Debug.LogWarning("Failsafe hit");
 
-            CardEffects = effectList.ToArray();
+            cardEffects = effectList.ToArray();
         }
 
         private void InitResource(int points)
         {
             points += 5;
 
-            if(Erase)
+            if(erase)
             {
                 points -= 2;
-                Erase = false;
+                erase = false;
             }
+        }
+
+        public void OnPlay(BattleContext ctx)
+        {
+            foreach(CardEffect effect in cardEffects)
+                effect.OnPlay(ctx);
         }
 
         public void OnDiscard(BattleContext ctx)
         {
-            foreach(CardEffect effect in CardEffects)
+            foreach(CardEffect effect in cardEffects)
                 effect.OnDiscard(ctx);
         }
 
         public void OnErase(BattleContext ctx)
         {
-            foreach(CardEffect effect in CardEffects)
+            foreach(CardEffect effect in cardEffects)
                 effect.OnErase(ctx);
         }
 
         public void OnEnterHand(BattleContext ctx)
         {
-            foreach(CardEffect effect in CardEffects)
+            foreach(CardEffect effect in cardEffects)
                 effect.OnEnterHand(ctx);
         }
 
         public void OnTurnEnd(BattleContext ctx)
         {
-            foreach(CardEffect effect in CardEffects)
+            foreach(CardEffect effect in cardEffects)
                 effect.OnTurnEnd(ctx);
         }
 
@@ -251,19 +257,19 @@ namespace Assets.Scripts
         {
             StringBuilder sb = new();
 
-            if(Attack > 0)
-                sb.AppendLine($"Deals <color=#66d>{Utils.FileSizeString(Attack)}</color> of damage.");
-            if(Defense > 0)
-                sb.AppendLine($"Blocks <color=#66d>{Utils.FileSizeString(Defense)}</color> of damage.");
+            if(attack > 0)
+                sb.AppendLine($"Deals <color=#66d>{Utils.FileSizeString(attack)}</color> of damage.");
+            if(defense > 0)
+                sb.AppendLine($"Blocks <color=#66d>{Utils.FileSizeString(defense)}</color> of damage.");
 
-            if(Erase)
+            if(erase)
                 sb.AppendLine("<color=#d00>[Erase]</color>");
-            if(Volatile)
+            if(@volatile)
                 sb.AppendLine("<color=#d00>[Volatile]</color>");
-            if(Keep)
+            if(keep)
                 sb.AppendLine("<color=#d00>[Keep]</color>");
 
-            foreach(CardEffect effect in CardEffects)
+            foreach(CardEffect effect in cardEffects)
             {
                 string desc = effect.Description;
                 if(!string.IsNullOrEmpty(desc))

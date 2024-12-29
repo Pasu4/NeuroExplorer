@@ -16,13 +16,15 @@ namespace Assets.Scripts
         public CardUI cardUI;
         public GameObject cardBack;
         public Card card;
+        public bool hovered = false;
+        public bool selected = false;
 
         Coroutine moveCoro = null;
 
         // Use this for initialization
         void Start()
         {
-            target = transform.position;
+            //target = transform.position;
         }
 
         // Update is called once per frame
@@ -35,9 +37,9 @@ namespace Assets.Scripts
         {
             if(!battleUI.InHand(this)) return;
 
-            if(card.FileSize > GameManager.Instance.mp)
+            if(card.fileSize > GameManager.Instance.mp)
             {
-                GameManager.Instance.CreateTextEffect("Not enoungh RAM", Color.red, transform.position);
+                GameManager.Instance.CreateTextEffect("Insufficient Memory", Color.red, transform.position);
                 return;
             }
 
@@ -48,6 +50,7 @@ namespace Assets.Scripts
         {
             if(!battleUI.InHand(this)) return;
 
+            hovered = true;
             transform.SetAsLastSibling();
         }
 
@@ -55,20 +58,32 @@ namespace Assets.Scripts
         {
             if(!battleUI.InHand(this)) return;
 
+            hovered = false;
             battleUI.OrderHand();
         }
 
         public void SetTarget(Vector2 newTarget)
         {
-            if(Vector2.SqrMagnitude(newTarget - (Vector2) transform.position) < 0.01f)
+            // If already near position
+            if(Vector2.SqrMagnitude(newTarget - (Vector2) transform.localPosition) < 0.01f)
             {
-                transform.position = newTarget;
+                transform.localPosition = newTarget;
+                target = newTarget;
                 return;
             }
+
+            // If same target
+            if(newTarget == target)
+            {
+                return;
+            }
+
+            // Move
             if(moveCoro != null)
             {
                 StopCoroutine(moveCoro);
             }
+            target = newTarget;
             moveCoro = StartCoroutine(CMoveTo());
         }
 
@@ -86,7 +101,7 @@ namespace Assets.Scripts
         {
             this.card = card;
             cardUI.SetCard(card);
-            cardBack.GetComponent<Image>().sprite = GameManager.Instance.cardSprites.GetBackSprite(card.Type);
+            cardBack.GetComponent<Image>().sprite = GameManager.Instance.cardSprites.GetBackSprite(card.type);
         }
 
         public void Reveal(bool reveal)

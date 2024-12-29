@@ -26,6 +26,8 @@ namespace Assets.Scripts
         {
             base.OnMouseDown();
 
+            if(GameManager.Instance.gameMode != GameMode.Room) return;
+
             Player player = GameManager.Instance.player;
             if(Vector2.Distance(player.transform.position, transform.position) > player.interactionRange)
                 return;
@@ -43,7 +45,7 @@ namespace Assets.Scripts
         {
             base.Init(room, realPath);
 
-            if(!Utils.HasReadPermission(realPath) || realPath == "C:\\$Recycle.Bin")
+            if(Directory.Exists(realPath) && !Utils.HasReadPermission(realPath) || realPath == "C:\\$Recycle.Bin")
             {
                 // Set locked
                 locked = true;

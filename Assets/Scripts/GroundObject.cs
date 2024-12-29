@@ -35,6 +35,8 @@ namespace Assets.Scripts
 
         protected virtual void OnMouseDown()
         {
+            if(GameManager.Instance.gameMode != GameMode.Room) return;
+
             Player player = GameManager.Instance.player;
             if(Vector2.Distance(player.transform.position, transform.position) > player.interactionRange)
             {

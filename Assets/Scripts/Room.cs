@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -15,10 +17,12 @@ namespace Assets.Scripts
         public float placementRandomness = 0.8f;
         [Min(1)]
         public float maxRoomAspectRatio = 4.0f;
+        public float minRoomArea = 25f;
 
         public GameObject filePrefab;
         public GameObject dirPrefab;
         public GameObject chestPrefab;
+        public GameObject encounterPrefab;
 
         public GameObject wallTop;
         public GameObject wallBottom;
@@ -26,9 +30,33 @@ namespace Assets.Scripts
         public GameObject wallRight;
 
         public List<GameObject> groundObjects;
+        public List<GameObject> encounters;
         public string folderPath;
 
         SpriteRenderer spriteRenderer;
+
+        // TODO add boss rooms
+        private Regex noEnemyRooms = new(@"
+            ^C:\\Users\\\w+(?:\\OneDrive)?\\Desktop$
+        ", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled);
+
+        readonly List<FakeDir> fakeDirs = new()
+        {
+            new(@"C:\Users", "Vedal"),
+            new(@"C:\Users\Vedal", "source"),
+            new(@"C:\Users\Vedal\source", "repos"),
+            new(@"C:\Users\Vedal\source\repos", "FilAIn"),
+
+            new(@"C:\Users\Vedal", "AppData"),
+            new(@"C:\Users\Vedal\AppData", "LocalLow"),
+            new(@"C:\Users\Vedal\AppData", "Roaming"),
+            new(@"C:\Users\Vedal\AppData", "Local"),
+            new(@"C:\Users\Vedal\AppData\LocalLow", "AImila"),
+
+            new(@"C:\Windows", "Final"),
+            new(@"C:\Windows\Final", "Boss"),
+            new(@"C:\Windows\Final\Boss", "AIris"),
+        };
 
         // Use this for initialization
         void Start()
@@ -52,28 +80,64 @@ namespace Assets.Scripts
 
             // Destroy old ground objects
             foreach(GameObject go in groundObjects)
-            {
                 Destroy(go);
-            }
             groundObjects.Clear();
 
-            // Find files and folders
-            string[] files, dirs;
-            if(newPath.Contains(Path.DirectorySeparatorChar)) // Problems if there is no path separator
+            foreach(GameObject go in encounters)
+                Destroy(go);
+            encounters.Clear();
+
+            if(newPath == @"C:\Users\Vedal\source\repos\FilAIn")
             {
-                files = Directory.GetFiles(newPath);
-                dirs = Directory.GetDirectories(newPath);
+                SpecialRoom(@"C:\Users\Vedal\source\repos\FilAIn");
+                return;
             }
-            else
+            if(newPath == @"C:\Users\Vedal\AppData\LocalLow\AImila")
             {
-                files = Directory.GetFiles(newPath + "\\");
-                dirs = Directory.GetDirectories(newPath + "\\");
+                SpecialRoom(@"C:\Users\Vedal\AppData\LocalLow\AImila");
+                return;
+            }
+            if(newPath == @"C:\Windows\Final")
+            {
+                SpecialRoom(@"C:\Windows\Final");
+                return;
+            }
+            if(newPath == @"C:\Windows\Final\Boss")
+            {
+                SpecialRoom(@"C:\Windows\Final\Boss");
+                return;
+            }
+            if(newPath == @"C:\Windows\Final\Boss\AIris")
+            {
+                SpecialRoom(@"C:\Windows\Final\Boss\AIris");
+                return;
             }
 
-            int objCount = files.Length + dirs.Length;
+            List<string> files = new();
+            List<string> dirs = new();
+
+            if(Directory.Exists(newPath))
+            {
+                if(newPath.Contains(Path.DirectorySeparatorChar)) // Problems if there is no path separator
+                {
+                    files = Directory.GetFiles(newPath).ToList();
+                    dirs = Directory.GetDirectories(newPath).ToList();
+                }
+                else
+                {
+                    files = Directory.GetFiles(newPath + "\\").ToList();
+                    dirs = Directory.GetDirectories(newPath + "\\").ToList();
+                }
+            }
+
+            // Add fake dirs
+            dirs.AddRange(fakeDirs.Where(d => d.location == newPath).Select(d => d.location + Path.DirectorySeparatorChar + d.name));
+
+            int objCount = files.Count + dirs.Count;
 
             // Calculate room dimensions
             float area = objCount * cellSize * cellSize;
+            area = Mathf.Max(minRoomArea, area);
             float sqrtArea = Mathf.Sqrt(area);
             float sqrtMaxRoomAspectRatio = Mathf.Sqrt(maxRoomAspectRatio);
             
@@ -103,10 +167,11 @@ namespace Assets.Scripts
             }
             foreach(string dir in dirs)
             {
-                if(Utils.HasReadPermission(dir) && Directory.GetDirectories(dir).Length == 0)
-                    grid[index % iWidth, index / iWidth] = CreateChest(dir);
-                else
-                    grid[index % iWidth, index / iWidth] = CreateDir(dir);
+                //if(Utils.HasReadPermission(dir) && Directory.GetDirectories(dir).Length == 0)
+                //    grid[index % iWidth, index / iWidth] = CreateChest(dir);
+                //else
+                //    grid[index % iWidth, index / iWidth] = CreateDir(dir);
+                grid[index % iWidth, index / iWidth] = CreateDir(dir);
                 index++;
             }
 
@@ -139,6 +204,47 @@ namespace Assets.Scripts
                 player.transform.position = fromObj.transform.position;
             else
                 player.transform.position = Vector2.zero;
+
+            // Spawn encounters
+            if(!noEnemyRooms.IsMatch(newPath))
+            {
+                int count = groundObjects.Count / 10 + 1;
+                List<GroundObject> guardedObjects = groundObjects
+                    .Select(o => o.GetComponent<GroundObject>())
+                    .OrderByDescending(o => o is GroundFile)
+                    .ThenByDescending(o => o is GroundFile f ? f.fileSize : 0)
+                    .ThenBy(_ => random.Next())
+                    .Take(count)
+                    .ToList();
+
+                long averageFileSize;
+                try
+                {
+                    averageFileSize = (long) groundObjects
+                        .Select(o => o.GetComponent<GroundObject>())
+                        .OfType<GroundFile>()
+                        .Average(o => o.fileSize);
+                }
+                catch(System.InvalidOperationException)
+                {
+                    averageFileSize = 10000;
+                }
+
+                for(int i = 0; i < guardedObjects.Count; i++)
+                {
+                    if(Vector2.Distance(player.transform.position, guardedObjects[i].transform.position) < 5)
+                        continue; // Don't spawn too close to player
+
+                    if(guardedObjects[i] is GroundFile f)
+                    {
+                        CreateEncounter(f.realPath, f.transform.position, (long) Mathf.Sqrt(f.fileSize));
+                    }
+                    else if(guardedObjects[i] is GroundDir d)
+                    {
+                        CreateEncounter(d.realPath, d.transform.position, (long) Mathf.Sqrt(averageFileSize));
+                    }
+                }
+            }
         }
 
         public GameObject CreateFile(string path)
@@ -181,6 +287,52 @@ namespace Assets.Scripts
             dirObj.GetComponent<GroundDir>().Init(this, parentPath);
             dirObj.GetComponent<GroundDir>().SetUpDir();
             return dirObj;
+        }
+
+        private void CreateEncounter(string id, Vector2 position, long strength)
+        {
+            GameObject go = Instantiate(encounterPrefab);
+            encounters.Add(go);
+            go.transform.position = position;
+            go.transform.position = (Vector2) transform.position + Random.insideUnitCircle * 2;
+            go.GetComponent<Encounter>().Init(id, strength);
+        }
+
+        private void SpecialRoom(string path)
+        {
+            GameObject exit = CreateUpDir(path);
+
+            if(path == @"C:\Users\Vedal\source\repos\FilAIn")
+            {
+                SetSize(new Vector2(10, 10));
+                exit.transform.position = player.transform.position = Vector2.down * 4;
+            }
+            else if(path == @"C:\Users\Vedal\AppData\LocalLow\AImila")
+            {
+                SetSize(new Vector2(20, 20));
+                exit.transform.position = player.transform.position = Vector2.down * 9;
+            }
+            else if(path == @"C:\Windows\Final")
+            {
+                SetSize(new Vector2(5, 25));
+                exit.transform.position = player.transform.position = Vector2.down * 11;
+
+                GameObject dir = CreateDir(@"C:\Windows\Final\Boss");
+                dir.transform.position = Vector2.up * 11;
+            }
+            else if(path == @"C:\Windows\Final\Boss")
+            {
+                SetSize(new Vector2(5, 25));
+                exit.transform.position = player.transform.position = Vector2.down * 11;
+
+                GameObject dir = CreateDir(@"C:\Windows\Final\Boss\AIris");
+                dir.transform.position = Vector2.up * 11;
+            }
+            else if(path == @"C:\Windows\Final\Boss\AIris")
+            {
+                SetSize(new Vector2(5, 25));
+                exit.transform.position = player.transform.position = Vector2.down * 11;
+            }
         }
 
         public void SetSize(Vector2 size)

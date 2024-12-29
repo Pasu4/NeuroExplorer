@@ -55,7 +55,7 @@ namespace Assets.Scripts
             // Hand
             for(int i = 0; i < handCards.Count; i++)
             {
-                Vector2 target = (i - handCards.Count / 2f) * handCardDistance * Vector2.right;
+                Vector2 target = new(-((i - (handCards.Count - 1) / 2f) * handCardDistance), handCards[i].hovered ? 16 : 0);
                 handCards[i].SetTarget(target);
             }
 
@@ -78,24 +78,32 @@ namespace Assets.Scripts
             playerHpBar.value = gm.hp;
 
             // MP text
-            playerMpText.text = $"Allocated RAM: {Utils.FileSizeString(gm.mp)} / {Utils.FileSizeString(gm.maxMp)}";
+            playerMpText.text = $"Backup Memory: {Utils.FileSizeString(gm.block)}\n"
+                + $"Available Memory: {Utils.FileSizeString(gm.mp)} / {Utils.FileSizeString(gm.maxMp)}";
         }
 
         public void PlayCard(BattleCardUI card)
         {
-            if(card.card.Attack > 0)
+            GameManager.Instance.mp -= card.card.fileSize;
+
+            if(card.card.attack > 0)
             {
-                AttackEnemy(targetEnemy, card.card.Attack);
+                AttackEnemy(targetEnemy, card.card.attack);
+                GameManager.Instance.CreateTextEffect("-" + Utils.FileSizeString(card.card.attack), Color.red, targetEnemy.transform.position);
             }
-            if(card.card.Defense > 0)
+            if(card.card.defense > 0)
             {
-                GameManager.Instance.block += card.card.Defense;
+                GameManager.Instance.block += card.card.defense;
             }
 
-            if(card.card.Erase)
+            card.card.OnPlay(GetContext());
+
+            if(card.card.erase)
                 Erase(card);
             else
                 Discard(card);
+
+            CheckGame();
         }
 
         public void Discard(BattleCardUI card)
@@ -105,7 +113,7 @@ namespace Assets.Scripts
             card.card.OnDiscard(GetContext());
 
             card.transform.SetParent(discardPile);
-            card.SetTarget(Vector2.zero);
+            // card.SetTarget(Vector2.zero);
         }
 
         public void Erase(BattleCardUI card)
@@ -172,6 +180,18 @@ namespace Assets.Scripts
             return handCards.Contains(card);
         }
 
+        public void CheckGame()
+        {
+            if(GameManager.Instance.hp < 0)
+            {
+                GameManager.Instance.GameOver();
+            }
+            if(enemies.Count == 0)
+            {
+                GameManager.Instance.BattleWin();
+            }
+        }
+
         public void StartBattle(Enemy[] enemies, string encounterId)
         {
             StartCoroutine(CBattle(enemies, encounterId));
@@ -201,6 +221,8 @@ namespace Assets.Scripts
             {
                 GameManager.Instance.GameOver();
             }
+
+            GameManager.Instance.CreateTextEffect("-" + Utils.FileSizeString(damage), Color.red, playerHpBar.transform.position, Vector2.down);
         }
 
         public void AttackEnemy(EnemyUI enemy, long damage)
@@ -251,6 +273,8 @@ namespace Assets.Scripts
                 bc.battleUI = this;
                 bc.SetCard(card);
                 bc.Reveal(false);
+                drawCards.Add(bc);
+                deck.Add(bc);
             }
 
             Shuffle();
@@ -296,11 +320,11 @@ namespace Assets.Scripts
                 List<BattleCardUI> handCardsCopy = handCards.ToList();
                 foreach(BattleCardUI card in handCardsCopy)
                 {
-                    if(card.card.Volatile)
+                    if(card.card.@volatile)
                     {
                         Erase(card);
                     }
-                    else if(!card.card.Keep)
+                    else if(!card.card.keep)
                     {
                         Discard(card);
                     }
@@ -322,6 +346,11 @@ namespace Assets.Scripts
                 Draw(1);
                 yield return new WaitForSeconds(0.25f);
             }
+        }
+
+        public void EndPlayerTurn()
+        {
+            playerTurn = false;
         }
     }
 }
