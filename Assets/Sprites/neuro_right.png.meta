@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1612610b0d4719a48925ec4c31f9150d
+guid: 5a0b9c2e8e2d5e44eb9439811dad64e1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6285951387225775691
-    second: neuro_up_0
+      213: -9013017982564835139
+    second: neuro_right_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,12 +100,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: neuro_up_0
+      name: neuro_right_0
       rect:
         serializedVersion: 2
-        x: 16
+        x: 21
         y: 0
-        width: 32
+        width: 21
         height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5b1a8098480d3c8a0800000000000000
-      internalID: -6285951387225775691
+      spriteID: db0e30bd5e35be280800000000000000
+      internalID: -9013017982564835139
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      neuro_up_0: -6285951387225775691
+      neuro_right_0: -9013017982564835139
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
