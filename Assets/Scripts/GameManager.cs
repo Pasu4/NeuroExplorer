@@ -25,19 +25,25 @@ namespace Assets.Scripts
 
         public InventoryUI inventoryUI;
         public RoomUI roomUI;
+        public BattleUI battleUI;
 
         public Player player;
         public long hp;
         public long maxHp;
         public long mp;
         public long maxMp;
+        public long block;
         public List<Card> deck = new();
         public long inventorySpace;
-        public long FreeStorage => inventorySpace - deck.Sum(c => c.FileSize);
+        public long UsedStorage => deck.Sum(c => c.FileSize);
+        public long FreeStorage => inventorySpace - UsedStorage;
 
         public FileSprite[] fileSprites;
         public Sprite[] defaultSprites;
         public CardSprites cardSprites;
+        public Sprite enemyActionAttackSprite;
+        public Sprite enemyActionDefendSprite;
+        public Sprite enemyActionTrojanSprite;
 
         public GameObject textEffectPrefab;
 
@@ -46,6 +52,8 @@ namespace Assets.Scripts
 
         private InputAction inventoryAction;
         private InputAction cancelAction;
+
+        public List<string> defeatedEncounters;
 
         private void Awake()
         {
@@ -183,6 +191,38 @@ namespace Assets.Scripts
             tmp.text = text;
             tmp.color = color;
             textEffect.transform.position = position;
+        }
+
+        public Sprite GetFileSprite(string name, System.Random random)
+        {
+            IEnumerable<Sprite> possibleSprites = fileSprites
+                .Where(fs => fs.fileExtension == name)
+                .Select(fs => fs.sprite);
+
+            if(possibleSprites.Count() == 0)
+                possibleSprites = defaultSprites;
+
+            return random.Choose(possibleSprites);
+        }
+
+        public Sprite GetFileSprite(string name) => GetFileSprite(name, new System.Random());
+
+        public void StartBattle(Enemy[] enemies, string encounterId)
+        {
+            gameMode = GameMode.Battle;
+            battleUI.gameObject.SetActive(true);
+            battleUI.StartBattle(enemies, encounterId);
+        }
+
+        public void EndBattle()
+        {
+            gameMode = GameMode.Room;
+            battleUI.gameObject.SetActive(false);
+        }
+
+        public void GameOver()
+        {
+            // TODO
         }
     }
 }

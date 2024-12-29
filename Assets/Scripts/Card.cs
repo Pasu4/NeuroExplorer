@@ -18,17 +18,24 @@ namespace Assets.Scripts
 
         private System.Random random;
 
-        public string FilePath { get; private set; }
-        public string Name => Path.GetFileName(FilePath);
-        public long FileSize { get; private set; } = 0;
-        public Sprite Sprite { get; private set; }
-        public CardType Type { get; private set; }
-        public long Attack { get; private set; } = 0;
-        public long Defense { get; private set; } = 0;
-        public CardEffect[] CardEffects { get; private set; } = Array.Empty<CardEffect>();
-        public bool RequiresTarget { get; private set; } = false;
-        public bool Erase { get; private set; } = false;
-        public bool Volatile { get; private set; } = false;
+        public string FilePath { get; set; }
+        public string Name { get; set; }
+        public long FileSize { get; set; } = 0;
+        public Sprite Sprite { get; set; }
+        public CardType Type { get; set; }
+        public long Attack { get; set; } = 0;
+        public long Defense { get; set; } = 0;
+        public CardEffect[] CardEffects { get; set; } = Array.Empty<CardEffect>();
+        public bool RequiresTarget { get; set; } = false;
+        public bool Erase { get; set; } = false;
+        public bool Volatile { get; set; } = false;
+        public bool Keep { get; set; } = false;
+
+        // For object initializer
+        public Card()
+        {
+            random = new System.Random();
+        }
 
         public Card(string path, long fileSize, Sprite sprite)
         {
@@ -36,9 +43,10 @@ namespace Assets.Scripts
             FilePath = path;
             FileSize = fileSize;
             Sprite = sprite;
+            Name = Path.GetFileName(FilePath);
 
             long mainValue = (long) Mathf.Sqrt(FileSize) * 1000L; // Main attack or defense value
-            int points = Mathf.CeilToInt(Mathf.Log10(FileSize) - 3); // Points to spend on increasing the main value or effects
+            int points = Mathf.CeilToInt(Mathf.Log10(FileSize) - 4); // Points to spend on increasing the main value or effects
             
             // (15%) Add [Erase] and 2 points
             if(random.NextDouble() < 0.15f)
@@ -215,6 +223,12 @@ namespace Assets.Scripts
             }
         }
 
+        public void OnDiscard(BattleContext ctx)
+        {
+            foreach(CardEffect effect in CardEffects)
+                effect.OnDiscard(ctx);
+        }
+
         public void OnErase(BattleContext ctx)
         {
             foreach(CardEffect effect in CardEffects)
@@ -225,6 +239,12 @@ namespace Assets.Scripts
         {
             foreach(CardEffect effect in CardEffects)
                 effect.OnEnterHand(ctx);
+        }
+
+        public void OnTurnEnd(BattleContext ctx)
+        {
+            foreach(CardEffect effect in CardEffects)
+                effect.OnTurnEnd(ctx);
         }
 
         public string GetDescription()
@@ -240,6 +260,8 @@ namespace Assets.Scripts
                 sb.AppendLine("<color=#d00>[Erase]</color>");
             if(Volatile)
                 sb.AppendLine("<color=#d00>[Volatile]</color>");
+            if(Keep)
+                sb.AppendLine("<color=#d00>[Keep]</color>");
 
             foreach(CardEffect effect in CardEffects)
             {

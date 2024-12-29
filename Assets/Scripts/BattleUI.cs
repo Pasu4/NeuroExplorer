@@ -11,16 +11,19 @@ namespace Assets.Scripts
         public Transform hand;
         public float handCardDistance = 10f;
         public float pileCardDistance = 2f;
+        public float enemyDistance = 50f;
 
-        public RectTransform playerHPBar;
-        public TextMeshProUGUI playerMPText;
+        public BarUI playerHpBar;
+        public TextMeshProUGUI playerMpText;
 
         [Space(10)]
         public Transform drawPile;
         public Transform discardPile;
         public Transform erasePile;
+        public Transform enemyParent;
 
         public GameObject battleCardPrefab;
+        public GameObject enemyPrefab;
 
         [Space(10)]
         public List<BattleCardUI> handCards;
@@ -28,6 +31,11 @@ namespace Assets.Scripts
         public List<BattleCardUI> discardedCards;
         public List<BattleCardUI> erasedCards;
         public List<BattleCardUI> deck;
+        public List<EnemyUI> enemies;
+        public EnemyUI targetEnemy;
+
+        public bool playerTurn = false;
+        public string encounterId;
 
         // Use this for initialization
         void Start()
@@ -38,7 +46,9 @@ namespace Assets.Scripts
         // Update is called once per frame
         void Update()
         {
-            if(GameManager.Instance.gameMode != GameMode.Battle) return;
+            GameManager gm = GameManager.Instance;
+
+            if(gm.gameMode != GameMode.Battle) return;
 
             // Move cards to their positions
 
@@ -62,12 +72,37 @@ namespace Assets.Scripts
                 Vector2 target = i * pileCardDistance * Vector2.up;
                 discardedCards[i].SetTarget(target);
             }
+
+            // HP bar
+            playerHpBar.maxValue = gm.maxHp;
+            playerHpBar.value = gm.hp;
+
+            // MP text
+            playerMpText.text = $"Allocated RAM: {Utils.FileSizeString(gm.mp)} / {Utils.FileSizeString(gm.maxMp)}";
+        }
+
+        public void PlayCard(BattleCardUI card)
+        {
+            if(card.card.Attack > 0)
+            {
+                AttackEnemy(targetEnemy, card.card.Attack);
+            }
+            if(card.card.Defense > 0)
+            {
+                GameManager.Instance.block += card.card.Defense;
+            }
+
+            if(card.card.Erase)
+                Erase(card);
+            else
+                Discard(card);
         }
 
         public void Discard(BattleCardUI card)
         {
             handCards.Remove(card);
             discardedCards.Add(card);
+            card.card.OnDiscard(GetContext());
 
             card.transform.SetParent(discardPile);
             card.SetTarget(Vector2.zero);
@@ -137,8 +172,64 @@ namespace Assets.Scripts
             return handCards.Contains(card);
         }
 
-        public void StartBattle()
+        public void StartBattle(Enemy[] enemies, string encounterId)
         {
+            StartCoroutine(CBattle(enemies, encounterId));
+        }
+
+        public void CreateHandCard(Card card) => AddCard(card, handCards, hand, true);
+        public void CreateDrawCard(Card card) => AddCard(card, drawCards, drawPile, false);
+        public void CreateDiscardedCard(Card card) => AddCard(card, discardedCards, discardPile, false);
+
+        private void AddCard(Card card, List<BattleCardUI> pile, Transform parent, bool reveal)
+        {
+            GameObject go = Instantiate(battleCardPrefab, parent);
+            BattleCardUI bc = go.GetComponent<BattleCardUI>();
+            bc.SetCard(card);
+            bc.Reveal(reveal);
+        }
+
+        public void AttackPlayer(long damage)
+        {
+            GameManager.Instance.block -= damage;
+            if(GameManager.Instance.block < 0)
+            {
+                GameManager.Instance.hp += GameManager.Instance.block;
+                GameManager.Instance.block = 0;
+            }
+            if(GameManager.Instance.hp <= 0)
+            {
+                GameManager.Instance.GameOver();
+            }
+        }
+
+        public void AttackEnemy(EnemyUI enemy, long damage)
+        {
+            enemy.enemy.block -= damage;
+            if(enemy.enemy.block < 0)
+            {
+                enemy.enemy.hp += enemy.enemy.block;
+                enemy.enemy.block = 0;
+            }
+            if(enemy.enemy.hp <= 0)
+            {
+                enemies.Remove(enemy);
+                Destroy(enemy.gameObject);
+            }
+        }
+
+        public BattleContext GetContext()
+        {
+            return new BattleContext
+            {
+                BattleUI = this
+            };
+        }
+
+        private IEnumerator CBattle(Enemy[] enemies, string encounterId)
+        {
+            this.encounterId = encounterId;
+
             // Delete old cards
             foreach(BattleCardUI c in deck)
                 if(c) Destroy(c);
@@ -157,21 +248,80 @@ namespace Assets.Scripts
             {
                 GameObject go = Instantiate(battleCardPrefab, drawPile);
                 BattleCardUI bc = go.GetComponent<BattleCardUI>();
+                bc.battleUI = this;
                 bc.SetCard(card);
                 bc.Reveal(false);
             }
 
-            // TODO?
             Shuffle();
-            Draw(5);
+
+            // Delete old enemies
+            foreach(Transform child in enemyParent)
+            {
+                Destroy(child.gameObject);
+            }
+
+            // Spawn new enemies
+            int enemyCount = enemies.Length;
+            for(int i = 0; i < enemyCount; i++)
+            {
+                GameObject go = Instantiate(enemyPrefab, enemyParent);
+                go.transform.localPosition = (i - (enemyCount - 1) / 2f) * enemyDistance * Vector2.right;
+                EnemyUI e = go.GetComponent<EnemyUI>();
+                e.SetEnemy(enemies[i]);
+                this.enemies.Add(e);
+            }
+            targetEnemy = this.enemies[0];
+
+            // Draw initial cards
+
+            while(true)
+            {
+                Debug.Log("Drawing cards");
+                yield return CDraw(5);
+
+                playerTurn = true;
+                while(playerTurn)
+                    yield return null; // Wait for player to end the turn
+
+                Debug.Log("Player turn ended");
+
+                // Notify all cards that the turn ended
+                foreach(BattleCardUI card in handCards)
+                {
+                    card.card.OnTurnEnd(GetContext());
+                }
+
+                // Discard all hand cards
+                List<BattleCardUI> handCardsCopy = handCards.ToList();
+                foreach(BattleCardUI card in handCardsCopy)
+                {
+                    if(card.card.Volatile)
+                    {
+                        Erase(card);
+                    }
+                    else if(!card.card.Keep)
+                    {
+                        Discard(card);
+                    }
+                }
+
+                // Execute enemy actions
+                foreach(Enemy enemy in enemies)
+                {
+                    enemy.DoTurn(GetContext());
+                    yield return new WaitForSeconds(1.0f);
+                }
+            }
         }
 
-        public BattleContext GetContext()
+        private IEnumerator CDraw(int count)
         {
-            return new BattleContext
+            for(int i = 0; i < count; i++)
             {
-                BattleUI = this
-            };
+                Draw(1);
+                yield return new WaitForSeconds(0.25f);
+            }
         }
     }
 }

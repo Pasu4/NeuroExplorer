@@ -16,6 +16,7 @@ namespace Assets.Scripts
         public virtual void OnTurnStart(BattleContext ctx) { }
         public virtual void OnTurnEnd(BattleContext ctx) { }
         public virtual void OnEnterHand(BattleContext ctx) { }
+        public virtual void OnDiscard(BattleContext ctx) { }
         public virtual void OnErase(BattleContext ctx) { }
         public virtual void OnPlay(BattleContext ctx) { }
     }

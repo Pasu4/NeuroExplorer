@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
@@ -34,10 +35,13 @@ namespace Assets.Scripts
         {
             if(!battleUI.InHand(this)) return;
 
-            if(erase)
-                battleUI.Erase(this);
-            else
-                battleUI.Discard(this);
+            if(card.FileSize > GameManager.Instance.mp)
+            {
+                GameManager.Instance.CreateTextEffect("Not enoungh RAM", Color.red, transform.position);
+                return;
+            }
+
+            battleUI.PlayCard(this);
         }
 
         public void OnPointerEnter(PointerEventData ev)
@@ -82,6 +86,7 @@ namespace Assets.Scripts
         {
             this.card = card;
             cardUI.SetCard(card);
+            cardBack.GetComponent<Image>().sprite = GameManager.Instance.cardSprites.GetBackSprite(card.Type);
         }
 
         public void Reveal(bool reveal)
