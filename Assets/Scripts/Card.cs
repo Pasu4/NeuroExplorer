@@ -143,6 +143,25 @@ namespace Assets.Scripts
                             int count = random.Next(points) + 1;
                             effectList.Add(new MallocEffect(count));
                             points -= count;
+                        })),
+                        (100, new Action(() => {
+                            if(effectList.Any(e => e is ClearerrEffect)) return;
+
+                            effectList.Add(new ClearerrEffect());
+                            erase = true;
+                            points -= 3;
+                        })),
+                        (100, new Action(() => {
+                            if(effectList.Any(e => e is MemmoveEffect)) return;
+
+                            effectList.Add(new MemmoveEffect());
+                            points -= 2;
+                        })),
+                        (100, new Action(() => {
+                            if(effectList.Any(e => e is QsortEffect) || points < 4) return;
+
+                            effectList.Add(new QsortEffect());
+                            points -= 4;
                         }))
                     )();
                 }
@@ -222,7 +241,26 @@ namespace Assets.Scripts
                         int count = random.Next(points) + 1;
                         effectList.Add(new MallocEffect(count));
                         points -= count;
-                    }))
+                    })),
+                        (100, new Action(() => {
+                            if(effectList.Any(e => e is ClearerrEffect)) return;
+
+                            effectList.Add(new ClearerrEffect());
+                            erase = true;
+                            points -= 3;
+                        })),
+                        (100, new Action(() => {
+                            if(effectList.Any(e => e is MemmoveEffect)) return;
+
+                            effectList.Add(new MemmoveEffect());
+                            points -= 2;
+                        })),
+                        (100, new Action(() => {
+                            if(effectList.Any(e => e is QsortEffect) || points < 4) return;
+
+                            effectList.Add(new QsortEffect());
+                            points -= 4;
+                        }))
                 )();
                 failsafe--;
             }

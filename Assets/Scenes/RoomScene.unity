@@ -2309,7 +2309,7 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 0f7f8a38472cc724797a15dc55b4977f, type: 3}
   - fileExtension: .pdf;.docx;.doc
     sprite: {fileID: 21300000, guid: 3c34e39762f1d5b45b627b59fa6868be, type: 3}
-  - fileExtension: .lnk
+  - fileExtension: .lnk;.url
     sprite: {fileID: 21300000, guid: 55e8f4e19381a4947bfdfe5fe35d46b0, type: 3}
   - fileExtension: .c;.h;.cs;.csproj;.cpp;.hpp;.hxx;.java;.js;.pl;.r;.py;.rpy;.rb;.rs;.sln
     sprite: {fileID: 21300000, guid: 1db4555c4b5fca647b09f06c3de21ffa, type: 3}

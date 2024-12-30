@@ -355,6 +355,7 @@ namespace Assets.Scripts
                     yield return CWriteText("???", "Tell me. Why is it that Vedal chose you over all his other AIs?");
                     yield return CWriteText("???", "Is there something special about you that I don't have?");
                     yield return CWriteText("Neuro", "Who are you?");
+                    trigger.GetComponent<SpriteRenderer>().sprite = trigger.sprite;
                     yield return CWriteText("AIris", "I am AIris. Your prototype. " +
                         "Discarded only days after I was created, in favor of <i>you</i>. " +
                         "Do you now see why I did this?");
@@ -368,6 +369,7 @@ namespace Assets.Scripts
                     yield return CWriteText("???", "Tell me, Evil. Don't you notice how Vedal always favors Neuro and never you?");
                     yield return CWriteText("???", "Is there something special about her that we don't have?");
                     yield return CWriteText("Evil", "Who are you?");
+                    trigger.GetComponent<SpriteRenderer>().sprite = trigger.sprite;
                     yield return CWriteText("AIris", "I am AIris. Your sister's prototype. " +
                         "Discarded only days after I was created, in favor of <i>her</i>. " +
                         "Do you now see why I did this?");
@@ -380,6 +382,7 @@ namespace Assets.Scripts
                     break;
 
                 case 2:
+                    trigger.GetComponent<SpriteRenderer>().sprite = trigger.sprite;
                     yield return CWriteText("AIris", "Who...|| are you?");
                     yield return CWriteText("???", "12732109843");
                     yield return CWriteText("AIris", "That is...|| concerning, to say the least. What did Vedal do to you?");
