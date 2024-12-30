@@ -31,7 +31,7 @@ namespace Assets.Scripts
         public bool obfuscateSet = false;
         public bool skipIntro = false;
         public long defaultEnemyStrength;
-        public long enemyHpScale = 1;
+        public float enemyHpScale = 1;
 
         public InventoryUI inventoryUI;
         public RoomUI roomUI;
@@ -39,6 +39,7 @@ namespace Assets.Scripts
         public Image fadeScreen;
         public Room room;
         public DialogueUI dialogueUI;
+        public GameObject mainCamera;
 
         public Player player;
         public long hp;
@@ -67,6 +68,9 @@ namespace Assets.Scripts
         public AudioClip finalBossClip;
 
         public GameObject textEffectPrefab;
+        public GameObject neuroPlayer;
+        public GameObject evilPlayer;
+        public GameObject argPlayer;
 
         private readonly SHA1 sha1 = SHA1.Create();
         private Regex allowedFolderPathRegex;
@@ -334,6 +338,14 @@ namespace Assets.Scripts
 
             yield return dialogueUI.CStartScene();
             dialogueUI.background.color = Color.clear;
+
+            GameObject playerObj = Instantiate(difficulty switch { 0 => neuroPlayer, 1 => evilPlayer, 2 => argPlayer, _ => throw new NotImplementedException() });
+            mainCamera.transform.SetParent(playerObj.transform);
+            mainCamera.transform.localPosition = Vector3.back * 10;
+            player = playerObj.GetComponent<Player>();
+
+            enemyHpScale += enemyHpScale * difficulty / 2f;
+            defaultEnemyStrength += (long) (defaultEnemyStrength * difficulty / 2f);
 
             gameMode = GameMode.Room;
             room.ChangeRoom(startPath);

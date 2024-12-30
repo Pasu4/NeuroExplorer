@@ -35,8 +35,8 @@ namespace Assets.Scripts
 
         public virtual void Init()
         {
-            maxHp *= GameManager.Instance.enemyHpScale;
-            hp *= GameManager.Instance.enemyHpScale;
+            maxHp = (long) (maxHp * GameManager.Instance.enemyHpScale * Random.Range(0.8f, 1.2f));
+            hp = maxHp;
 
             nextAction ??= Utils.ChooseWeighted<EnemyAction>(new System.Random(),
                 (attackWeight, new AttackAction((long) (strength * Random.Range(0.8f, 1.2f) * attackFactor), Random.value < multiChance ? Random.Range(2, maxMulti) : 1)),

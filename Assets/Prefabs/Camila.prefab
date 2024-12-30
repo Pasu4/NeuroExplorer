@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: -164185929
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 20976372a81bbb645a4e57c91bd85949, type: 3}
+  m_Sprite: {fileID: 21300000, guid: df788b2e028de224ca4b979fbc7d66f6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -138,4 +138,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueId: camila
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: df788b2e028de224ca4b979fbc7d66f6, type: 3}

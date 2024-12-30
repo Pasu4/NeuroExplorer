@@ -10,8 +10,6 @@ namespace Assets.Scripts
 {
     public class Room : MonoBehaviour
     {
-        public Player player;
-
         public float cellSize = 2.0f;
         [Range(0, 1)]
         public float placementRandomness = 0.8f;
@@ -202,9 +200,9 @@ namespace Assets.Scripts
             GameObject fromObj = groundObjects
                 .FirstOrDefault(go => go.GetComponent<GroundObject>().realPath == fromPath);
             if(fromObj != null)
-                player.transform.position = fromObj.transform.position;
+                GameManager.Instance.player.transform.position = fromObj.transform.position;
             else
-                player.transform.position = Vector2.zero;
+                GameManager.Instance.player.transform.position = Vector2.zero;
 
             // Spawn encounters
             if(!noEnemyRooms.IsMatch(newPath))
@@ -233,7 +231,7 @@ namespace Assets.Scripts
 
                 for(int i = 0; i < guardedObjects.Count; i++)
                 {
-                    if(Vector2.Distance(player.transform.position, guardedObjects[i].transform.position) < 5)
+                    if(Vector2.Distance(GameManager.Instance.player.transform.position, guardedObjects[i].transform.position) < 5)
                         continue; // Don't spawn too close to player
 
                     CreateEncounter(guardedObjects[i].realPath, guardedObjects[i].transform.position, GameManager.Instance.defaultEnemyStrength);
@@ -302,6 +300,7 @@ namespace Assets.Scripts
 
         private void SpecialRoom(string path)
         {
+            Player player = GameManager.Instance.player;
             GameObject exit = CreateUpDir(path);
 
             if(path == @"C:\Users\Vedal\source\repos\FilAIn")
