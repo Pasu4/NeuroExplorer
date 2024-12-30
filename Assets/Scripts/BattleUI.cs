@@ -244,6 +244,7 @@ namespace Assets.Scripts
 
         public void AttackPlayer(long damage)
         {
+            GameManager.Instance.sfxSource.PlayOneShot(GameManager.Instance.hitClip);
             GameManager.Instance.block -= damage;
             if(GameManager.Instance.block < 0)
             {
@@ -260,6 +261,7 @@ namespace Assets.Scripts
 
         public void AttackEnemy(EnemyUI enemy, long damage)
         {
+            GameManager.Instance.sfxSource.PlayOneShot(GameManager.Instance.hitClip);
             enemy.enemy.block -= damage;
             if(enemy.enemy.block < 0)
             {
@@ -336,10 +338,16 @@ namespace Assets.Scripts
 
             while(true)
             {
+
                 GameManager.Instance.mp = GameManager.Instance.maxMp;
                 GameManager.Instance.block = 0;
                 Debug.Log("Drawing cards");
                 yield return CDraw(5);
+
+                if(deck.Count(c => c.card.cardEffects.Any(e => e is SemaphoreEffect)) >= 4)
+                {
+                    GameManager.Instance.GameOver();
+                }
 
                 playerTurn = true;
                 while(playerTurn && !battleWon)

@@ -24,6 +24,7 @@ namespace Assets.Scripts
         public GameObject filianPrefab;
         public GameObject camilaPrefab;
         public GameObject airisPrefab;
+        public GameObject healPrefab;
 
         public GameObject wallTop;
         public GameObject wallBottom;
@@ -110,6 +111,12 @@ namespace Assets.Scripts
             {
                 SpecialRoom(@"C:\Windows\Final\Boss\AIris");
                 return;
+            }
+
+            if(newPath.EndsWith("\\Desktop"))
+            {
+                var go = Instantiate(healPrefab);
+                encounters.Add(go);
             }
 
             List<string> files = new();

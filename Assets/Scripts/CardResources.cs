@@ -38,6 +38,33 @@ namespace Assets.Scripts
                 sprite = GameManager.Instance.GetFileSprite("fork_bomb"),
                 cardEffects = new[] { new ForkEffect() }
             },
+            "memory_leak" => new()
+            {
+                name = "Memory Leak",
+                type = Card.CardType.Trojan,
+                erase = true,
+                fileSize = GameManager.Instance.maxMp * 1 / 5,
+                sprite = GameManager.Instance.GetFileSprite("memory_leak"),
+                cardEffects = new[] { new MemoryLeakEffect(GameManager.Instance.maxHp / 20) }
+            },
+            "mutex" => new()
+            {
+                name = "Mutex",
+                type = Card.CardType.Trojan,
+                erase = true,
+                fileSize = GameManager.Instance.maxMp * 1 / 5,
+                sprite = GameManager.Instance.GetFileSprite("mutex"),
+                cardEffects = new[] { new MutexEffect() }
+            },
+            "semaphore" => new()
+            {
+                name = "Semaphore",
+                type = Card.CardType.Trojan,
+                erase = true,
+                fileSize = GameManager.Instance.maxMp * 3 / 5,
+                sprite = GameManager.Instance.GetFileSprite("semaphore"),
+                cardEffects = new[] { new SemaphoreEffect() }
+            },
             _ => new()
             {
                 name = "Error",

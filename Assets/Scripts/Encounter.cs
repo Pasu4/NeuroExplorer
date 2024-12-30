@@ -15,7 +15,7 @@ namespace Assets.Scripts
         // Use this for initialization
         void Start()
         {
-
+            
         }
 
         // Update is called once per frame
@@ -54,6 +54,7 @@ namespace Assets.Scripts
             {
                 enemy.strength = strength;
             }
+            GetComponent<SpriteRenderer>().sprite = new System.Random().Choose(enemies.Select(e => e.sprite));
         }
     }
 }

@@ -54,6 +54,7 @@ namespace Assets.Scripts
                 return;
             }
 
+            gm.sfxSource.PlayOneShot(gm.pickupClip);
             gm.deck.Add(card);
             gm.CreateTextEffect("Copied", Color.green, transform.position);
         }

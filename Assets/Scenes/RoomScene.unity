@@ -531,6 +531,135 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 234399076}
   m_CullTransparentMesh: 1
+--- !u!1 &240127143
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 240127145}
+  - component: {fileID: 240127144}
+  m_Layer: 0
+  m_Name: SFX source
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &240127144
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 240127143}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!4 &240127145
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 240127143}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.44190702, y: -0.57807446, z: 0.031110138}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &252355399
 GameObject:
   m_ObjectHideFlags: 0
@@ -2145,7 +2274,7 @@ MonoBehaviour:
   progress: 0
   obfuscateSet: 0
   skipIntro: 0
-  defaultEnemyStrength: 10000
+  defaultEnemyStrength: 20000
   enemyHpScale: 1
   inventoryUI: {fileID: 1829585123}
   roomUI: {fileID: 1699627474}
@@ -2231,10 +2360,10 @@ MonoBehaviour:
   enemyActionTrojanSprite: {fileID: 21300000, guid: 0fce4477d1624cb42a9af3c13e2e45ca, type: 3}
   enemies:
   - strength: 0
-    hp: 23000
-    maxHp: 23000
+    hp: 40000
+    maxHp: 40000
     block: 0
-    sprite: {fileID: 21300000, guid: fe98f77970b9e1c4bb310ea084046fad, type: 3}
+    sprite: {fileID: 21300000, guid: 7689cdf425055ca49a9adae3c459bb95, type: 3}
     attackWeight: 10
     defenseWeight: 10
     trojanWeight: 0
@@ -2243,12 +2372,12 @@ MonoBehaviour:
     trojanCount: 1
     multiChance: 0
     maxMulti: 2
-    trojanId: 
+    trojanId: error
   - strength: 0
-    hp: 30000
-    maxHp: 30000
+    hp: 60000
+    maxHp: 60000
     block: 0
-    sprite: {fileID: 702914797, guid: 1f23447eab72e184898c6f3b39ce6ab1, type: 3}
+    sprite: {fileID: 21300000, guid: 31395c072f3358e4ba6be7ee61880b50, type: 3}
     attackWeight: 10
     defenseWeight: 10
     trojanWeight: 10
@@ -2258,6 +2387,20 @@ MonoBehaviour:
     multiChance: 0
     maxMulti: 2
     trojanId: null_pointer
+  - strength: 0
+    hp: 30000
+    maxHp: 30000
+    block: 0
+    sprite: {fileID: 21300000, guid: 527a02dc22e63424bb4172e364c70cf7, type: 3}
+    attackWeight: 5
+    defenseWeight: 10
+    trojanWeight: 15
+    attackFactor: 0.5
+    defendFactor: 2
+    trojanCount: 3
+    multiChance: 0
+    maxMulti: 2
+    trojanId: memory_leak
   lockedDirSprite: {fileID: 21300000, guid: 170acf9d58f21284dad4b43e9ae0ce10, type: 3}
   upDirSprite: {fileID: 21300000, guid: ff3afe7c38448ad42a59e3ac7f4dbcea, type: 3}
   roomSource: {fileID: 1801706346}
@@ -2265,6 +2408,11 @@ MonoBehaviour:
   battleClip: {fileID: 8300000, guid: 2138f562cbd9a6347b5a5b430928b41c, type: 3}
   bossClip: {fileID: 8300000, guid: 0bb3f8b4f30cca64cae0b98e55683fb6, type: 3}
   finalBossClip: {fileID: 8300000, guid: 18b02b030f0a7094fa50b2abf9563a8a, type: 3}
+  hitClip: {fileID: 8300000, guid: 477bb93bfd8259d40803bb4cfbbe40ea, type: 3}
+  healClip: {fileID: 8300000, guid: 0decbb9e5265a2a40b08131db3defc55, type: 3}
+  pickupClip: {fileID: 8300000, guid: e47641c3ef9ca9c4d8ebd3c7b747730a, type: 3}
+  ladderClip: {fileID: 8300000, guid: 3ee56d2dc1b91094c950e2eae9d0e72d, type: 3}
+  sfxSource: {fileID: 240127144}
   textEffectPrefab: {fileID: 4677727198014242819, guid: 4088414dc7d07684780d5217f9d929ec, type: 3}
   neuroPlayer: {fileID: 743139686381384140, guid: 20c971f0ec43f0845896a129ce9ba2b7, type: 3}
   evilPlayer: {fileID: 743139686381384140, guid: cd1d45f3e7b5ad54488569d818a8a1f5, type: 3}
@@ -2746,7 +2894,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc18c156e034dae4aa6a934e879b0b13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
   cellSize: 3
   placementRandomness: 0.8
   maxRoomAspectRatio: 4
@@ -2758,6 +2905,7 @@ MonoBehaviour:
   filianPrefab: {fileID: 3127738230348892868, guid: fe176eb2b4f110a49b1c82efe7c1fdc3, type: 3}
   camilaPrefab: {fileID: 3127738230348892868, guid: 8b42d933d32ceba44a9ebf1523cb0a7c, type: 3}
   airisPrefab: {fileID: 3127738230348892868, guid: 7fd700e354ffce34b9e5460bdf20cbef, type: 3}
+  healPrefab: {fileID: 7440248802765761848, guid: d003be9f1b8cc6d48a5a3bee421ee108, type: 3}
   wallTop: {fileID: 489632245}
   wallBottom: {fileID: 545521343}
   wallLeft: {fileID: 889401748}
@@ -7523,3 +7671,4 @@ SceneRoots:
   - {fileID: 1801706347}
   - {fileID: 1799617799}
   - {fileID: 4254066090325382690}
+  - {fileID: 240127145}

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 807aa8d12cf33d84b966c82c56fcf9d7
+guid: 31395c072f3358e4ba6be7ee61880b50
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1049461823314036041
-    second: heal_0
+      213: -6246211245383584129
+    second: enemy_gymbag_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,11 +100,11 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: heal_0
+      name: enemy_gymbag_0
       rect:
         serializedVersion: 2
         x: 14
-        y: 14
+        y: 21
         width: 36
         height: 36
       alignment: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7ba780038009f61f0800000000000000
-      internalID: -1049461823314036041
+      spriteID: f767cd657fff059a0800000000000000
+      internalID: -6246211245383584129
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      heal_0: -1049461823314036041
+      enemy_gymbag_0: -6246211245383584129
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

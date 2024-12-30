@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 807aa8d12cf33d84b966c82c56fcf9d7
+guid: 527a02dc22e63424bb4172e364c70cf7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1049461823314036041
-    second: heal_0
+      213: 2187671098746508775
+    second: enemy_yukkuri_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: heal_0
+      name: enemy_yukkuri_0
       rect:
         serializedVersion: 2
-        x: 14
-        y: 14
-        width: 36
-        height: 36
+        x: 15
+        y: 3
+        width: 35
+        height: 26
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7ba780038009f61f0800000000000000
-      internalID: -1049461823314036041
+      spriteID: 7e59c26064b2c5e10800000000000000
+      internalID: 2187671098746508775
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      heal_0: -1049461823314036041
+      enemy_yukkuri_0: 2187671098746508775
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

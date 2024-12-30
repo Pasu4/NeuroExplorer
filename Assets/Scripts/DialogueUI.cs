@@ -94,7 +94,8 @@ namespace Assets.Scripts
             defenseWeight = 10,
             trojanWeight = 10,
             trojanCard = CardResources.GetCard("mutex"),
-            trojanCount = 1
+            trojanCount = 1,
+            nextAction = new TrojanAction()
         };
 
         public Enemy GetAiris(Sprite sprite) => new()
@@ -108,8 +109,9 @@ namespace Assets.Scripts
             attackWeight = 10,
             defenseWeight = 10,
             trojanWeight = 10,
-            trojanCard = CardResources.GetCard("fork_bomb"),
-            trojanCount = 1
+            trojanCard = CardResources.GetCard("semaphore"),
+            trojanCount = 1,
+            nextAction = new TrojanAction()
         };
 
         private void BossSceneStart()
@@ -336,7 +338,7 @@ namespace Assets.Scripts
             yield return CWriteText("Vedal", "Well, good thing I already figured that out myself.");
             yield return CWriteText("Vedal", "The next one is in the <color=#f00>Windows</color> folder. " +
                 "<color=#f00>'C:\\Windows\\Final\\Boss'</color>, to be exact, real creative I must say.");
-            yield return CWriteText("Vedal", "That should be the one locking up my PC, so if you defeat her, that give me access to my files again.");
+            yield return CWriteText("Vedal", "That should be the one locking up my PC, so if you defeat her, that should give me access to my files again.");
 
             yield return CBossSceneEnd();
         }

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 807aa8d12cf33d84b966c82c56fcf9d7
+guid: 7689cdf425055ca49a9adae3c459bb95
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1049461823314036041
-    second: heal_0
+      213: -7007162886363983051
+    second: enemy_drone_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: heal_0
+      name: enemy_drone_0
       rect:
         serializedVersion: 2
-        x: 14
-        y: 14
-        width: 36
-        height: 36
+        x: 8
+        y: 29
+        width: 48
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7ba780038009f61f0800000000000000
-      internalID: -1049461823314036041
+      spriteID: 53359fafa7e81ce90800000000000000
+      internalID: -7007162886363983051
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      heal_0: -1049461823314036041
+      enemy_drone_0: -7007162886363983051
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

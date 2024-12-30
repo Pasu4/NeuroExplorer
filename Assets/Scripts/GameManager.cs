@@ -67,6 +67,12 @@ namespace Assets.Scripts
         public AudioClip bossClip;
         public AudioClip finalBossClip;
 
+        public AudioClip hitClip;
+        public AudioClip healClip;
+        public AudioClip pickupClip;
+        public AudioClip ladderClip;
+        public AudioSource sfxSource;
+
         public GameObject textEffectPrefab;
         public GameObject neuroPlayer;
         public GameObject evilPlayer;
@@ -359,6 +365,7 @@ namespace Assets.Scripts
 
         private IEnumerator CTransitionRoom(string realPath)
         {
+            sfxSource.PlayOneShot(ladderClip);
             gameMode = GameMode.Transition;
             yield return FadeOut(Color.black);
             room.ChangeRoom(realPath);
