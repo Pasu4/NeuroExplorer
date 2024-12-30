@@ -31,6 +31,7 @@ namespace Assets.Scripts
         public bool obfuscateSet = false;
         public bool skipIntro = false;
         public long defaultEnemyStrength;
+        public long enemyHpScale = 1;
 
         public InventoryUI inventoryUI;
         public RoomUI roomUI;
@@ -59,6 +60,11 @@ namespace Assets.Scripts
         public Enemy[] enemies;
         public Sprite lockedDirSprite;
         public Sprite upDirSprite;
+        public AudioSource roomSource;
+        public AudioSource battleSource;
+        public AudioClip battleClip;
+        public AudioClip bossClip;
+        public AudioClip finalBossClip;
 
         public GameObject textEffectPrefab;
 
@@ -133,6 +139,8 @@ namespace Assets.Scripts
                 )$
                 | .*\\desktop\.ini$
             ", RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase);
+            roomSource.Stop();
+            battleSource.Stop();
 
             StartCoroutine(CStart());
         }
@@ -251,13 +259,44 @@ namespace Assets.Scripts
 
         public Sprite GetFileSprite(string name) => GetFileSprite(name, new System.Random());
 
-        public void StartBattle(Enemy[] enemies, string encounterId, bool isSpecial) => StartCoroutine(CTransitionBattle(enemies, encounterId, isSpecial));
+        public void StartBattle(Enemy[] enemies, string encounterId, bool isSpecial, AudioClip music) => StartCoroutine(CTransitionBattle(enemies, encounterId, isSpecial, music));
 
         public void GameOver() => StartCoroutine(CGameOver());
 
         public void BattleWin(bool reward) => StartCoroutine(CBattleWin(reward));
 
         public void TransitionRoom(string realPath) => StartCoroutine(CTransitionRoom(realPath));
+
+        public void BossScene(BossTrigger trigger)
+        {
+            switch(trigger.dialogueId)
+            {
+                case "filian":
+                    StartCoroutine(difficulty switch
+                    {
+                        //1 => dialogueUI.EvilFilianScene(),
+                        //2 => dialogueUI.UnknownFilianScene(),
+                        _ => dialogueUI.NeuroFilianScene(trigger),
+                    });
+                    break;
+                case "camila":
+                    StartCoroutine(difficulty switch
+                    {
+                        //1 => dialogueUI.EvilCamilaScene(),
+                        //2 => dialogueUI.UnknownCamilaScene(),
+                        _ => dialogueUI.NeuroCamilaScene(trigger),
+                    });
+                    break;
+                case "airis":
+                    StartCoroutine(difficulty switch
+                    {
+                        //1 => dialogueUI.EvilAirisScene(),
+                        //2 => dialogueUI.UnknownAirisScene(),
+                        _ => dialogueUI.NeuroAirisScene(trigger),
+                    });
+                    break;
+            }
+        }
 
         public IEnumerator CStart()
         {
@@ -268,6 +307,7 @@ namespace Assets.Scripts
                 room.ChangeRoom(startPath);
                 gameMode = GameMode.Room;
                 difficulty = 0;
+                roomSource.UnPause();
                 yield break;
             }
 
@@ -290,6 +330,7 @@ namespace Assets.Scripts
             dialogueUI.obfuscateDialog.SetActive(false);
             dialogueUI.textboxObj.SetActive(true);
             fadeScreen.color = Color.clear;
+            roomSource.Play();
 
             yield return dialogueUI.CStartScene();
             dialogueUI.background.color = Color.clear;
@@ -309,14 +350,18 @@ namespace Assets.Scripts
             yield return FadeIn(Color.black);
         }
 
-        private IEnumerator CTransitionBattle(Enemy[] enemies, string encounterId, bool isSpecial)
+        private IEnumerator CTransitionBattle(Enemy[] enemies, string encounterId, bool isSpecial, AudioClip music)
         {
             gameMode = GameMode.Transition;
+            roomSource.Pause();
             yield return FadeOut(Color.white);
+
             gameMode = GameMode.Battle;
             battleUI.gameObject.SetActive(true);
             battleUI.StartBattle(enemies, encounterId, isSpecial);
             gameMode = GameMode.Battle;
+            battleSource.clip = music;
+            battleSource.Play();
             yield return FadeIn(Color.white);
         }
 
@@ -324,8 +369,11 @@ namespace Assets.Scripts
         {
             gameMode = GameMode.Transition;
             battleUI.StopAllCoroutines();
+            dialogueUI.StopAllCoroutines();
+            dialogueUI.gameObject.SetActive(false);
 
             yield return FadeOut(Color.black);
+            battleSource.Stop();
 
             battleUI.gameObject.SetActive(false);
             yield return new WaitForSeconds(1.0f);
@@ -339,6 +387,7 @@ namespace Assets.Scripts
                 .ToList();
             hp = maxHp;
 
+            roomSource.UnPause();
             room.ChangeRoom(startPath);
             gameMode = GameMode.Room;
             yield return FadeIn(Color.black);
@@ -351,6 +400,8 @@ namespace Assets.Scripts
             yield return FadeOut(Color.black);
             battleUI.gameObject.SetActive(false);
             defeatedEncounters.Add(battleUI.encounterId);
+            battleSource.Stop();
+            roomSource.UnPause();
 
             // Some random bonus
             if(reward)
@@ -391,7 +442,7 @@ namespace Assets.Scripts
             yield return FadeIn(Color.black);
         }
 
-        private IEnumerator FadeOut(Color color)
+        public IEnumerator FadeOut(Color color)
         {
             fadeScreen.color = color;
             for(float a = 0f; a < 1f; a += Time.deltaTime)
@@ -406,7 +457,7 @@ namespace Assets.Scripts
             fadeScreen.color = c2;
         }
 
-        private IEnumerator FadeIn(Color color)
+        public IEnumerator FadeIn(Color color)
         {
             fadeScreen.color = color;
             for(float a = 1f; a > 0f; a -= Time.deltaTime)

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.CardEffects;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -40,6 +41,7 @@ namespace Assets.Scripts
         public bool playerTurn = false;
         public BattleCardUI selectedCard;
         public string encounterId;
+        public bool battleWon = false;
 
         // Use this for initialization
         void Start()
@@ -100,6 +102,12 @@ namespace Assets.Scripts
             foreach(BattleCardUI c in handCards)
                 c.selected = false;
 
+            if(handCards.Any(c => c.card.cardEffects.Any(e => e is MutexEffect)))
+            {
+                GameManager.Instance.CreateTextEffect("Deadlock", Color.red, card.transform.position);
+                return;
+            }
+
             GameManager.Instance.mp -= card.card.fileSize;
 
             if(card.card.attack > 0)
@@ -140,8 +148,8 @@ namespace Assets.Scripts
             card.card.OnErase(GetContext());
 
             card.transform.SetParent(erasePile);
-            card.SetTarget(Vector2.zero);
             card.targetValid = false;
+            card.SetTarget(Vector2.zero);
         }
 
         public void Reshuffle()
@@ -206,10 +214,11 @@ namespace Assets.Scripts
             {
                 GameManager.Instance.GameOver();
             }
-            if(enemies.Count == 0)
+            if(enemies.Count == 0 && !isSpecial)
             {
                 GameManager.Instance.BattleWin(!isSpecial);
             }
+            battleWon = enemies.Count == 0 && isSpecial;
         }
 
         public void StartBattle(Enemy[] enemies, string encounterId, bool isSpecial)
@@ -274,6 +283,7 @@ namespace Assets.Scripts
 
         private IEnumerator CBattle(Enemy[] enemies, string encounterId, bool isSpecial)
         {
+            battleWon = false;
             this.encounterId = encounterId;
             this.isSpecial = isSpecial;
 
@@ -327,14 +337,16 @@ namespace Assets.Scripts
             while(true)
             {
                 GameManager.Instance.mp = GameManager.Instance.maxMp;
+                GameManager.Instance.block = 0;
                 Debug.Log("Drawing cards");
                 yield return CDraw(5);
 
                 playerTurn = true;
-                while(playerTurn)
+                while(playerTurn && !battleWon)
                     yield return null; // Wait for player to end the turn
 
-                Debug.Log("Player turn ended");
+                if(battleWon)
+                    yield break;
 
                 // Notify all cards that the turn ended
                 foreach(BattleCardUI card in handCards)

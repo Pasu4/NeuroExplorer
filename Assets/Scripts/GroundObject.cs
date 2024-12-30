@@ -47,12 +47,12 @@ namespace Assets.Scripts
         protected virtual void OnMouseEnter()
         {
             if(GameManager.Instance.gameMode != GameMode.Room) return;
-            label.SetActive(true);
+            //label.SetActive(true);
         }
 
         protected virtual void OnMouseExit()
         {
-            label.SetActive(false);
+            //label.SetActive(false);
         }
 
         public virtual void Init(Room room, string realPath)

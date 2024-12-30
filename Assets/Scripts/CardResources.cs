@@ -29,13 +29,22 @@ namespace Assets.Scripts
                 fileSize = GameManager.Instance.maxMp * 1 / 5,
                 sprite = GameManager.Instance.GetFileSprite("null_pointer")
             },
+            "fork_bomb" => new()
+            {
+                name = "Fork Bomb",
+                type = Card.CardType.Trojan,
+                erase = true,
+                fileSize = GameManager.Instance.maxMp * 3 / 5,
+                sprite = GameManager.Instance.GetFileSprite("fork_bomb"),
+                cardEffects = new[] { new ForkEffect() }
+            },
             _ => new()
             {
                 name = "Error",
                 type = Card.CardType.Trojan,
                 @volatile = true,
                 fileSize = 1_000_000_000_000L,
-                sprite = GameManager.Instance.GetFileSprite("null_pointer")
+                sprite = GameManager.Instance.GetFileSprite("error")
             }
         };
     }

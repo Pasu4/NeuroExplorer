@@ -34,7 +34,7 @@ namespace Assets.Scripts
         {
             if(collision.gameObject.CompareTag("Player"))
             {
-                GameManager.Instance.StartBattle(enemies, encounterId, false);
+                GameManager.Instance.StartBattle(enemies, encounterId, false, GameManager.Instance.battleClip);
                 Destroy(gameObject);
             }
         }

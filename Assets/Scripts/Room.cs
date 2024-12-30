@@ -23,6 +23,9 @@ namespace Assets.Scripts
         public GameObject dirPrefab;
         public GameObject chestPrefab;
         public GameObject encounterPrefab;
+        public GameObject filianPrefab;
+        public GameObject camilaPrefab;
+        public GameObject airisPrefab;
 
         public GameObject wallTop;
         public GameObject wallBottom;
@@ -48,8 +51,8 @@ namespace Assets.Scripts
             new(@"C:\Users\Vedal\source", "repos"),
             new(@"C:\Users\Vedal\source\repos", "FilAIn"),
 
-            new(@"C:\Program Data", "VedalAI"),
-            new(@"C:\Program Data\VedalAI", "AImila"),
+            new(@"C:\Program Files", "VedalAI"),
+            new(@"C:\Program Files\VedalAI", "AImila"),
 
             new(@"C:\Windows", "Final"),
             new(@"C:\Windows\Final", "Boss"),
@@ -91,9 +94,9 @@ namespace Assets.Scripts
                 SpecialRoom(@"C:\Users\Vedal\source\repos\FilAIn");
                 return;
             }
-            if(newPath == @"C:\Users\Vedal\AppData\LocalLow\AImila")
+            if(newPath == @"C:\Program Files\VedalAI\AImila")
             {
-                SpecialRoom(@"C:\Users\Vedal\AppData\LocalLow\AImila");
+                SpecialRoom(@"C:\Program Files\VedalAI\AImila");
                 return;
             }
             if(newPath == @"C:\Windows\Final")
@@ -305,11 +308,25 @@ namespace Assets.Scripts
             {
                 SetSize(new Vector2(10, 10));
                 exit.transform.position = player.transform.position = Vector2.down * 4;
+
+                if(!GameManager.Instance.defeatedEncounters.Contains("filian"))
+                {
+                    GameObject go = Instantiate(filianPrefab);
+                    go.transform.position = Vector2.up * 3;
+                    encounters.Add(go); // Hacky but should work
+                }
             }
-            else if(path == @"C:\Users\Vedal\AppData\LocalLow\AImila")
+            else if(path == @"C:\Program Files\VedalAI\AImila")
             {
                 SetSize(new Vector2(20, 20));
                 exit.transform.position = player.transform.position = Vector2.down * 9;
+
+                if(!GameManager.Instance.defeatedEncounters.Contains("camila"))
+                {
+                    GameObject go = Instantiate(camilaPrefab);
+                    go.transform.position = Vector2.up * 8;
+                    encounters.Add(go);
+                }
             }
             else if(path == @"C:\Windows\Final")
             {
@@ -331,6 +348,13 @@ namespace Assets.Scripts
             {
                 SetSize(new Vector2(5, 25));
                 exit.transform.position = player.transform.position = Vector2.down * 11;
+
+                if(!GameManager.Instance.defeatedEncounters.Contains("airis"))
+                {
+                    GameObject go = Instantiate(airisPrefab);
+                    go.transform.position = Vector2.up * 10;
+                    encounters.Add(go);
+                }
             }
         }
 

@@ -24,7 +24,11 @@ namespace Assets.Scripts
         // Update is called once per frame
         void Update()
         {
-            if(GameManager.Instance.gameMode != GameMode.Room) return;
+            if(GameManager.Instance.gameMode != GameMode.Room)
+            {
+                animator.SetBool("Moving", false);
+                return;
+            }
 
             Vector2 moveInput = moveAction.ReadValue<Vector2>();
 
