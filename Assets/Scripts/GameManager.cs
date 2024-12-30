@@ -57,6 +57,8 @@ namespace Assets.Scripts
         public Sprite enemyActionDefendSprite;
         public Sprite enemyActionTrojanSprite;
         public Enemy[] enemies;
+        public Sprite lockedDirSprite;
+        public Sprite upDirSprite;
 
         public GameObject textEffectPrefab;
 
@@ -238,7 +240,7 @@ namespace Assets.Scripts
         public Sprite GetFileSprite(string name, System.Random random)
         {
             IEnumerable<Sprite> possibleSprites = fileSprites
-                .Where(fs => fs.fileExtension == name)
+                .Where(fs => fs.fileExtension.Split(';', StringSplitOptions.RemoveEmptyEntries).Contains(name.ToLower()))
                 .Select(fs => fs.sprite);
 
             if(possibleSprites.Count() == 0)

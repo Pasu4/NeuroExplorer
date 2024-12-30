@@ -49,8 +49,7 @@ namespace Assets.Scripts
             {
                 // Set locked
                 locked = true;
-                GetComponent<SpriteRenderer>().color = new Color(0.75f, 0, 0);
-                // TODO: Change sprite
+                GetComponent<SpriteRenderer>().sprite = GameManager.Instance.lockedDirSprite;
             }
         }
 
@@ -62,8 +61,7 @@ namespace Assets.Scripts
         public void SetUpDir()
         {
             GetComponentInChildren<TextMeshProUGUI>(true).text = "Back to " + Path.GetFileName(displayPath);
-            // TODO: Change sprite to up
-            GetComponent<SpriteRenderer>().color = Color.HSVToRGB(0f, 0.75f, 1f);
+            GetComponent<SpriteRenderer>().sprite = GameManager.Instance.upDirSprite;
         }
     }
 }

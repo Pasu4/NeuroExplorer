@@ -64,14 +64,7 @@ namespace Assets.Scripts
 
             // Set sprite
             string extension = Path.GetExtension(realPath);
-            IEnumerable<Sprite> possibleSprites = GameManager.Instance.fileSprites
-                .Where(fs => fs.fileExtension == extension)
-                .Select(fs => fs.sprite);
-
-            if(possibleSprites.Count() == 0)
-                possibleSprites = GameManager.Instance.defaultSprites;
-
-            Sprite sprite = random.Choose(possibleSprites);
+            Sprite sprite = GameManager.Instance.GetFileSprite(extension);
             GetComponent<SpriteRenderer>().sprite = sprite;
 
             // Set file size

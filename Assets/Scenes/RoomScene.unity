@@ -2340,14 +2340,59 @@ MonoBehaviour:
   block: 0
   inventorySpace: 10000
   fileSprites:
-  - fileExtension: .txt
-    sprite: {fileID: 602895466, guid: 1f23447eab72e184898c6f3b39ce6ab1, type: 3}
   - fileExtension: .exe
-    sprite: {fileID: -2078034487, guid: 1f23447eab72e184898c6f3b39ce6ab1, type: 3}
+    sprite: {fileID: 21300000, guid: 98900d728ca6b6b46afa5cdb1fab05be, type: 3}
   - fileExtension: .exe
-    sprite: {fileID: 702914797, guid: 1f23447eab72e184898c6f3b39ce6ab1, type: 3}
+    sprite: {fileID: 21300000, guid: 163a713fd53e94341a86b8dcc3ae8b1f, type: 3}
+  - fileExtension: .exe
+    sprite: {fileID: 21300000, guid: c2528e1207124d947a6511e0405cca05, type: 3}
+  - fileExtension: .exe
+    sprite: {fileID: 21300000, guid: 76536aef6fd4a474ea355eb313fb846b, type: 3}
+  - fileExtension: .exe
+    sprite: {fileID: 21300000, guid: cc6591f4aec9b2f46b334d4fe8d40329, type: 3}
+  - fileExtension: .pdf;.docx;.doc
+    sprite: {fileID: 21300000, guid: 819e1da96152780468abf0c660b86a4a, type: 3}
+  - fileExtension: .pdf;.docx;.doc
+    sprite: {fileID: 21300000, guid: 6b62207e86000994cb2ab62b2ea91c73, type: 3}
+  - fileExtension: .pdf;.docx;.doc
+    sprite: {fileID: 21300000, guid: 0f7f8a38472cc724797a15dc55b4977f, type: 3}
+  - fileExtension: .pdf;.docx;.doc
+    sprite: {fileID: 21300000, guid: 3c34e39762f1d5b45b627b59fa6868be, type: 3}
+  - fileExtension: .lnk
+    sprite: {fileID: 21300000, guid: 55e8f4e19381a4947bfdfe5fe35d46b0, type: 3}
+  - fileExtension: .c;.h;.cs;.csproj;.cpp;.hpp;.hxx;.java;.js;.pl;.r;.py;.rpy;.rb;.rs;.sln
+    sprite: {fileID: 21300000, guid: 1db4555c4b5fca647b09f06c3de21ffa, type: 3}
+  - fileExtension: .c;.h;.cs;.csproj;.cpp;.hpp;.hxx;.java;.js;.pl;.r;.py;.rpy;.rb;.rs;.sln
+    sprite: {fileID: 21300000, guid: bd7f21d25df330c478a94eb999140850, type: 3}
+  - fileExtension: .wav;.flac;.mp3;.ogg;.midi
+    sprite: {fileID: 21300000, guid: 86e1b15a1db3498489e26ec3e9ca0b70, type: 3}
+  - fileExtension: .wav;.flac;.mp3;.ogg;.midi
+    sprite: {fileID: 21300000, guid: aee03db61662b0a41a0237976fa464b7, type: 3}
+  - fileExtension: .wav;.flac;.mp3;.ogg;.midi
+    sprite: {fileID: 21300000, guid: c6b83d0e63bffed4aab0d42bff54f56d, type: 3}
+  - fileExtension: .txt;.md
+    sprite: {fileID: 21300000, guid: 2f00a161b88fcbd4da537831d7df30fa, type: 3}
+  - fileExtension: .txt;.md
+    sprite: {fileID: 21300000, guid: 9117ebe7f9146ec4abb29d4481906c50, type: 3}
+  - fileExtension: .bmp;.ico;.jpg;.jpeg;.png;.psd;.svg;.webp
+    sprite: {fileID: 21300000, guid: 1cbc47721ae92c84f821f326225428c9, type: 3}
+  - fileExtension: .bmp;.ico;.jpg;.jpeg;.png;.psd;.svg;.webp
+    sprite: {fileID: 21300000, guid: d55f0804f7ccc4144aa340ec562957dd, type: 3}
+  - fileExtension: .bmp;.ico;.jpg;.jpeg;.png;.psd;.svg;.webp
+    sprite: {fileID: 21300000, guid: 9546a7d6413a7a0409e1b70dc325ca23, type: 3}
+  - fileExtension: .dll
+    sprite: {fileID: 0}
+  - fileExtension: .dll
+    sprite: {fileID: 21300000, guid: 90696d4aa055bc24e9d85e6b615872ae, type: 3}
+  - fileExtension: .dll
+    sprite: {fileID: 21300000, guid: 29cf79923885a9d40b640830aceeb776, type: 3}
+  - fileExtension: .dll
+    sprite: {fileID: 21300000, guid: 39a68067fbfd72d4f9cf1ca0355acc2b, type: 3}
+  - fileExtension: .gif;.anim;.avi;.mp4;.mov;.mkv;.mpeg;.mpg;.mpe;.wmv;.webm
+    sprite: {fileID: 21300000, guid: 2043b5bb54a15fd4bb334adc0c251188, type: 3}
   defaultSprites:
-  - {fileID: 702914797, guid: 1f23447eab72e184898c6f3b39ce6ab1, type: 3}
+  - {fileID: 21300000, guid: a2474aa7ba764d747b472143d5fc1491, type: 3}
+  - {fileID: 21300000, guid: 00ae105a188dd1940971dfa667615f51, type: 3}
   cardSprites:
     attackFront: {fileID: 5067068861543155969, guid: daf10df19208c164e98c5ce4f4bca433, type: 3}
     attackBack: {fileID: -359166266, guid: daf10df19208c164e98c5ce4f4bca433, type: 3}
@@ -2391,6 +2436,8 @@ MonoBehaviour:
     multiChance: 0
     maxMulti: 2
     trojanId: null_pointer
+  lockedDirSprite: {fileID: 21300000, guid: 170acf9d58f21284dad4b43e9ae0ce10, type: 3}
+  upDirSprite: {fileID: 21300000, guid: ff3afe7c38448ad42a59e3ac7f4dbcea, type: 3}
   textEffectPrefab: {fileID: 4677727198014242819, guid: 4088414dc7d07684780d5217f9d929ec, type: 3}
   defeatedEncounters: []
 --- !u!4 &775382105
