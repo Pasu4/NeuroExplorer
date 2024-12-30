@@ -46,6 +46,7 @@ namespace Assets.Scripts
 
         protected virtual void OnMouseEnter()
         {
+            if(GameManager.Instance.gameMode != GameMode.Room) return;
             label.SetActive(true);
         }
 

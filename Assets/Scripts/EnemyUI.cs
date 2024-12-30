@@ -1,17 +1,19 @@
 ﻿using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
-    public class EnemyUI : MonoBehaviour
+    public class EnemyUI : MonoBehaviour, IPointerDownHandler
     {
         public TextMeshProUGUI hpText;
         public BarUI hpBar;
         public Image nextActionImage;
         public TextMeshProUGUI nextActionText;
         public Enemy enemy;
+        public BattleUI battleUI;
 
         // Use this for initialization
         void Start()
@@ -24,7 +26,7 @@ namespace Assets.Scripts
         {
             hpBar.maxValue = enemy.maxHp;
             hpBar.value = enemy.hp;
-            hpText.text = Utils.FileSizeString(enemy.hp);
+            hpText.text = enemy.block > 0 ? $"{Utils.FileSizeString(enemy.hp)}\n<color=#66d>+ {Utils.FileSizeString(enemy.block)}</color>" : Utils.FileSizeString(enemy.hp);
 
             if(enemy.nextAction is AttackAction a)
             {
@@ -40,6 +42,14 @@ namespace Assets.Scripts
             {
                 nextActionImage.sprite = GameManager.Instance.enemyActionTrojanSprite;
                 nextActionText.text = "";
+            }
+        }
+
+        public void OnPointerDown(PointerEventData ev)
+        {
+            if(battleUI.selectedCard != null)
+            {
+                battleUI.PlayCard(battleUI.selectedCard);
             }
         }
 

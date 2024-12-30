@@ -38,7 +38,7 @@ namespace Assets.Scripts
                 return;
             }
 
-            room.ChangeRoom(realPath); // TODO: Transition
+            GameManager.Instance.TransitionRoom(realPath);
         }
 
         public override void Init(Room room, string realPath)

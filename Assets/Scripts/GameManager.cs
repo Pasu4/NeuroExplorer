@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
@@ -22,12 +23,16 @@ namespace Assets.Scripts
         public string startPath;
         public bool obfuscate;
         public int gameSeed;
-        public int difficulty;
+        public int difficulty = -1;
         public int progress = 0;
+        public bool obfuscateSet = false;
 
         public InventoryUI inventoryUI;
         public RoomUI roomUI;
         public BattleUI battleUI;
+        public Image fadeScreen;
+        public Room room;
+        public DialogueUI dialogueUI;
 
         public Player player;
         public long hp;
@@ -81,7 +86,11 @@ namespace Assets.Scripts
             allowedFolderPathRegex = new Regex(@"
                 ^C:(?:
                     \\Windows (?:
-                        \\AIris
+                        \\Final (?:
+                            \\Boss (?:
+                                \\\w+
+                            )?
+                        )?
                     )?
                     | \\Users (?:
                         \\Vedal
@@ -102,19 +111,23 @@ namespace Assets.Scripts
                             )
                             | \\AppData (?:
                                 \\Local
-                                | \\LocalLow (?:
-                                    \\AImila
-                                )?
+                                | \\LocalLow
                                 | \\Roaming
                             )?
                         )
                     )?
-                    | \\Program\sFiles
+                    | \\Program\sFiles (?:
+                        \\VedalAI (?:
+                            \\AImila
+                        )?
+                    )?
                     | \\Program\sFiles\s\(x86\)
                     | \\Temp
                 )$
                 | .*\\desktop\.ini$
             ", RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase);
+
+            StartCoroutine(CStart());
         }
 
         // Update is called once per frame
@@ -132,6 +145,17 @@ namespace Assets.Scripts
                 gameMode = GameMode.Room;
                 inventoryUI.gameObject.SetActive(false);
             }
+        }
+
+        public void SetObfuscate(bool value)
+        {
+            obfuscate = value;
+            obfuscateSet = true;
+        }
+
+        public void SetDifficulty(int value)
+        {
+            difficulty = value;
         }
 
         public System.Random CreatePathRandom(string path, string tag)
@@ -220,29 +244,113 @@ namespace Assets.Scripts
 
         public Sprite GetFileSprite(string name) => GetFileSprite(name, new System.Random());
 
-        public void StartBattle(Enemy[] enemies, string encounterId)
+        public void StartBattle(Enemy[] enemies, string encounterId) => StartCoroutine(CTransitionBattle(enemies, encounterId));
+
+        public void GameOver() => StartCoroutine(CGameOver());
+
+        public void BattleWin() => StartCoroutine(CBattleWin());
+
+        public void TransitionRoom(string realPath) => StartCoroutine(CTransitionRoom(realPath));
+
+        public IEnumerator CStart()
         {
+            gameMode = GameMode.Dialogue;
+            dialogueUI.background.color = Color.black;
+            fadeScreen.color = Color.black;
+
+            dialogueUI.gameObject.SetActive(true);
+            dialogueUI.textboxObj.SetActive(false);
+            dialogueUI.obfuscateDialog.SetActive(true);
+
+            yield return new WaitForSeconds(1.0f);
+            yield return FadeIn(Color.black);
+
+            while(!obfuscateSet) yield return null; // Wait for dialog complete
+
+            yield return FadeOut(Color.black);
+            yield return new WaitForSeconds(1.0f);
+
+            dialogueUI.obfuscateDialog.SetActive(false);
+            dialogueUI.textboxObj.SetActive(true);
+            fadeScreen.color = Color.clear;
+
+            yield return dialogueUI.CStartScene();
+            dialogueUI.background.color = Color.clear;
+
+            gameMode = GameMode.Room;
+            room.ChangeRoom(startPath);
+
+            yield return FadeIn(Color.black);
+        }
+
+        private IEnumerator CTransitionRoom(string realPath)
+        {
+            gameMode = GameMode.Transition;
+            yield return FadeOut(Color.black);
+            room.ChangeRoom(realPath);
+            gameMode = GameMode.Room;
+            yield return FadeIn(Color.black);
+        }
+
+        private IEnumerator CTransitionBattle(Enemy[] enemies, string encounterId)
+        {
+            gameMode = GameMode.Transition;
+            yield return FadeOut(Color.white);
             gameMode = GameMode.Battle;
             battleUI.gameObject.SetActive(true);
             battleUI.StartBattle(enemies, encounterId);
+            gameMode = GameMode.Battle;
+            yield return FadeIn(Color.white);
         }
 
-        public void EndBattle()
+        private IEnumerator CGameOver()
         {
+            gameMode = GameMode.Transition;
+            yield return FadeOut(Color.black);
+            yield return new WaitForSeconds(1.0f);
+            CreateTextEffect("<size=300>YOU DIED</size>\n<size=100>and lost some cards</size>", Color.red, player.transform.position, Vector3.zero);
+            yield return new WaitForSeconds(3.0f);
+            room.ChangeRoom(startPath);
             gameMode = GameMode.Room;
+        }
+
+        private IEnumerator CBattleWin()
+        {
+            yield return FadeOut(Color.black);
             battleUI.gameObject.SetActive(false);
-        }
-
-        public void GameOver()
-        {
-            // TODO
-        }
-
-        public void BattleWin()
-        {
-            // TODO
             defeatedEncounters.Add(battleUI.encounterId);
-            EndBattle();
+            gameMode = GameMode.Room;
+            yield return FadeIn(Color.black);
+        }
+
+        private IEnumerator FadeOut(Color color)
+        {
+            fadeScreen.color = color;
+            for(float a = 0f; a < 1f; a += Time.deltaTime)
+            {
+                Color c = fadeScreen.color;
+                c.a = a;
+                fadeScreen.color = c;
+                yield return null;
+            }
+            Color c2 = fadeScreen.color;
+            c2.a = 1f;
+            fadeScreen.color = c2;
+        }
+
+        private IEnumerator FadeIn(Color color)
+        {
+            fadeScreen.color = color;
+            for(float a = 1f; a > 0f; a -= Time.deltaTime)
+            {
+                Color c = fadeScreen.color;
+                c.a = a;
+                fadeScreen.color = c;
+                yield return null;
+            }
+            Color c2 = fadeScreen.color;
+            c2.a = 0f;
+            fadeScreen.color = c2;
         }
     }
 }

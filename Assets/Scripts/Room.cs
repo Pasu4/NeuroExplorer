@@ -31,7 +31,8 @@ namespace Assets.Scripts
 
         public List<GameObject> groundObjects;
         public List<GameObject> encounters;
-        public string folderPath;
+        public string realPath;
+        public string displayPath;
 
         SpriteRenderer spriteRenderer;
 
@@ -47,11 +48,8 @@ namespace Assets.Scripts
             new(@"C:\Users\Vedal\source", "repos"),
             new(@"C:\Users\Vedal\source\repos", "FilAIn"),
 
-            new(@"C:\Users\Vedal", "AppData"),
-            new(@"C:\Users\Vedal\AppData", "LocalLow"),
-            new(@"C:\Users\Vedal\AppData", "Roaming"),
-            new(@"C:\Users\Vedal\AppData", "Local"),
-            new(@"C:\Users\Vedal\AppData\LocalLow", "AImila"),
+            new(@"C:\Program Data", "VedalAI"),
+            new(@"C:\Program Data\VedalAI", "AImila"),
 
             new(@"C:\Windows", "Final"),
             new(@"C:\Windows\Final", "Boss"),
@@ -63,7 +61,7 @@ namespace Assets.Scripts
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
 
-            ChangeRoom(GameManager.Instance.startPath);
+            //ChangeRoom(GameManager.Instance.startPath);
         }
 
         // Update is called once per frame
@@ -74,8 +72,9 @@ namespace Assets.Scripts
 
         public void ChangeRoom(string newPath)
         {
-            string fromPath = folderPath;
-            folderPath = newPath;
+            string fromPath = realPath;
+            realPath = newPath;
+            displayPath = GameManager.Instance.obfuscate ? GameManager.Instance.ObfuscatePath(realPath, true) : realPath;
             System.Random random = GameManager.Instance.CreatePathRandom(newPath, "RoomLayout");
 
             // Destroy old ground objects

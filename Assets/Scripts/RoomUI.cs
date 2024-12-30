@@ -8,6 +8,7 @@ namespace Assets.Scripts
     {
         public TextMeshProUGUI storageText;
         public BarUI storageBar;
+        public TextMeshProUGUI locationText;
 
         // Use this for initialization
         void Start()
@@ -23,6 +24,8 @@ namespace Assets.Scripts
             storageText.text = $"Free storage: {Utils.FileSizeString(gm.FreeStorage)} / {Utils.FileSizeString(gm.inventorySpace)}";
             storageBar.maxValue = gm.inventorySpace;
             storageBar.value = gm.UsedStorage;
+
+            locationText.text = $"Location: {GameManager.Instance.room.realPath}";
         }
     }
 }

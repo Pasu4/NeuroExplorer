@@ -110,7 +110,8 @@ namespace Assets.Scripts
                     break;
 
                 case CardType.Resource:
-                    InitResource(points);
+                    //InitResource(points);
+                    InitTool(points); // TODO
                     break;
             }
 

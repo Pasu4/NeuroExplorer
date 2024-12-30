@@ -11,6 +11,8 @@ namespace Assets.Scripts
         Room,
         Inventory,
         Battle,
-        MainMenu
+        MainMenu,
+        Transition,
+        Dialogue
     }
 }

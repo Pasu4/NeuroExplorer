@@ -51,18 +51,29 @@ namespace Assets.Scripts
         {
             block = 0;
             if(nextAction is AttackAction aAct)
+            {
+                GameManager.Instance.CreateTextEffect("Attack", Color.blue, ctx.activeEnemy.transform.position);
                 DoAttackAction(ctx, aAct);
+            }
             else if(nextAction is DefendAction dAct)
+            {
+                GameManager.Instance.CreateTextEffect("Defend", Color.blue, ctx.activeEnemy.transform.position);
                 DoDefendAction(ctx, dAct);
+            }
             else if(nextAction is TrojanAction tAct)
+            {
                 DoTrojanAction(ctx, tAct);
+                GameManager.Instance.CreateTextEffect("Trojan", Color.blue, ctx.activeEnemy.transform.position);
+            }
+
+            nextAction = ChooseNextAction(ctx);
         }
 
         public virtual void DoAttackAction(BattleContext ctx, AttackAction action)
         {
             for(int i = 0; i < action.times; i++)
             {
-                ctx.BattleUI.AttackPlayer((long) (action.damage * attackFactor));
+                ctx.battleUI.AttackPlayer((long) (action.damage * attackFactor));
             }
         }
 
@@ -75,7 +86,7 @@ namespace Assets.Scripts
         {
             for(int i = 0; i < trojanCount; i++)
             {
-                ctx.BattleUI.CreateDiscardedCard(trojanCard);
+                ctx.battleUI.CreateDiscardedCard(trojanCard);
             }
         }
 

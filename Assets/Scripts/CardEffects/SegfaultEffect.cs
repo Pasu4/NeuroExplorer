@@ -12,7 +12,7 @@ namespace Assets.Scripts.CardEffects
 
         public override void OnTurnEnd(BattleContext ctx)
         {
-            ctx.BattleUI.AttackPlayer(3000);
+            ctx.battleUI.AttackPlayer(3000);
         }
     }
 }

@@ -44,7 +44,15 @@ namespace Assets.Scripts
             }
 
             hovered = false;
-            battleUI.PlayCard(this);
+
+            if(card.requiresTarget)
+            {
+                battleUI.selectedCard = this;
+                GameManager.Instance.CreateTextEffect("Select target", Color.blue, transform.position);
+                selected = true;
+            }    
+            else
+                battleUI.PlayCard(this);
         }
 
         public void OnPointerEnter(PointerEventData ev)

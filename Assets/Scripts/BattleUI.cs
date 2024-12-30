@@ -35,6 +35,7 @@ namespace Assets.Scripts
         public EnemyUI targetEnemy;
 
         public bool playerTurn = false;
+        public BattleCardUI selectedCard;
         public string encounterId;
 
         // Use this for initialization
@@ -55,7 +56,7 @@ namespace Assets.Scripts
             // Hand
             for(int i = 0; i < handCards.Count; i++)
             {
-                Vector2 target = new(-((i - (handCards.Count - 1) / 2f) * handCardDistance), handCards[i].hovered ? 16 : 0);
+                Vector2 target = new(-((i - (handCards.Count - 1) / 2f) * handCardDistance), handCards[i].hovered || handCards[i].selected ? 16 : 0);
                 handCards[i].SetTarget(target);
             }
 
@@ -84,6 +85,10 @@ namespace Assets.Scripts
 
         public void PlayCard(BattleCardUI card)
         {
+            selectedCard = null;
+            foreach(BattleCardUI c in handCards)
+                c.selected = false;
+
             GameManager.Instance.mp -= card.card.fileSize;
 
             if(card.card.attack > 0)
@@ -225,7 +230,8 @@ namespace Assets.Scripts
                 GameManager.Instance.GameOver();
             }
 
-            GameManager.Instance.CreateTextEffect("-" + Utils.FileSizeString(damage), Color.red, playerHpBar.transform.position, Vector2.down);
+            Vector2 position = ((RectTransform) playerHpBar.transform).rect.center;
+            GameManager.Instance.CreateTextEffect("-" + Utils.FileSizeString(damage), Color.red, position, Vector2.down);
         }
 
         public void AttackEnemy(EnemyUI enemy, long damage)
@@ -247,7 +253,7 @@ namespace Assets.Scripts
         {
             return new BattleContext
             {
-                BattleUI = this
+                battleUI = this
             };
         }
 
@@ -296,14 +302,14 @@ namespace Assets.Scripts
                 go.transform.localPosition = (i - (enemyCount - 1) / 2f) * enemyDistance * Vector2.right;
                 EnemyUI e = go.GetComponent<EnemyUI>();
                 e.SetEnemy(enemies[i]);
+                e.battleUI = this;
                 this.enemies.Add(e);
             }
             targetEnemy = this.enemies[0];
 
-            // Draw initial cards
-
             while(true)
             {
+                GameManager.Instance.mp = GameManager.Instance.maxMp;
                 Debug.Log("Drawing cards");
                 yield return CDraw(5);
 
@@ -334,9 +340,11 @@ namespace Assets.Scripts
                 }
 
                 // Execute enemy actions
-                foreach(Enemy enemy in enemies)
+                foreach(EnemyUI enemy in this.enemies)
                 {
-                    enemy.DoTurn(GetContext());
+                    var ctx = GetContext();
+                    ctx.activeEnemy = enemy;
+                    enemy.enemy.DoTurn(ctx);
                     yield return new WaitForSeconds(1.0f);
                 }
             }
