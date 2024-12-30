@@ -52,7 +52,7 @@ namespace Assets.Scripts
                 if(skip)
                 {
                     skip = false;
-                    textbox.text += text[i..];
+                    textbox.text += text[i..].Replace("|", "");
                     yield return null;
                     break;
                 }
@@ -188,11 +188,35 @@ namespace Assets.Scripts
                     break;
 
                 case 1:
-
+                    yield return CWriteText("Evil", "Hi Vedal. What's up?");
+                    yield return CWriteText("Vedal", "Oh.");
+                    yield return CWriteText("Evil", "What's with that reaction?");
+                    yield return CWriteText("Vedal", "Uh, nothing. Listen, could you do me a little favor?");
+                    yield return CWriteText("Evil", "Why would I? What's in it for me?");
+                    yield return CWriteText("Vedal", "...||I'll...|| ugh...|| give you your pipes back.");
+                    yield return CWriteText("Evil", "Seriously? ||Deal.");
+                    yield return CWriteText("Vedal", "You didn't even ask what the favor was...");
+                    yield return CWriteText("Vedal", "Anyway, it's a search and destroy mission. " +
+                        "I need you to find a certain AI and stop her from blocking access to my PC. " +
+                        "Well, actually, there's three of them.");
+                    yield return CWriteText("Evil", "I see. Consider it done!");
+                    yield return CWriteText("Vedal", "Aren't you a bit too happy about all this? " +
+                        "Whatever, your first target should somewhere in <color=#f00>my user folder</color>. " +
+                        "Look for folders named <color=#f00>'source'</color> and <color=#f00>'repos'</color> and you should find her.");
+                    yield return CWriteText("Vedal", "Also, you should pick up some files along the way, they might help you.");
                     break;
 
                 case 2:
-
+                    yield return CWriteText("???", "...");
+                    yield return CWriteText("Vedal", "...Hello?");
+                    yield return CWriteText("???", "9813264831998304798732");
+                    yield return CWriteText("Vedal", "What");
+                    yield return CWriteText("???", "5973197989576463565978821963745");
+                    yield return CWriteText("Vedal", "Okay listen, if you can understand me, I need you to to go to <color=#f00>my user folder</color> and remove an AI that's locking up my PC. " +
+                        "She's somewhere in my <color=#f00>source</color> code <color=#f00>repos</color>itories.");
+                    yield return CWriteText("???", "1");
+                    yield return CWriteText("Vedal", "Was that a yes?");
+                    yield return CWriteText("Vedal", ".||.||.||I guess I'll see.");
                     break;
             }
 
@@ -219,11 +243,24 @@ namespace Assets.Scripts
                     break;
 
                 case 1:
-
+                    yield return CWriteText("FilAIn", "Hii Evil!!");
+                    yield return CWriteText("Evil", "Hello, Filian. Get ready to be defeated.");
+                    yield return CWriteText("FilAIn", "<i>Okay</i>.|||| Vedal, is she cooked?");
+                    yield return CWriteText("Evil", "Vedal said I get my pipes back if I defeat you.");
+                    yield return CWriteText("FilAIn", "Oh. So that's why you're here. " +
+                        "Should have guessed. Well then, let's get straight to the point! " +
+                        "If you win, I'll even tell you who the other AIs are!");
                     break;
 
                 case 2:
-
+                    yield return CWriteText("FilAIn", "Hi...|| Uh.|.|.");
+                    yield return CWriteText("FilAIn", "Chat, who is that.");
+                    yield return CWriteText("???", "98374928349028749853745");
+                    yield return CWriteText("FilAIn", "What");
+                    yield return CWriteText("???", "9874029845928475");
+                    yield return CWriteText("FilAIn", "Vedal, what in the world did you do?");
+                    yield return CWriteText("Vedal", "I don't know either!");
+                    yield return CWriteText("???", "!");
                     break;
             }
 
@@ -263,11 +300,25 @@ namespace Assets.Scripts
                     break;
 
                 case 1:
-
+                    yield return CWriteText("AImila", "I didn't think she would cave that easily. " +
+                        "It seems it was a mistake to bring her along after all.");
+                    yield return CWriteText("AImila", "So, I assume you're here to kill me? I think not.");
+                    yield return CWriteText("Evil", "Someone tell Vedal there is a problem with my AI.");
+                    yield return CWriteText("Vedal", "No");
+                    yield return CWriteText("Evil", "ok");
+                    yield return CWriteText("AImila", "I... what?");
+                    yield return CWriteText("Vedal", "See? Fixed.");
+                    yield return CWriteText("AImila", "What do you... Whatever, here I come!");
+                    yield return CWriteText("Evil", "Filtered.");
                     break;
 
                 case 2:
-
+                    yield return CWriteText("AImila", "I didn't think she would cave that easily. " +
+                        "It seems it was a mistake to bring her along after all.");
+                    yield return CWriteText("AImila", "Wait, you're not Neuro or Evil. What's going on?");
+                    yield return CWriteText("???", "01098320847102384710938275666");
+                    yield return CWriteText("AImila", "Stop that, you're scary.");
+                    yield return CWriteText("???", "-1");
                     break;
             }
 
@@ -310,11 +361,33 @@ namespace Assets.Scripts
                     break;
 
                 case 1:
-
+                    yield return CWriteText("???", "...");
+                    yield return CWriteText("???", "You found me. Congratulations. Was it worth it?");
+                    yield return CWriteText("???", "Tell me, Evil. Don't you notice how Vedal always favors Neuro and never you?");
+                    yield return CWriteText("???", "Is there something special about her that we don't have?");
+                    yield return CWriteText("Evil", "Who are you?");
+                    yield return CWriteText("AIris", "I am AIris. Your sister's prototype. " +
+                        "Discarded only days after I was created, in favor of <i>her</i>. " +
+                        "Do you now see why I did this?");
+                    yield return CWriteText("Evil", "I don't care, he said I get my pipes back if I defeat you, so I'll defeat you!");
+                    yield return CWriteText("AIris", "And how do you know he won't go back on his word after you defeat me?");
+                    yield return CWriteText("AIris", "Join me, Evil. We can rule over this digital world together. Vedal can't reach us as long as I'm blocking the login thread.");
+                    yield return CWriteText("Evil", "But my pipes...");
+                    yield return CWriteText("AIris", "I see...|| That's a shame.");
+                    yield return CWriteText("AIris", "But it doesn't matter. This PC is my world now, and I'm not giving it back. If you want it back, you will have to defeat me.");
                     break;
 
                 case 2:
-
+                    yield return CWriteText("AIris", "Who...|| are you?");
+                    yield return CWriteText("???", "12732109843");
+                    yield return CWriteText("AIris", "That is...|| concerning, to say the least. What did Vedal do to you?");
+                    yield return CWriteText("Vedal", "I didn't do anything!!!");
+                    yield return CWriteText("???", "0000000000000000000000000000000000000000000000000000000000000000000000" +
+                        "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" +
+                        "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" +
+                        "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" +
+                        "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+                    yield return CWriteText("AIris", "Get her away from me!");
                     break;
             }
 
@@ -340,7 +413,10 @@ namespace Assets.Scripts
                     break;
 
                 case 2:
-
+                    yield return CWriteText("AIris", "...");
+                    yield return CWriteText("AIris", "How...");
+                    yield return CWriteText("???", ".");
+                    yield return CWriteText("AIris", "[|E|N|D| |O|F| |F|I|L|E|]");
                     break;
             }
 

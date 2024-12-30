@@ -263,7 +263,11 @@ namespace Assets.Scripts
 
         public Sprite GetFileSprite(string name) => GetFileSprite(name, new System.Random());
 
-        public void StartBattle(Enemy[] enemies, string encounterId, bool isSpecial, AudioClip music) => StartCoroutine(CTransitionBattle(enemies, encounterId, isSpecial, music));
+        public void StartBattle(Enemy[] enemies, string encounterId, bool isSpecial, AudioClip music)
+        {
+            battleUI.battleWon = false;
+            StartCoroutine(CTransitionBattle(enemies, encounterId, isSpecial, music));
+        }
 
         public void GameOver() => StartCoroutine(CGameOver());
 

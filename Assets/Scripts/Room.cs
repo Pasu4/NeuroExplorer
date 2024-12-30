@@ -37,7 +37,6 @@ namespace Assets.Scripts
 
         SpriteRenderer spriteRenderer;
 
-        // TODO add boss rooms
         private Regex noEnemyRooms = new(@"
             ^C:\\Users\\\w+(?:\\OneDrive)?\\Desktop$
         ", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled);
