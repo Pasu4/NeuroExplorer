@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -11,6 +12,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using URandom = UnityEngine.Random;
 
 namespace Assets.Scripts
 {
@@ -25,7 +27,10 @@ namespace Assets.Scripts
         public int gameSeed;
         public int difficulty = -1;
         public int progress = 0;
+        [HideInInspector]
         public bool obfuscateSet = false;
+        public bool skipIntro = false;
+        public long defaultEnemyStrength;
 
         public InventoryUI inventoryUI;
         public RoomUI roomUI;
@@ -244,16 +249,26 @@ namespace Assets.Scripts
 
         public Sprite GetFileSprite(string name) => GetFileSprite(name, new System.Random());
 
-        public void StartBattle(Enemy[] enemies, string encounterId) => StartCoroutine(CTransitionBattle(enemies, encounterId));
+        public void StartBattle(Enemy[] enemies, string encounterId, bool isSpecial) => StartCoroutine(CTransitionBattle(enemies, encounterId, isSpecial));
 
         public void GameOver() => StartCoroutine(CGameOver());
 
-        public void BattleWin() => StartCoroutine(CBattleWin());
+        public void BattleWin(bool reward) => StartCoroutine(CBattleWin(reward));
 
         public void TransitionRoom(string realPath) => StartCoroutine(CTransitionRoom(realPath));
 
         public IEnumerator CStart()
         {
+            if(skipIntro)
+            {
+                yield return null;
+                SetObfuscate(false);
+                room.ChangeRoom(startPath);
+                gameMode = GameMode.Room;
+                difficulty = 0;
+                yield break;
+            }
+
             gameMode = GameMode.Dialogue;
             dialogueUI.background.color = Color.black;
             fadeScreen.color = Color.black;
@@ -292,13 +307,13 @@ namespace Assets.Scripts
             yield return FadeIn(Color.black);
         }
 
-        private IEnumerator CTransitionBattle(Enemy[] enemies, string encounterId)
+        private IEnumerator CTransitionBattle(Enemy[] enemies, string encounterId, bool isSpecial)
         {
             gameMode = GameMode.Transition;
             yield return FadeOut(Color.white);
             gameMode = GameMode.Battle;
             battleUI.gameObject.SetActive(true);
-            battleUI.StartBattle(enemies, encounterId);
+            battleUI.StartBattle(enemies, encounterId, isSpecial);
             gameMode = GameMode.Battle;
             yield return FadeIn(Color.white);
         }
@@ -306,19 +321,70 @@ namespace Assets.Scripts
         private IEnumerator CGameOver()
         {
             gameMode = GameMode.Transition;
+            battleUI.StopAllCoroutines();
+
             yield return FadeOut(Color.black);
+
+            battleUI.gameObject.SetActive(false);
             yield return new WaitForSeconds(1.0f);
-            CreateTextEffect("<size=300>YOU DIED</size>\n<size=100>and lost some cards</size>", Color.red, player.transform.position, Vector3.zero);
+
+            CreateTextEffect("<size=300><b>YOU DIED</b></size>\n<size=100>and lost some cards</size>", Color.red, player.transform.position, Vector3.zero);
             yield return new WaitForSeconds(3.0f);
+
+            deck = deck
+                .OrderBy(_ => UnityEngine.Random.value)
+                .Take(deck.Count/2)
+                .ToList();
+            hp = maxHp;
+
             room.ChangeRoom(startPath);
             gameMode = GameMode.Room;
+            yield return FadeIn(Color.black);
         }
 
-        private IEnumerator CBattleWin()
+        private IEnumerator CBattleWin(bool reward)
         {
+            battleUI.StopAllCoroutines();
+
             yield return FadeOut(Color.black);
             battleUI.gameObject.SetActive(false);
             defeatedEncounters.Add(battleUI.encounterId);
+
+            // Some random bonus
+            if(reward)
+            {
+                string rewardText = "";
+                Utils.ChooseWeighted<Action>(new System.Random(),
+                    (10, new(() => {
+                        long amount = (long) (maxHp * URandom.Range(0.05f, 0.10f));
+                        maxHp += amount;
+                        hp += amount;
+                        rewardText = $"Data integrity increased by {Utils.FileSizeString(amount)}";
+                    })),
+                    (10, new(() => {
+                        long amount = (long) (maxMp * URandom.Range(0.05f, 0.10f));
+                        maxMp += amount;
+                        mp += amount;
+                        rewardText = $"Available RAM increased by {Utils.FileSizeString(amount)}";
+                    })),
+                    (10, new(() => {
+                        long amount = (long) (inventorySpace * URandom.Range(0.05f, 0.10f));
+                        inventorySpace += amount;
+                        rewardText = $"Available Storage increased by {Utils.FileSizeString(amount)}";
+                    })),
+                    (10, new(() => {
+                        Card card = new Card(
+                            URandom.value.ToString(CultureInfo.InvariantCulture),
+                            (long) (defaultEnemyStrength * URandom.Range(0.8f, 1.2f)),
+                            GetFileSprite("")
+                        );
+                        rewardText = "You got a new card";
+                    }))
+                )();
+
+                CreateTextEffect(rewardText, Color.green, player.transform.position);
+            }
+
             gameMode = GameMode.Room;
             yield return FadeIn(Color.black);
         }

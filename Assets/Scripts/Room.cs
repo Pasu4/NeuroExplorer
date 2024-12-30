@@ -233,14 +233,15 @@ namespace Assets.Scripts
                     if(Vector2.Distance(player.transform.position, guardedObjects[i].transform.position) < 5)
                         continue; // Don't spawn too close to player
 
-                    if(guardedObjects[i] is GroundFile f)
-                    {
-                        CreateEncounter(f.realPath, f.transform.position, (long) Mathf.Sqrt(f.fileSize));
-                    }
-                    else if(guardedObjects[i] is GroundDir d)
-                    {
-                        CreateEncounter(d.realPath, d.transform.position, (long) Mathf.Sqrt(averageFileSize));
-                    }
+                    CreateEncounter(guardedObjects[i].realPath, guardedObjects[i].transform.position, GameManager.Instance.defaultEnemyStrength);
+                    //if(guardedObjects[i] is GroundFile f)
+                    //{
+                    //    CreateEncounter(f.realPath, f.transform.position, (long) (Mathf.Sqrt(f.fileSize) * GameManager.Instance.enemyStrengthMultiplier));
+                    //}
+                    //else if(guardedObjects[i] is GroundDir d)
+                    //{
+                    //    CreateEncounter(d.realPath, d.transform.position, (long) Mathf.Sqrt(averageFileSize));
+                    //}
                 }
             }
         }

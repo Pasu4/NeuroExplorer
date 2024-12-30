@@ -12,9 +12,12 @@ namespace Assets.Scripts
         public float handCardDistance = 10f;
         public float pileCardDistance = 2f;
         public float enemyDistance = 50f;
+        public bool isSpecial = false;
 
         public BarUI playerHpBar;
         public TextMeshProUGUI playerMpText;
+        public TextMeshProUGUI playerHpText;
+        public Transform hpEffectSpawn;
 
         [Space(10)]
         public Transform drawPile;
@@ -74,9 +77,17 @@ namespace Assets.Scripts
                 discardedCards[i].SetTarget(target);
             }
 
+            // Erase pile
+            for(int i = 0; i < erasedCards.Count; i++)
+            {
+                erasedCards[i].SetTarget(Vector2.zero);
+            }
+
             // HP bar
             playerHpBar.maxValue = gm.maxHp;
             playerHpBar.value = gm.hp;
+
+            playerHpText.text = $"Data Integrity: {Utils.FileSizeString(gm.hp)} / {Utils.FileSizeString(gm.maxHp)}";
 
             // MP text
             playerMpText.text = $"Backup Memory: {Utils.FileSizeString(gm.block)}\n"
@@ -118,6 +129,7 @@ namespace Assets.Scripts
             card.card.OnDiscard(GetContext());
 
             card.transform.SetParent(discardPile);
+            card.targetValid = false;
             // card.SetTarget(Vector2.zero);
         }
 
@@ -129,6 +141,7 @@ namespace Assets.Scripts
 
             card.transform.SetParent(erasePile);
             card.SetTarget(Vector2.zero);
+            card.targetValid = false;
         }
 
         public void Reshuffle()
@@ -137,6 +150,7 @@ namespace Assets.Scripts
             foreach(BattleCardUI card in discardedCards)
             {
                 card.transform.SetParent(drawPile);
+                card.targetValid = false;
                 card.Reveal(false);
             }
             discardedCards.Clear();
@@ -167,6 +181,7 @@ namespace Assets.Scripts
                 drawCards.Remove(drawnCard);
                 handCards.Add(drawnCard);
                 drawnCard.transform.SetParent(hand);
+                drawnCard.targetValid = false;
                 drawnCard.Reveal(true);
                 drawnCard.card.OnEnterHand(GetContext());
             }
@@ -193,13 +208,14 @@ namespace Assets.Scripts
             }
             if(enemies.Count == 0)
             {
-                GameManager.Instance.BattleWin();
+                GameManager.Instance.BattleWin(!isSpecial);
             }
         }
 
-        public void StartBattle(Enemy[] enemies, string encounterId)
+        public void StartBattle(Enemy[] enemies, string encounterId, bool isSpecial)
         {
-            StartCoroutine(CBattle(enemies, encounterId));
+            StopAllCoroutines(); // Just for safety
+            StartCoroutine(CBattle(enemies, encounterId, isSpecial));
         }
 
         public void CreateHandCard(Card card) => AddCard(card, handCards, hand, true);
@@ -230,8 +246,7 @@ namespace Assets.Scripts
                 GameManager.Instance.GameOver();
             }
 
-            Vector2 position = ((RectTransform) playerHpBar.transform).rect.center;
-            GameManager.Instance.CreateTextEffect("-" + Utils.FileSizeString(damage), Color.red, position, Vector2.down);
+            GameManager.Instance.CreateTextEffect("-" + Utils.FileSizeString(damage), Color.red, hpEffectSpawn.position, Vector2.down);
         }
 
         public void AttackEnemy(EnemyUI enemy, long damage)
@@ -257,16 +272,17 @@ namespace Assets.Scripts
             };
         }
 
-        private IEnumerator CBattle(Enemy[] enemies, string encounterId)
+        private IEnumerator CBattle(Enemy[] enemies, string encounterId, bool isSpecial)
         {
             this.encounterId = encounterId;
+            this.isSpecial = isSpecial;
 
             // Delete old cards
             foreach(BattleCardUI c in deck)
-                if(c) Destroy(c);
+                if(c) Destroy(c.gameObject);
 
             foreach(BattleCardUI c in erasedCards)
-                if(c) Destroy(c);
+                if(c) Destroy(c.gameObject);
 
             handCards.Clear();
             drawCards.Clear();
@@ -293,6 +309,7 @@ namespace Assets.Scripts
             {
                 Destroy(child.gameObject);
             }
+            this.enemies.Clear();
 
             // Spawn new enemies
             int enemyCount = enemies.Length;

@@ -18,6 +18,7 @@ namespace Assets.Scripts
         public Card card;
         public bool hovered = false;
         public bool selected = false;
+        public bool targetValid = false;
 
         Coroutine moveCoro = null;
 
@@ -74,7 +75,7 @@ namespace Assets.Scripts
         public void SetTarget(Vector2 newTarget)
         {
             // If already near position
-            if(Vector2.SqrMagnitude(newTarget - (Vector2) transform.localPosition) < 0.01f)
+            if(Vector2.SqrMagnitude(newTarget - (Vector2) transform.localPosition) < 0.01f && targetValid)
             {
                 transform.localPosition = newTarget;
                 target = newTarget;
@@ -82,7 +83,7 @@ namespace Assets.Scripts
             }
 
             // If same target
-            if(newTarget == target)
+            if(newTarget == target && targetValid)
             {
                 return;
             }
@@ -92,6 +93,7 @@ namespace Assets.Scripts
             {
                 StopCoroutine(moveCoro);
             }
+            targetValid = true;
             target = newTarget;
             moveCoro = StartCoroutine(CMoveTo());
         }

@@ -49,6 +49,7 @@ namespace Assets.Scripts
         {
             if(battleUI.selectedCard != null)
             {
+                battleUI.targetEnemy = this;
                 battleUI.PlayCard(battleUI.selectedCard);
             }
         }

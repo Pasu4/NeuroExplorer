@@ -36,8 +36,8 @@ namespace Assets.Scripts
         public virtual void Init()
         {
             nextAction = Utils.ChooseWeighted<EnemyAction>(new System.Random(),
-                (attackWeight, new AttackAction((long) (strength * Random.Range(0.9f, 1.1f)), Random.value < multiChance ? Random.Range(2, maxMulti) : 1)),
-                (defenseWeight, new DefendAction((long) (strength * Random.Range(0.9f, 1.1f)))),
+                (attackWeight, new AttackAction((long) (strength * Random.Range(0.8f, 1.2f) * attackFactor), Random.value < multiChance ? Random.Range(2, maxMulti) : 1)),
+                (defenseWeight, new DefendAction((long) (strength * Random.Range(0.8f, 1.2f) * defendFactor))),
                 (trojanWeight, new TrojanAction())
             );
 
@@ -93,8 +93,8 @@ namespace Assets.Scripts
         public virtual EnemyAction ChooseNextAction(BattleContext context)
         {
             return Utils.ChooseWeighted<EnemyAction>(new System.Random(),
-                (attackWeight, new AttackAction(strength)),
-                (defenseWeight, new DefendAction(strength)),
+                (attackWeight, new AttackAction((long) (strength * Random.Range(0.8f, 1.2f) * attackFactor), Random.value < multiChance ? Random.Range(2, maxMulti) : 1)),
+                (defenseWeight, new DefendAction((long) (strength * Random.Range(0.8f, 1.2f) * defendFactor))),
                 (trojanWeight, new TrojanAction())
             );
         }
