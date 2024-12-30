@@ -25,7 +25,7 @@ namespace Assets.Scripts
             storageBar.maxValue = gm.inventorySpace;
             storageBar.value = gm.UsedStorage;
 
-            locationText.text = $"Location: {GameManager.Instance.room.realPath}";
+            locationText.text = $"Location: {GameManager.Instance.room.displayPath}";
         }
     }
 }
