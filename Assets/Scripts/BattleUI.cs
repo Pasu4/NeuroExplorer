@@ -133,7 +133,13 @@ namespace Assets.Scripts
 
         public void Discard(BattleCardUI card)
         {
+            // Make absolutely sure this card is not in multiple piles at once
             handCards.Remove(card);
+            drawCards.Remove(card);
+            discardedCards.Remove(card);
+            erasedCards.Remove(card);
+            deck.Remove(card);
+
             discardedCards.Add(card);
             card.card.OnDiscard(GetContext());
 
@@ -144,8 +150,13 @@ namespace Assets.Scripts
 
         public void Erase(BattleCardUI card)
         {
+            // Make absolutely sure this card is not in multiple piles at once
             handCards.Remove(card);
+            drawCards.Remove(card);
+            discardedCards.Remove(card);
+            erasedCards.Remove(card);
             deck.Remove(card);
+
             erasedCards.Add(card);
             card.card.OnErase(GetContext());
 
