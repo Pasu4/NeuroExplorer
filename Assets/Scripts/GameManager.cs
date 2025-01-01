@@ -450,10 +450,11 @@ namespace Assets.Scripts
                     })),
                     (10, new(() => {
                         Card card = new Card(
-                            URandom.value.ToString(CultureInfo.InvariantCulture),
-                            (long) (defaultEnemyStrength * URandom.Range(0.8f, 1.2f)),
+                            URandom.value.ToString("F7", CultureInfo.InvariantCulture)[2..] + ".log",
+                            (long) (maxMp * URandom.Range(0.5f, 1.0f)),
                             GetFileSprite("")
                         );
+                        deck.Add(card);
                         rewardText = "You got a new card";
                     }))
                 )();
