@@ -2332,7 +2332,7 @@ MonoBehaviour:
   - fileExtension: .bmp;.ico;.jpg;.jpeg;.png;.psd;.svg;.webp
     sprite: {fileID: 21300000, guid: 9546a7d6413a7a0409e1b70dc325ca23, type: 3}
   - fileExtension: .dll
-    sprite: {fileID: 0}
+    sprite: {fileID: 21300000, guid: 26b95859ab8bb3343bc6ae70f54950f2, type: 3}
   - fileExtension: .dll
     sprite: {fileID: 21300000, guid: 90696d4aa055bc24e9d85e6b615872ae, type: 3}
   - fileExtension: .dll
@@ -2373,6 +2373,7 @@ MonoBehaviour:
     multiChance: 0
     maxMulti: 2
     trojanId: error
+    targetDrawPile: 0
   - strength: 0
     hp: 60000
     maxHp: 60000
@@ -2387,6 +2388,7 @@ MonoBehaviour:
     multiChance: 0
     maxMulti: 2
     trojanId: null_pointer
+    targetDrawPile: 0
   - strength: 0
     hp: 30000
     maxHp: 30000
@@ -2401,6 +2403,7 @@ MonoBehaviour:
     multiChance: 0
     maxMulti: 2
     trojanId: memory_leak
+    targetDrawPile: 0
   lockedDirSprite: {fileID: 21300000, guid: 170acf9d58f21284dad4b43e9ae0ce10, type: 3}
   upDirSprite: {fileID: 21300000, guid: ff3afe7c38448ad42a59e3ac7f4dbcea, type: 3}
   roomSource: {fileID: 1801706346}
