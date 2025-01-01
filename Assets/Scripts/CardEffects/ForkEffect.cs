@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Scripts.CardEffects
 {
@@ -12,7 +13,7 @@ namespace Assets.Scripts.CardEffects
 
         public override void OnTurnEnd(BattleContext ctx)
         {
-            ctx.battleUI.CreateDiscardedCard(CardResources.GetCard("fork_bomb"));
+            ctx.battleUI.CreateDiscardedCard(CardResources.GetCard("fork_bomb"), (Vector2) ctx.battleUI.discardPile.transform.position + Vector2.up * 10);
         }
     }
 }
