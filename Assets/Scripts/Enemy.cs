@@ -89,7 +89,7 @@ namespace Assets.Scripts
         {
             for(int i = 0; i < trojanCount; i++)
             {
-                ctx.battleUI.CreateDiscardedCard(trojanCard);
+                ctx.battleUI.CreateDiscardedCard(trojanCard, ctx.activeEnemy.transform.position);
             }
         }
 
