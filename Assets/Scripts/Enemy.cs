@@ -66,8 +66,13 @@ namespace Assets.Scripts
             }
             else if(nextAction is TrojanAction tAct)
             {
-                DoTrojanAction(ctx, tAct);
                 GameManager.Instance.CreateTextEffect("Trojan", Color.blue, ctx.activeEnemy.transform.position);
+                DoTrojanAction(ctx, tAct);
+            }
+            else if(nextAction is DoNothingAction)
+            {
+                // Do nothing
+                GameManager.Instance.CreateTextEffect("Skip", Color.blue, ctx.activeEnemy.transform.position);
             }
 
             nextAction = ChooseNextAction(ctx);

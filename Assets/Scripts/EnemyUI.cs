@@ -43,6 +43,10 @@ namespace Assets.Scripts
                 nextActionImage.sprite = GameManager.Instance.enemyActionTrojanSprite;
                 nextActionText.text = "";
             }
+            else if(enemy.nextAction is DoNothingAction)
+            {
+                // TODO sprite
+            }
         }
 
         public void OnPointerDown(PointerEventData ev)

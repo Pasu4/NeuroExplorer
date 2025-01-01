@@ -246,9 +246,18 @@ namespace Assets.Scripts
                 })),
                 (100, new Action(() =>
                 {
-                    if(type != CardType.Tool || points < 2) return;
+                    if(type != CardType.Tool || effectList.Any(e => e is ReallocEffect) || points < 2) return;
 
                     effectList.Add(new ReallocEffect());
+                    points -= 2;
+                })),
+                (100, new Action(() =>
+                {
+                    if((type != CardType.Tool && type != CardType.Attack) || effectList.Any(e => e is ContinueEffect) || points < 2) return;
+
+                    requiresTarget = true;
+                    erase = true;
+                    effectList.Add(new ContinueEffect());
                     points -= 2;
                 }))
             )(); // Immediately execute
