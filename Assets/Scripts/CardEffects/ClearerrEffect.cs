@@ -12,8 +12,8 @@ namespace Assets.Scripts.CardEffects
 
         public override void OnPlay(BattleContext ctx)
         {
-            var cs = ctx.battleUI.deck.Where(c => c.card.type == Card.CardType.Trojan);
-            foreach(var c in cs)
+            BattleCardUI[] cs = ctx.battleUI.deck.Where(c => c.card.type == Card.CardType.Trojan).ToArray();
+            foreach(BattleCardUI c in cs)
             {
                 ctx.battleUI.Erase(c);
             }
