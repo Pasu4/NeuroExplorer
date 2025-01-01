@@ -79,7 +79,8 @@ namespace Assets.Scripts
             trojanWeight = 10,
             trojanCard = CardResources.GetCard("fork_bomb"),
             trojanCount = 1,
-            nextAction = new TrojanAction()
+            nextAction = new TrojanAction(),
+            multiChance = 0.0f
         };
 
         public Enemy GetCamila(Sprite sprite) => new()
@@ -95,7 +96,8 @@ namespace Assets.Scripts
             trojanWeight = 10,
             trojanCard = CardResources.GetCard("mutex"),
             trojanCount = 1,
-            nextAction = new TrojanAction()
+            nextAction = new TrojanAction(),
+            multiChance = 0.0f
         };
 
         public Enemy GetAiris(Sprite sprite) => new()
@@ -111,7 +113,8 @@ namespace Assets.Scripts
             trojanWeight = 10,
             trojanCard = CardResources.GetCard("semaphore"),
             trojanCount = 1,
-            nextAction = new TrojanAction()
+            nextAction = new TrojanAction(),
+            multiChance = 0.0f
         };
 
         private void BossSceneStart()
