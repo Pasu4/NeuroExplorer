@@ -76,13 +76,13 @@ namespace Assets.Scripts
         {
             for(int i = 0; i < action.times; i++)
             {
-                ctx.battleUI.AttackPlayer((long) (action.damage * attackFactor));
+                ctx.battleUI.AttackPlayer(action.damage);
             }
         }
 
         public virtual void DoDefendAction(BattleContext ctx, DefendAction action)
         {
-            block = (long) (action.block * defendFactor);
+            block = action.block;
         }
 
         public virtual void DoTrojanAction(BattleContext ctx, TrojanAction action)
