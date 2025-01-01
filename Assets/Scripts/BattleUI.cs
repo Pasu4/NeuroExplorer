@@ -102,7 +102,8 @@ namespace Assets.Scripts
             foreach(BattleCardUI c in handCards)
                 c.selected = false;
 
-            if(handCards.Any(c => c.card.cardEffects.Any(e => e is MutexEffect)))
+            // Allow playing only mutex cards
+            if(handCards.Any(c => c.card.cardEffects.Any(e => e is MutexEffect)) && card.card.cardEffects.All(e => e is not MutexEffect))
             {
                 GameManager.Instance.CreateTextEffect("Deadlock", Color.red, card.transform.position);
                 return;
