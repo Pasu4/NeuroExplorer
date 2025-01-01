@@ -114,7 +114,8 @@ namespace Assets.Scripts
             trojanCard = CardResources.GetCard("semaphore"),
             trojanCount = 1,
             nextAction = new TrojanAction(),
-            multiChance = 0.0f
+            multiChance = 0.0f,
+            targetDrawPile = true
         };
 
         private void BossSceneStart()
