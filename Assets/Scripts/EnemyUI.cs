@@ -45,7 +45,8 @@ namespace Assets.Scripts
             }
             else if(enemy.nextAction is DoNothingAction)
             {
-                // TODO sprite
+                nextActionImage.sprite = GameManager.Instance.enemyActionDoNothingSprite;
+                nextActionText.text = "";
             }
         }
 

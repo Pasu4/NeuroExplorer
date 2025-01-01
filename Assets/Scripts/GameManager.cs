@@ -58,6 +58,7 @@ namespace Assets.Scripts
         public Sprite enemyActionAttackSprite;
         public Sprite enemyActionDefendSprite;
         public Sprite enemyActionTrojanSprite;
+        public Sprite enemyActionDoNothingSprite;
         public Enemy[] enemies;
         public Sprite lockedDirSprite;
         public Sprite upDirSprite;

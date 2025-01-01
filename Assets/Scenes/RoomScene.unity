@@ -2358,6 +2358,7 @@ MonoBehaviour:
   enemyActionAttackSprite: {fileID: 21300000, guid: a6483a48fa932a44aa757ebb260e4e1b, type: 3}
   enemyActionDefendSprite: {fileID: 21300000, guid: 76475445cb0d0a7478393e57dd697c0a, type: 3}
   enemyActionTrojanSprite: {fileID: 21300000, guid: 0fce4477d1624cb42a9af3c13e2e45ca, type: 3}
+  enemyActionDoNothingSprite: {fileID: 21300000, guid: 9adf6aff0a51df449981657c5fe6b4ed, type: 3}
   enemies:
   - strength: 0
     hp: 40000
@@ -4697,6 +4698,7 @@ MonoBehaviour:
   selectedCard: {fileID: 0}
   encounterId: 
   battleWon: 0
+  turn: 0
 --- !u!114 &1623202602
 MonoBehaviour:
   m_ObjectHideFlags: 0
