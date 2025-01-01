@@ -25,6 +25,7 @@ namespace Assets.Scripts
         public float multiChance = 0.25f;
         public int maxMulti = 2;
         public string trojanId = "";
+        public bool targetDrawPile = false;
 
         public EnemyAction nextAction;
 
@@ -89,7 +90,10 @@ namespace Assets.Scripts
         {
             for(int i = 0; i < trojanCount; i++)
             {
-                ctx.battleUI.CreateDiscardedCard(trojanCard, ctx.activeEnemy.transform.position);
+                if(targetDrawPile)
+                    ctx.battleUI.CreateDrawCard(trojanCard, ctx.activeEnemy.transform.position);
+                else
+                    ctx.battleUI.CreateDiscardedCard(trojanCard, ctx.activeEnemy.transform.position);
             }
         }
 
