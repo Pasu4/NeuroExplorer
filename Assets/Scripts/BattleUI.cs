@@ -230,7 +230,7 @@ namespace Assets.Scripts
 
         public void CreateHandCard(Card card) => AddCard(card, handCards, hand, true);
         public void CreateDrawCard(Card card) => AddCard(card, drawCards, drawPile, false);
-        public void CreateDiscardedCard(Card card) => AddCard(card, discardedCards, discardPile, false);
+        public void CreateDiscardedCard(Card card) => AddCard(card, discardedCards, discardPile, true);
 
         private void AddCard(Card card, List<BattleCardUI> pile, Transform parent, bool reveal)
         {
