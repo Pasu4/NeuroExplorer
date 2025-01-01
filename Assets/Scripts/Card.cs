@@ -62,7 +62,7 @@ namespace Assets.Scripts
                 points += 2;
             }
 
-            CardType type = random.NextDouble() switch
+            type = random.NextDouble() switch
             {
                 <.35 => CardType.Attack,  // (35%) Attack card
                 <.70 => CardType.Defense, // (35%) Defense card
@@ -114,8 +114,6 @@ namespace Assets.Scripts
                     InitTool(points); // TODO
                     break;
             }
-
-            this.type = type;
         }
 
         private void InitAttack(long mainValue, int points)
@@ -136,34 +134,7 @@ namespace Assets.Scripts
                 }
                 else // (50%) Add a random effect
                 {
-                    Utils.ChooseWeighted(random,
-                        (100, new Action(() => {
-                            if(effectList.Any(e => e is MallocEffect)) return;
-
-                            int count = random.Next(points) + 1;
-                            effectList.Add(new MallocEffect(count));
-                            points -= count;
-                        })),
-                        (100, new Action(() => {
-                            if(effectList.Any(e => e is ClearerrEffect)) return;
-
-                            effectList.Add(new ClearerrEffect());
-                            erase = true;
-                            points -= 3;
-                        })),
-                        (100, new Action(() => {
-                            if(effectList.Any(e => e is MemmoveEffect)) return;
-
-                            effectList.Add(new MemmoveEffect());
-                            points -= 2;
-                        })),
-                        (100, new Action(() => {
-                            if(effectList.Any(e => e is QsortEffect) || points < 4) return;
-
-                            effectList.Add(new QsortEffect());
-                            points -= 4;
-                        }))
-                    )();
+                    points = ChooseEffect(points, effectList);
                 }
                 failsafe--;
             }
@@ -189,34 +160,7 @@ namespace Assets.Scripts
                 }
                 else // (50%) Add a random effect
                 {
-                    Utils.ChooseWeighted(random,
-                        (100, new Action(() => {
-                            if(effectList.Any(e => e is MallocEffect)) return;
-
-                            int count = random.Next(points) + 1;
-                            effectList.Add(new MallocEffect(count));
-                            points -= count;
-                        })),
-                        (100, new Action(() => {
-                            if(effectList.Any(e => e is ClearerrEffect)) return;
-
-                            effectList.Add(new ClearerrEffect());
-                            erase = true;
-                            points -= 3;
-                        })),
-                        (100, new Action(() => {
-                            if(effectList.Any(e => e is MemmoveEffect)) return;
-
-                            effectList.Add(new MemmoveEffect());
-                            points -= 2;
-                        })),
-                        (100, new Action(() => {
-                            if(effectList.Any(e => e is QsortEffect) || points < 4) return;
-
-                            effectList.Add(new QsortEffect());
-                            points -= 4;
-                        }))
-                    )();
+                    points = ChooseEffect(points, effectList);
                 }
                 failsafe--;
             }
@@ -234,34 +178,7 @@ namespace Assets.Scripts
 
             while(points > 0 && failsafe > 0)
             {
-                Utils.ChooseWeighted(random,
-                    (100, new Action(() => {
-                        if(effectList.Any(e => e is MallocEffect)) return;
-
-                        int count = random.Next(points) + 1;
-                        effectList.Add(new MallocEffect(count));
-                        points -= count;
-                    })),
-                        (100, new Action(() => {
-                            if(effectList.Any(e => e is ClearerrEffect)) return;
-
-                            effectList.Add(new ClearerrEffect());
-                            erase = true;
-                            points -= 3;
-                        })),
-                        (100, new Action(() => {
-                            if(effectList.Any(e => e is MemmoveEffect)) return;
-
-                            effectList.Add(new MemmoveEffect());
-                            points -= 2;
-                        })),
-                        (100, new Action(() => {
-                            if(effectList.Any(e => e is QsortEffect) || points < 4) return;
-
-                            effectList.Add(new QsortEffect());
-                            points -= 4;
-                        }))
-                )();
+                points = ChooseEffect(points, effectList);
                 failsafe--;
             }
 
@@ -279,6 +196,63 @@ namespace Assets.Scripts
                 points -= 2;
                 erase = false;
             }
+        }
+
+        private int ChooseEffect(int points, List<CardEffect> effectList)
+        {
+            Utils.ChooseWeighted(random,
+                (100, new Action(() =>
+                {
+                    if(effectList.Any(e => e is MallocEffect)) return;
+
+                    int count = type == CardType.Tool ? random.Next(points) + 1 : 1;
+                    effectList.Add(new MallocEffect(count));
+                    points -= count;
+                })),
+                (100, new Action(() =>
+                {
+                    if(type != CardType.Tool || effectList.Any(e => e is ClearerrEffect)) return;
+
+                    if(!erase)
+                    {
+                        points += 2;
+                        erase = true;
+                    }
+
+                    int count = random.Next(points) + 1;
+                    effectList.Add(new ClearerrEffect(count));
+                    points -= count;
+                })),
+                (100, new Action(() =>
+                {
+                    if(effectList.Any(e => e is MemmoveEffect) || points < 2) return;
+
+                    effectList.Add(new MemmoveEffect());
+                    points -= 2;
+                })),
+                (100, new Action(() =>
+                {
+                    if(type != CardType.Tool || effectList.Any(e => e is QsortEffect) || points < 4) return;
+
+                    effectList.Add(new QsortEffect());
+                    points -= 4;
+                })),
+                (100, new Action(() =>
+                {
+                    if(type != CardType.Tool || points < 2) return;
+
+                    effectList.Add(new RandEffect((long) (fileSize * random.Range(0.5f, 1.5f))));
+                    points -= 2;
+                })),
+                (100, new Action(() =>
+                {
+                    if(type != CardType.Tool || points < 2) return;
+
+                    effectList.Add(new ReallocEffect());
+                    points -= 2;
+                }))
+            )(); // Immediately execute
+            return points;
         }
 
         public void OnPlay(BattleContext ctx)
