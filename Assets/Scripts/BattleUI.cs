@@ -146,6 +146,7 @@ namespace Assets.Scripts
         {
             handCards.Remove(card);
             deck.Remove(card);
+            erasedCards.Add(card);
             card.card.OnErase(GetContext());
 
             card.transform.SetParent(erasePile);
@@ -228,13 +229,17 @@ namespace Assets.Scripts
             StartCoroutine(CBattle(enemies, encounterId, isSpecial));
         }
 
-        public void CreateHandCard(Card card) => AddCard(card, handCards, hand, true);
-        public void CreateDrawCard(Card card) => AddCard(card, drawCards, drawPile, false);
-        public void CreateDiscardedCard(Card card) => AddCard(card, discardedCards, discardPile, true);
+        public void CreateHandCard(Card card, Vector2 source) => AddCard(card, handCards, hand, true, source);
+        public void CreateHandCard(Card card) => AddCard(card, handCards, hand, true, hand.transform.position);
+        public void CreateDrawCard(Card card, Vector2 source) => AddCard(card, drawCards, drawPile, false, source);
+        public void CreateDrawCard(Card card) => AddCard(card, drawCards, drawPile, false, drawPile.transform.position);
+        public void CreateDiscardedCard(Card card, Vector2 source) => AddCard(card, discardedCards, discardPile, true, source);
+        public void CreateDiscardedCard(Card card) => AddCard(card, discardedCards, discardPile, true, discardPile.transform.position);
 
-        private void AddCard(Card card, List<BattleCardUI> pile, Transform parent, bool reveal)
+        private void AddCard(Card card, List<BattleCardUI> pile, Transform parent, bool reveal, Vector2 source)
         {
             GameObject go = Instantiate(battleCardPrefab, parent);
+            go.transform.position = source;
             BattleCardUI bc = go.GetComponent<BattleCardUI>();
             bc.SetCard(card);
             bc.Reveal(reveal);
