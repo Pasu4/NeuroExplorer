@@ -141,6 +141,7 @@ namespace Assets.Scripts
             deck.Remove(card);
 
             discardedCards.Add(card);
+            deck.Add(card);
             card.card.OnDiscard(GetContext());
 
             card.transform.SetParent(discardPile);
