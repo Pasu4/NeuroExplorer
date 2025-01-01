@@ -32,4 +32,8 @@ namespace Assets.Scripts
     public class TrojanAction : EnemyAction { }
 
     public class DoNothingAction : EnemyAction { }
+
+    public class SummonAction : EnemyAction { }
+
+    public class BuffAction : EnemyAction { }
 }

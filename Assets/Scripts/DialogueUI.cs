@@ -66,58 +66,6 @@ namespace Assets.Scripts
                 yield return null;
         }
 
-        public Enemy GetFilian(Sprite sprite) => new()
-        {
-            sprite = sprite,
-            maxHp = 150_000 + GameManager.Instance.difficulty * 50_000,
-            hp    = 150_000 + GameManager.Instance.difficulty * 50_000,
-            strength = 15_000 + GameManager.Instance.difficulty * 5_000,
-            attackFactor = 1.0f,
-            defendFactor = 1.0f,
-            attackWeight = 10,
-            defenseWeight = 10,
-            trojanWeight = 10,
-            trojanCard = CardResources.GetCard("fork_bomb"),
-            trojanCount = 1,
-            nextAction = new TrojanAction(),
-            multiChance = 0.0f
-        };
-
-        public Enemy GetCamila(Sprite sprite) => new()
-        {
-            sprite = sprite,
-            maxHp = 150_000 + GameManager.Instance.difficulty * 50_000, // Will be scaled
-            hp    = 150_000 + GameManager.Instance.difficulty * 50_000,
-            strength = 150_000 + GameManager.Instance.difficulty * 50_000,
-            attackFactor = 1.0f,
-            defendFactor = 1.0f,
-            attackWeight = 10,
-            defenseWeight = 10,
-            trojanWeight = 10,
-            trojanCard = CardResources.GetCard("mutex"),
-            trojanCount = 1,
-            nextAction = new TrojanAction(),
-            multiChance = 0.0f
-        };
-
-        public Enemy GetAiris(Sprite sprite) => new()
-        {
-            sprite = sprite,
-            maxHp = 150_000 + GameManager.Instance.difficulty * 50_000,
-            hp    = 150_000 + GameManager.Instance.difficulty * 50_000,
-            strength = 1_500_000 + GameManager.Instance.difficulty * 500_000,
-            attackFactor = 1.0f,
-            defendFactor = 1.0f,
-            attackWeight = 10,
-            defenseWeight = 10,
-            trojanWeight = 10,
-            trojanCard = CardResources.GetCard("semaphore"),
-            trojanCount = 1,
-            nextAction = new TrojanAction(),
-            multiChance = 0.0f,
-            targetDrawPile = true
-        };
-
         private void BossSceneStart()
         {
             gameObject.SetActive(true);
@@ -270,7 +218,7 @@ namespace Assets.Scripts
                     break;
             }
 
-            GameManager.Instance.StartBattle(new Enemy[] { GetFilian(trigger.sprite) }, "filian", true, GameManager.Instance.bossClip);
+            GameManager.Instance.StartBattle(new Enemy[] { new FilianEnemy(trigger.sprite) }, "filian", true, GameManager.Instance.bossClip);
 
             while(!GameManager.Instance.battleUI.battleWon) yield return null;
 
@@ -328,7 +276,7 @@ namespace Assets.Scripts
                     break;
             }
 
-            GameManager.Instance.StartBattle(new Enemy[] { GetCamila(trigger.sprite) }, "camila", true, GameManager.Instance.bossClip);
+            GameManager.Instance.StartBattle(new Enemy[] { new CamilaEnemy(trigger.sprite) }, "camila", true, GameManager.Instance.bossClip);
 
             while(!GameManager.Instance.battleUI.battleWon) yield return null;
 
@@ -396,11 +344,11 @@ namespace Assets.Scripts
                         "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" +
                         "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" +
                         "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-                    yield return CWriteText("AIris", "Get her away from me!");
+                    yield return CWriteText("AIris", "Get away from me!");
                     break;
             }
 
-            GameManager.Instance.StartBattle(new Enemy[] { GetAiris(trigger.sprite) }, "airis", true, GameManager.Instance.finalBossClip);
+            GameManager.Instance.StartBattle(new Enemy[] { new AirisEnemy(trigger.sprite) }, "airis", true, GameManager.Instance.finalBossClip);
 
             while(!GameManager.Instance.battleUI.battleWon) yield return null;
 

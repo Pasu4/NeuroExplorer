@@ -52,7 +52,7 @@ namespace Assets.Scripts
                 name = "Mutex",
                 type = Card.CardType.Trojan,
                 erase = true,
-                fileSize = GameManager.Instance.maxMp * 1 / 5,
+                fileSize = GameManager.Instance.maxMp * 9/20,
                 sprite = GameManager.Instance.GetFileSprite("mutex"),
                 cardEffects = new[] { new MutexEffect() }
             },

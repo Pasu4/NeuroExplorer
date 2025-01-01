@@ -42,6 +42,7 @@ namespace Assets.Scripts
         public BattleCardUI selectedCard;
         public string encounterId;
         public bool battleWon = false;
+        public int turn = 0;
 
         // Use this for initialization
         void Start()
@@ -304,6 +305,7 @@ namespace Assets.Scripts
         private IEnumerator CBattle(Enemy[] enemies, string encounterId, bool isSpecial)
         {
             battleWon = false;
+            turn = 0;
             this.encounterId = encounterId;
             this.isSpecial = isSpecial;
 
@@ -359,7 +361,6 @@ namespace Assets.Scripts
 
                 GameManager.Instance.mp = GameManager.Instance.maxMp;
                 GameManager.Instance.block = 0;
-                Debug.Log("Drawing cards");
                 yield return CDraw(5);
 
                 if(deck.Count(c => c.card.cardEffects.Any(e => e is SemaphoreEffect)) >= 4)
@@ -402,6 +403,8 @@ namespace Assets.Scripts
                     enemy.enemy.DoTurn(ctx);
                     yield return new WaitForSeconds(1.0f);
                 }
+
+                turn++;
             }
         }
 
