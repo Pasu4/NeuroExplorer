@@ -315,16 +315,7 @@ namespace Assets.Scripts
 
         public IEnumerator CStart()
         {
-            if(skipIntro)
-            {
-                yield return null;
-                SetObfuscate(false);
-                room.ChangeRoom(startPath);
-                gameMode = GameMode.Room;
-                difficulty = 0;
-                roomSource.UnPause();
-                yield break;
-            }
+            yield return null; // Wait for other scripts to initialize
 
             gameMode = GameMode.Dialogue;
             dialogueUI.background.color = Color.black;
@@ -334,20 +325,34 @@ namespace Assets.Scripts
             dialogueUI.textboxObj.SetActive(false);
             dialogueUI.obfuscateDialog.SetActive(true);
 
-            yield return new WaitForSeconds(1.0f);
-            yield return FadeIn(Color.black);
+            if(!skipIntro)
+            {
+                yield return new WaitForSeconds(1.0f);
+                yield return FadeIn(Color.black);
 
-            while(!obfuscateSet) yield return null; // Wait for dialog complete
+                while(!obfuscateSet) yield return null; // Wait for dialog complete
 
-            yield return FadeOut(Color.black);
-            yield return new WaitForSeconds(1.0f);
+                yield return FadeOut(Color.black);
+                yield return new WaitForSeconds(1.0f);
+            }
+            else
+            {
+                SetObfuscate(true);
+            }
 
             dialogueUI.obfuscateDialog.SetActive(false);
             dialogueUI.textboxObj.SetActive(true);
             fadeScreen.color = Color.clear;
             roomSource.Play();
 
-            yield return dialogueUI.CStartScene();
+            if(!skipIntro)
+                yield return dialogueUI.CStartScene();
+            else
+            {
+                difficulty = 0;
+                dialogueUI.gameObject.SetActive(false);
+            }
+
             dialogueUI.background.color = Color.clear;
 
             GameObject playerObj = Instantiate(difficulty switch { 0 => neuroPlayer, 1 => evilPlayer, 2 => argPlayer, _ => throw new NotImplementedException() });

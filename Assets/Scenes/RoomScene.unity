@@ -4673,9 +4673,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hand: {fileID: 1629846371}
-  handCardDistance: 40
+  handCardMaxDistance: 40
+  handCardMaxOffset: 256
   pileCardDistance: 2
-  enemyDistance: 50
+  enemyMaxDistance: 64
+  enemyMaxOffset: 256
   isSpecial: 0
   playerHpBar: {fileID: 1152053867}
   playerMpText: {fileID: 472155102}
@@ -4824,7 +4826,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 32}
-  m_SizeDelta: {x: 64, y: 96}
+  m_SizeDelta: {x: 320, y: 96}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1644222796
 GameObject:
@@ -7007,7 +7009,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 32}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 320, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1997191365
 GameObject:

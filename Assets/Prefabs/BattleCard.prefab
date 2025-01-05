@@ -85,6 +85,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4415219325592648620}
   - component: {fileID: 1036448092976608732}
+  - component: {fileID: 3494622340378608379}
   m_Layer: 5
   m_Name: BattleCard
   m_TagString: Untagged
@@ -111,7 +112,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 64, y: 92}
+  m_SizeDelta: {x: 64, y: 96}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1036448092976608732
 MonoBehaviour:
@@ -126,6 +127,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleUI: {fileID: 0}
+  erase: 0
+  cardUI: {fileID: 7116721524868734086}
+  cardBack: {fileID: 3062023962185461450}
+  hovered: 0
+  selected: 0
+--- !u!114 &3494622340378608379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6784929768767005728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d610d6b5433e8e478a6ea3a457a53b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   target: {x: 0, y: 0}
   moveCurve:
     serializedVersion: 2
@@ -151,10 +169,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  moveTime: 1
-  erase: 0
-  cardUI: {fileID: 7116721524868734086}
-  cardBack: {fileID: 3062023962185461450}
+  moveTime: 0.5
+  targetValid: 0
 --- !u!1001 &3586552428652288474
 PrefabInstance:
   m_ObjectHideFlags: 0

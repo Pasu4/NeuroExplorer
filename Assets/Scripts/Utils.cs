@@ -5,10 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
-    internal static class Utils
+    public static class Utils
     {
         public static T Choose<T>(this System.Random random, IEnumerable<T> enumerable)
         {
@@ -82,6 +83,26 @@ namespace Assets.Scripts
                 if(selection < 0) return obj;
             }
             throw new Exception("Unreachable");
+        }
+
+        public static Vector2 DistributeBetweenCentered(Vector2 start, Vector2 end, int count, int index, float maxDistance = Mathf.Infinity)
+        {
+            if(count <= 0) throw new ArgumentException(nameof(count) + " must be greater than 0.", nameof(count));
+
+            if(count == 1) return (start + end) / 2f; // Center
+
+            float maxLength = maxDistance * (count - 1); // Only between points
+            float length = Vector2.Distance(start, end);
+
+            if(length > maxLength)
+            {
+                float reduce = (length - maxLength) / 2f; // Reduce on both sides
+                start = Vector2.MoveTowards(start, end, reduce);
+                end = Vector2.MoveTowards(end, start, reduce);
+            }
+
+            float t = ((float) index) / (count - 1);
+            return Vector2.LerpUnclamped(start, end, t);
         }
     }
 }

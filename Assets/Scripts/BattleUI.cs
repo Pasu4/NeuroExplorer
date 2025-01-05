@@ -10,9 +10,11 @@ namespace Assets.Scripts
     public class BattleUI : MonoBehaviour
     {
         public Transform hand;
-        public float handCardDistance = 10f;
+        public float handCardMaxDistance = 10f;
+        public float handCardMaxOffset = 50f;
         public float pileCardDistance = 2f;
-        public float enemyDistance = 50f;
+        public float enemyMaxDistance = 50f;
+        public float enemyMaxOffset = 100f;
         public bool isSpecial = false;
 
         public BarUI playerHpBar;
@@ -57,33 +59,48 @@ namespace Assets.Scripts
 
             if(gm.gameMode != GameMode.Battle) return;
 
-            // Move cards to their positions
+            // Move objects to their positions
 
             // Hand
             for(int i = 0; i < handCards.Count; i++)
             {
-                Vector2 target = new(-((i - (handCards.Count - 1) / 2f) * handCardDistance), handCards[i].hovered || handCards[i].selected ? 16 : 0);
-                handCards[i].SetTarget(target);
+                Vector2 target = Utils.DistributeBetweenCentered(
+                    Vector2.right * handCardMaxOffset, Vector2.left * handCardMaxOffset,
+                    handCards.Count, i, handCardMaxDistance
+                );
+                if(handCards[i].hovered || handCards[i].selected)
+                    target += Vector2.up * 16;
+                handCards[i].GetComponent<MoveObject>().SetTarget(target);
             }
 
             // Draw pile
             for(int i = 0; i < drawCards.Count; i++)
             {
                 Vector2 target = i * pileCardDistance * Vector2.up;
-                drawCards[i].SetTarget(target);
+                drawCards[i].GetComponent<MoveObject>().SetTarget(target);
             }
 
             // Discard pile
             for(int i = 0; i < discardedCards.Count; i++)
             {
                 Vector2 target = i * pileCardDistance * Vector2.up;
-                discardedCards[i].SetTarget(target);
+                discardedCards[i].GetComponent<MoveObject>().SetTarget(target);
             }
 
             // Erase pile
             for(int i = 0; i < erasedCards.Count; i++)
             {
-                erasedCards[i].SetTarget(Vector2.zero);
+                erasedCards[i].GetComponent<MoveObject>().SetTarget(Vector2.zero);
+            }
+
+            // Enemies
+            for(int i = 0; i < enemies.Count; i++)
+            {
+                Vector2 target = Utils.DistributeBetweenCentered(
+                    Vector2.left * enemyMaxOffset, Vector2.right * enemyMaxOffset,
+                    enemies.Count, i, enemyMaxDistance
+                );
+                enemies[i].GetComponent<MoveObject>().SetTarget(target);
             }
 
             // HP bar
@@ -146,7 +163,7 @@ namespace Assets.Scripts
             card.card.OnDiscard(GetContext());
 
             card.transform.SetParent(discardPile);
-            card.targetValid = false;
+            card.GetComponent<MoveObject>().targetValid = false;
             // card.SetTarget(Vector2.zero);
         }
 
@@ -163,8 +180,8 @@ namespace Assets.Scripts
             card.card.OnErase(GetContext());
 
             card.transform.SetParent(erasePile);
-            card.targetValid = false;
-            card.SetTarget(Vector2.zero);
+            card.GetComponent<MoveObject>().targetValid = false;
+            card.GetComponent<MoveObject>().SetTarget(Vector2.zero);
         }
 
         public void Reshuffle()
@@ -173,7 +190,7 @@ namespace Assets.Scripts
             foreach(BattleCardUI card in discardedCards)
             {
                 card.transform.SetParent(drawPile);
-                card.targetValid = false;
+                card.GetComponent<MoveObject>().targetValid = false;
                 card.Reveal(false);
             }
             discardedCards.Clear();
@@ -204,7 +221,7 @@ namespace Assets.Scripts
                 drawCards.Remove(drawnCard);
                 handCards.Add(drawnCard);
                 drawnCard.transform.SetParent(hand);
-                drawnCard.targetValid = false;
+                drawnCard.GetComponent<MoveObject>().targetValid = false;
                 drawnCard.Reveal(true);
                 drawnCard.card.OnEnterHand(GetContext());
             }
@@ -348,7 +365,7 @@ namespace Assets.Scripts
             for(int i = 0; i < enemyCount; i++)
             {
                 GameObject go = Instantiate(enemyPrefab, enemyParent);
-                go.transform.localPosition = (i - (enemyCount - 1) / 2f) * enemyDistance * Vector2.right;
+                go.transform.localPosition = (i - (enemyCount - 1) / 2f) * enemyMaxDistance * Vector2.right;
                 EnemyUI e = go.GetComponent<EnemyUI>();
                 e.SetEnemy(enemies[i]);
                 e.battleUI = this;
