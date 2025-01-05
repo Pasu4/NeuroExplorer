@@ -2412,11 +2412,8 @@ MonoBehaviour:
   battleClip: {fileID: 8300000, guid: 2138f562cbd9a6347b5a5b430928b41c, type: 3}
   bossClip: {fileID: 8300000, guid: 0bb3f8b4f30cca64cae0b98e55683fb6, type: 3}
   finalBossClip: {fileID: 8300000, guid: 18b02b030f0a7094fa50b2abf9563a8a, type: 3}
-  hitClip: {fileID: 8300000, guid: 477bb93bfd8259d40803bb4cfbbe40ea, type: 3}
-  healClip: {fileID: 8300000, guid: 0decbb9e5265a2a40b08131db3defc55, type: 3}
-  pickupClip: {fileID: 8300000, guid: e47641c3ef9ca9c4d8ebd3c7b747730a, type: 3}
-  ladderClip: {fileID: 8300000, guid: 3ee56d2dc1b91094c950e2eae9d0e72d, type: 3}
   sfxSource: {fileID: 240127144}
+  sfx: {fileID: 11400000, guid: b033858fe7349e240a2dcce4e1e2e217, type: 2}
   textEffectPrefab: {fileID: 4677727198014242819, guid: 4088414dc7d07684780d5217f9d929ec, type: 3}
   neuroPlayer: {fileID: 743139686381384140, guid: 20c971f0ec43f0845896a129ce9ba2b7, type: 3}
   evilPlayer: {fileID: 743139686381384140, guid: cd1d45f3e7b5ad54488569d818a8a1f5, type: 3}

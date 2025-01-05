@@ -320,6 +320,21 @@ namespace Assets.Scripts
                     go.transform.position = Vector2.up * 3;
                     encounters.Add(go); // Hacky but should work
                 }
+
+                GameObject obj1 = Instantiate(filePrefab);
+                GameObject obj2 = Instantiate(filePrefab);
+
+                groundObjects.Add(obj1);
+                groundObjects.Add(obj2);
+
+                obj1.transform.position = new Vector2(-1.5f, 2);
+                obj2.transform.position = new Vector2(1.5f, 2);
+
+                Card card1 = CardResources.GetCard("filian_attack");
+                Card card2 = CardResources.GetCard("filian_defense");
+
+                obj1.GetComponent<GroundFile>().InitWithCard(this, realPath + "\\" + card1.name, card1);
+                obj2.GetComponent<GroundFile>().InitWithCard(this, realPath + "\\" + card2.name, card2);
             }
             else if(path == @"C:\Program Files\VedalAI\AImila")
             {
@@ -332,6 +347,21 @@ namespace Assets.Scripts
                     go.transform.position = Vector2.up * 8;
                     encounters.Add(go);
                 }
+
+                GameObject obj1 = Instantiate(filePrefab);
+                GameObject obj2 = Instantiate(filePrefab);
+
+                groundObjects.Add(obj1);
+                groundObjects.Add(obj2);
+
+                obj1.transform.position = new Vector2(-1.5f, 7);
+                obj2.transform.position = new Vector2(1.5f, 7);
+
+                Card card1 = CardResources.GetCard("camila_attack");
+                Card card2 = CardResources.GetCard("camila_defense");
+
+                obj1.GetComponent<GroundFile>().InitWithCard(this, realPath + "\\" + card1.name, card1);
+                obj2.GetComponent<GroundFile>().InitWithCard(this, realPath + "\\" + card2.name, card2);
             }
             else if(path == @"C:\Windows\Final")
             {

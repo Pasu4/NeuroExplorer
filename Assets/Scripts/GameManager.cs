@@ -68,11 +68,8 @@ namespace Assets.Scripts
         public AudioClip bossClip;
         public AudioClip finalBossClip;
 
-        public AudioClip hitClip;
-        public AudioClip healClip;
-        public AudioClip pickupClip;
-        public AudioClip ladderClip;
         public AudioSource sfxSource;
+        public SoundEffectsResources sfx;
 
         public GameObject textEffectPrefab;
         public GameObject neuroPlayer;
@@ -112,7 +109,9 @@ namespace Assets.Scripts
                     \\Windows (?:
                         \\Final (?:
                             \\Boss (?:
-                                \\\w+
+                                \\AIris (?:
+                                    \\.+
+                                )?
                             )?
                         )?
                     )?
@@ -121,7 +120,9 @@ namespace Assets.Scripts
                         | \\\w+ (?:
                             \\source (?:
                                 \\repos (?:
-                                    \\FilAIn
+                                    \\FilAIn (?:
+                                        \\.+
+                                    )?
                                 )?
                             )?
                             | \\Downloads
@@ -142,7 +143,9 @@ namespace Assets.Scripts
                     )?
                     | \\Program\sFiles (?:
                         \\VedalAI (?:
-                            \\AImila
+                            \\AImila (?:
+                                \\.+
+                            )?
                         )?
                     )?
                     | \\Program\sFiles\s\(x86\)
@@ -363,6 +366,12 @@ namespace Assets.Scripts
             enemyHpScale += enemyHpScale * difficulty / 2f;
             defaultEnemyStrength += (long) (defaultEnemyStrength * difficulty / 2f);
 
+            deck.AddRange(new[] { "osu", "minecraft", "slay_the_spire", "desktop_ini", "prompt", "neuro_log" }.Select(id => CardResources.GetCard(id)));
+
+            if(difficulty == 0)      deck.Add(CardResources.GetCard("gymbag"));
+            else if(difficulty == 1) deck.Add(CardResources.GetCard("metal_pipe"));
+            else if(difficulty == 2) deck.Add(CardResources.GetCard("hiyori"));
+
             gameMode = GameMode.Room;
             room.ChangeRoom(startPath);
 
@@ -371,7 +380,7 @@ namespace Assets.Scripts
 
         private IEnumerator CTransitionRoom(string realPath)
         {
-            sfxSource.PlayOneShot(ladderClip);
+            sfxSource.PlayOneShot(sfx.ladder);
             gameMode = GameMode.Transition;
             yield return FadeOut(Color.black);
             room.ChangeRoom(realPath);

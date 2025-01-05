@@ -12,7 +12,7 @@ namespace Assets.Scripts
     {
         public long fileSize;
 
-        Card card;
+        public Card card;
 
         // Use this for initialization
         protected override void Start()
@@ -54,7 +54,7 @@ namespace Assets.Scripts
                 return;
             }
 
-            gm.sfxSource.PlayOneShot(gm.pickupClip);
+            gm.sfxSource.PlayOneShot(gm.sfx.pickup);
             gm.deck.Add(card);
             gm.CreateTextEffect("Copied", Color.green, transform.position);
         }
@@ -74,6 +74,16 @@ namespace Assets.Scripts
 
             // Generate card
             card = new Card(displayPath, fileSize, sprite);
+        }
+
+        public void InitWithCard(Room room, string realPath, Card card)
+        {
+            base.Init(room, realPath);
+
+            this.card = card;
+
+            GetComponent<SpriteRenderer>().sprite = card.sprite;
+            fileSize = card.fileSize;
         }
 
         protected override void InitRandom()

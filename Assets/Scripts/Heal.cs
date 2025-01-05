@@ -13,7 +13,7 @@ namespace Assets.Scripts
         {
             if(GameManager.Instance.gameMode != GameMode.Room) return;
 
-            GameManager.Instance.sfxSource.PlayOneShot(GameManager.Instance.healClip);
+            GameManager.Instance.sfxSource.PlayOneShot(GameManager.Instance.sfx.heal);
             GameManager.Instance.CreateTextEffect("Fully healed", Color.green, GameManager.Instance.player.transform.position);
             GameManager.Instance.hp = GameManager.Instance.maxHp;
         }

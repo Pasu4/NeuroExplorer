@@ -131,8 +131,19 @@ namespace Assets.Scripts
 
             if(card.card.attack > 0)
             {
-                AttackEnemy(targetEnemy, card.card.attack);
-                GameManager.Instance.CreateTextEffect("-" + Utils.FileSizeString(card.card.attack), Color.red, targetEnemy.transform.position);
+                if(card.card.multi)
+                {
+                    foreach(EnemyUI enemy in enemies.ToList()) // Copy
+                    {
+                        AttackEnemy(enemy, card.card.attack);
+                        GameManager.Instance.CreateTextEffect("-" + Utils.FileSizeString(card.card.attack), Color.red, enemy.transform.position);
+                    }
+                }
+                else
+                {
+                    AttackEnemy(targetEnemy, card.card.attack);
+                    GameManager.Instance.CreateTextEffect("-" + Utils.FileSizeString(card.card.attack), Color.red, targetEnemy.transform.position);
+                }
             }
             if(card.card.defense > 0)
             {
@@ -280,7 +291,7 @@ namespace Assets.Scripts
 
         public void AttackPlayer(long damage)
         {
-            GameManager.Instance.sfxSource.PlayOneShot(GameManager.Instance.hitClip);
+            GameManager.Instance.sfxSource.PlayOneShot(GameManager.Instance.sfx.hit);
             GameManager.Instance.block -= damage;
             if(GameManager.Instance.block < 0)
             {
@@ -297,7 +308,7 @@ namespace Assets.Scripts
 
         public void AttackEnemy(EnemyUI enemy, long damage)
         {
-            GameManager.Instance.sfxSource.PlayOneShot(GameManager.Instance.hitClip);
+            GameManager.Instance.sfxSource.PlayOneShot(GameManager.Instance.sfx.hit);
             enemy.enemy.block -= damage;
             if(enemy.enemy.block < 0)
             {

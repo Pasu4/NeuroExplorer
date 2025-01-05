@@ -30,6 +30,7 @@ namespace Assets.Scripts
         public bool erase = false;
         public bool @volatile = false;
         public bool keep = false;
+        public bool multi = false;
 
         // For object initializer
         public Card()
@@ -124,21 +125,16 @@ namespace Assets.Scripts
 
             List<CardEffect> effectList = new();
 
-            int failsafe = 100;
-            while(points > 0 && failsafe > 0)
+            // Apply effects to 50% of cards
+            if(random.Next() % 2 == 0)
             {
-                if(random.NextDouble() < 0.5f) // (50%) Increase damage by 10% for 1 point
+                int rolls = points;
+                while(points > 0 && rolls > 0)
                 {
-                    attack += attack / 10;
-                    points--;
+                    points = ChooseEffect(points, ref attack, effectList);
+                    rolls--;
                 }
-                else // (50%) Add a random effect
-                {
-                    points = ChooseEffect(points, effectList);
-                }
-                failsafe--;
             }
-            if(failsafe <= 0) Debug.LogWarning("Failsafe hit");
 
             cardEffects = effectList.ToArray();
         }
@@ -150,21 +146,16 @@ namespace Assets.Scripts
 
             List<CardEffect> effectList = new();
 
-            int failsafe = 100;
-            while(points > 0 & failsafe > 0)
+            // Apply effects to 50% of cards
+            if(random.Next() % 2 == 0)
             {
-                if(random.NextDouble() < 0.5f) // (50%) Increase defense by 10% for 1 point
+                int rolls = points;
+                while(points > 0 & rolls > 0)
                 {
-                    defense += defense / 10;
-                    points--;
+                    points = ChooseEffect(points, ref defense, effectList);
+                    rolls--;
                 }
-                else // (50%) Add a random effect
-                {
-                    points = ChooseEffect(points, effectList);
-                }
-                failsafe--;
             }
-            if(failsafe <= 0) Debug.LogWarning("Failsafe hit");
 
             cardEffects = effectList.ToArray();
         }
@@ -174,15 +165,14 @@ namespace Assets.Scripts
             points = Math.Max(points, 1); // At least one point
 
             List<CardEffect> effectList = new();
-            int failsafe = 100;
+            int rolls = points;
 
-            while(points > 0 && failsafe > 0)
+            while(points > 0 && rolls > 0)
             {
-                points = ChooseEffect(points, effectList);
-                failsafe--;
+                long __ = 0;
+                points = ChooseEffect(points, ref __, effectList);
+                rolls--;
             }
-
-            if(failsafe <= 0) Debug.LogWarning("Failsafe hit");
 
             cardEffects = effectList.ToArray();
         }
@@ -198,16 +188,31 @@ namespace Assets.Scripts
             }
         }
 
-        private int ChooseEffect(int points, List<CardEffect> effectList)
+        private int ChooseEffect(int points, ref long mainValue, List<CardEffect> effectList)
         {
+            long localMainValue = mainValue;
+
             Utils.ChooseWeighted(random,
+                (100, new Action(() =>
+                {
+                    if(type != CardType.Attack || multi) return;
+
+                    multi = true;
+                    if(!effectList.Any(e => e is ContinueEffect))
+                        requiresTarget = false;
+                    
+                    points -= 2;
+                    localMainValue /= 2; // 50%
+                })),
                 (100, new Action(() =>
                 {
                     if(effectList.Any(e => e is MallocEffect)) return;
 
                     int count = type == CardType.Tool ? random.Next(points) + 1 : 1;
                     effectList.Add(new MallocEffect(count));
+                    
                     points -= count;
+                    localMainValue = localMainValue * 8/10; // 80%
                 })),
                 (100, new Action(() =>
                 {
@@ -221,6 +226,7 @@ namespace Assets.Scripts
 
                     int count = random.Next(points) + 1;
                     effectList.Add(new ClearerrEffect(count));
+
                     points -= count;
                 })),
                 (100, new Action(() =>
@@ -228,7 +234,9 @@ namespace Assets.Scripts
                     if(effectList.Any(e => e is MemmoveEffect) || points < 2) return;
 
                     effectList.Add(new MemmoveEffect());
+
                     points -= 2;
+                    localMainValue = localMainValue * 7/10; // 70%
                 })),
                 (100, new Action(() =>
                 {
@@ -242,6 +250,7 @@ namespace Assets.Scripts
                     if(type != CardType.Tool || points < 2) return;
 
                     effectList.Add(new RandEffect((long) (fileSize * random.Range(0.5f, 1.5f))));
+
                     points -= 2;
                 })),
                 (100, new Action(() =>
@@ -250,7 +259,9 @@ namespace Assets.Scripts
 
                     effectList.Add(new ReallocEffect());
                     points -= 2;
-                })),
+                }))
+                // Too OP
+                /*
                 (100, new Action(() =>
                 {
                     if((type != CardType.Tool && type != CardType.Attack) || effectList.Any(e => e is ContinueEffect) || points < 2) return;
@@ -259,8 +270,10 @@ namespace Assets.Scripts
                     erase = true;
                     effectList.Add(new ContinueEffect());
                     points -= 2;
-                }))
+                }))*/
             )(); // Immediately execute
+
+            mainValue = localMainValue;
             return points;
         }
 
@@ -299,7 +312,7 @@ namespace Assets.Scripts
             StringBuilder sb = new();
 
             if(attack > 0)
-                sb.AppendLine($"Deals <color=#66d>{Utils.FileSizeString(attack)}</color> of damage.");
+                sb.AppendLine($"Deals <color=#66d>{Utils.FileSizeString(attack)}</color> of damage{(multi ? " to all enemies" : "")}.");
             if(defense > 0)
                 sb.AppendLine($"Blocks <color=#66d>{Utils.FileSizeString(defense)}</color> of damage.");
 
