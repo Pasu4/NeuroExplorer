@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "ai.vedal.neurosdk": "https://github.com/VedalAI/neuro-game-sdk.git?path=Unity/Assets",
+    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
+    "com.endel.nativewebsocket": "https://github.com/endel/NativeWebSocket.git#upm",
     "com.unity.collab-proxy": "2.6.0",
     "com.unity.feature.2d": "2.0.1",
     "com.unity.ide.rider": "3.0.31",
