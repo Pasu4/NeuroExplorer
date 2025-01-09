@@ -31,6 +31,7 @@ namespace Assets.Scripts
         public bool @volatile = false;
         public bool keep = false;
         public bool multi = false;
+        public bool async = false;
 
         // For object initializer
         public Card()
@@ -307,7 +308,7 @@ namespace Assets.Scripts
                 effect.OnTurnEnd(ctx);
         }
 
-        public string GetDescription()
+        public string GetDescription(bool forNeuro = false)
         {
             StringBuilder sb = new();
 
@@ -316,18 +317,36 @@ namespace Assets.Scripts
             if(defense > 0)
                 sb.AppendLine($"Blocks <color=#66d>{Utils.FileSizeString(defense)}</color> of damage.");
 
-            if(erase)
-                sb.AppendLine("<color=#d00>[Erase]</color>");
-            if(@volatile)
-                sb.AppendLine("<color=#d00>[Volatile]</color>");
-            if(keep)
-                sb.AppendLine("<color=#d00>[Keep]</color>");
+            if(forNeuro)
+            {
+                if(erase)
+                    sb.AppendLine("Erase: If this card is played, it is removed from your deck for the rest of the battle.");
+                if(@volatile)
+                    sb.AppendLine("Volatile: If this card is in your hand at the end of the turn, it is removed from your deck for the rest of the battle.");
+                if(keep)
+                    sb.AppendLine("Static: This card stays in your hand at the end of the turn instead of being discarded.");
+                if(async)
+                    sb.AppendLine("Async: This card is not discarded when you play it.");
+            }
+            else
+            {
+                if(erase)
+                    sb.AppendLine("<color=#d00>[Erase]</color>");
+                if(@volatile)
+                    sb.AppendLine("<color=#d00>[Volatile]</color>");
+                if(keep)
+                    sb.AppendLine("<color=#d00>[Static]</color>");
+                if(async)
+                    sb.AppendLine("<color=#d00>[Async]</color>");
+            }
 
             foreach(CardEffect effect in cardEffects)
             {
                 string desc = effect.Description;
                 if(!string.IsNullOrEmpty(desc))
                     sb.AppendLine(desc);
+                if(forNeuro && effect is NeuroDescriptionEffect nde)
+                    sb.AppendLine(nde.neuroDescription);
             }
 
             return sb.ToString();

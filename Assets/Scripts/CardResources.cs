@@ -15,24 +15,24 @@ namespace Assets.Scripts
             "osu" => new() {
                 name = "osu.url",
                 type = Card.CardType.Attack,
-                fileSize = 917,
-                attack = 30282,
+                fileSize = 458,
+                attack = 21401 * 3/4,
                 requiresTarget = true,
                 sprite = GameManager.Instance.GetFileSprite(".url")
             },
             "minecraft" => new() {
                 name = "Minecraft Launcher.lnk",
                 type = Card.CardType.Attack,
-                fileSize = 984,
-                attack = 31369,
+                fileSize = 492,
+                attack = 22181 * 3/4,
                 requiresTarget = true,
                 sprite = GameManager.Instance.GetFileSprite(".lnk")
             },
             "slay_the_spire" => new() {
                 name = "Slay the Spire.url",
                 type = Card.CardType.Attack,
-                fileSize = 925,
-                attack = 30414,
+                fileSize = 462,
+                attack = 21494 * 3/4,
                 requiresTarget = true,
                 sprite = GameManager.Instance.GetFileSprite(".url")
             },
@@ -40,24 +40,24 @@ namespace Assets.Scripts
             {
                 name = "desktop.ini",
                 type = Card.CardType.Defense,
-                fileSize = 963,
-                defense = 31032,
+                fileSize = 481,
+                defense = 21932 * 3/4,
                 sprite = GameManager.Instance.GetFileSprite(".ini")
             },
             "prompt" => new()
             {
                 name = "prompt.txt",
                 type = Card.CardType.Defense,
-                fileSize = 958,
-                defense = 30952,
+                fileSize = 479,
+                defense = 21886 * 3/4,
                 sprite = GameManager.Instance.GetFileSprite(".txt")
             },
             "neuro_log" => new()
             {
                 name = "neuro.log",
                 type = Card.CardType.Defense,
-                fileSize = 975,
-                defense = 31225,
+                fileSize = 487,
+                defense = 22068,
                 sprite = GameManager.Instance.GetFileSprite(".log")
             },
 
@@ -97,8 +97,8 @@ namespace Assets.Scripts
                 filePath = @"C:\Users\Vedal\source\repos\FilAIn\main.py",
                 type = Card.CardType.Attack,
                 fileSize = 75337,
-                attack = 274_475 * 3/4,
-                erase = true,
+                attack = 274_475,
+                async = true,
                 sprite = GameManager.Instance.GetFileSprite(".py"),
                 cardEffects = new[] { new ForkEffect("filian_attack") }
             },
@@ -107,10 +107,9 @@ namespace Assets.Scripts
                 filePath = @"C:\Users\Vedal\source\repos\FilAIn\FilAIn.log",
                 type = Card.CardType.Defense,
                 fileSize = 75162,
-                defense = 274_156 * 3/4,
-                erase = true,
-                sprite = GameManager.Instance.GetFileSprite(".log"),
-                cardEffects = new[] { new ForkEffect("filian_defense") }
+                defense = 274_156 / 2,
+                async = true,
+                sprite = GameManager.Instance.GetFileSprite(".log")
             },
             "camila_attack" => new() {
                 name = "AImila.model",
@@ -124,11 +123,11 @@ namespace Assets.Scripts
             "camila_defense" => new() {
                 name = "camila_voice.zip",
                 filePath = @"C:\Program Files\VedalAI\AImila\camila_voice.zip",
-                type = Card.CardType.Defense,
+                type = Card.CardType.Tool, // Not really defense but eh
                 fileSize = 9_137_697,
-                defense = 3_022_862 * 12/10,
+                erase = true,
                 sprite = GameManager.Instance.GetFileSprite(".zip"),
-                cardEffects = new[] { new MutexEffect() }
+                cardEffects = new[] { new ContinueEffect() }
             },
 
             // Trojans
@@ -157,7 +156,7 @@ namespace Assets.Scripts
                 erase = true,
                 fileSize = GameManager.Instance.maxMp * 3 / 5,
                 sprite = GameManager.Instance.GetFileSprite("fork_bomb"),
-                cardEffects = new[] { new ForkEffect("fork_bomb") }
+                cardEffects = new CardEffect[] { new ForkEffect("fork_bomb"), new NeuroDescriptionEffect("You should get rid of this card before it floods your deck.") }
             },
             "memory_leak" => new()
             {

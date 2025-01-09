@@ -28,7 +28,7 @@ namespace Assets.Scripts
 
         }
 
-        public void OnPointerDown(PointerEventData ev)
+        public void Click()
         {
             if(!battleUI.InHand(this)) return;
 
@@ -45,9 +45,14 @@ namespace Assets.Scripts
                 battleUI.selectedCard = this;
                 GameManager.Instance.CreateTextEffect("Select target", Color.blue, transform.position);
                 selected = true;
-            }    
+            }
             else
                 battleUI.PlayCard(this);
+        }
+
+        public void OnPointerDown(PointerEventData ev)
+        {
+            Click();
         }
 
         public void OnPointerEnter(PointerEventData ev)

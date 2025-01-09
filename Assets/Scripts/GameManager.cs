@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Assets.Scripts.Integration.Actions;
+using NeuroSdk.Actions;
+using NeuroSdk.Messages.Outgoing;
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,6 +26,8 @@ namespace Assets.Scripts
         public GameMode gameMode = GameMode.MainMenu;
 
         public string startPath;
+        public string currentObjectiveText;
+        public string currentObjectivePath;
         public bool obfuscate;
         public int gameSeed;
         public int difficulty = -1;
@@ -32,6 +37,7 @@ namespace Assets.Scripts
         public bool skipIntro = false;
         public long defaultEnemyStrength;
         public float enemyHpScale = 1;
+        public float neuroVisionRange = 10f;
 
         public InventoryUI inventoryUI;
         public RoomUI roomUI;
@@ -86,6 +92,10 @@ namespace Assets.Scripts
 
         private void Awake()
         {
+#if UNITY_EDITOR
+            Application.runInBackground = true;
+#endif
+
             Instance = this;
 
             inventoryAction = InputSystem.actions.FindAction("Inventory");
@@ -276,6 +286,7 @@ namespace Assets.Scripts
         public void StartBattle(Enemy[] enemies, string encounterId, bool isSpecial, AudioClip music)
         {
             battleUI.battleWon = false;
+            NeuroActionHandler.UnregisterActions(AdvanceDialogueAction.staticName);
             StartCoroutine(CTransitionBattle(enemies, encounterId, isSpecial, music));
         }
 
@@ -328,12 +339,27 @@ namespace Assets.Scripts
             dialogueUI.textboxObj.SetActive(false);
             dialogueUI.obfuscateDialog.SetActive(true);
 
+            Context.Send(
+                "In this game, you will navigate the folders in Vedal's PC. " +
+                "Each folder is visualized as a room, and you can either go to the parent directory by ascending a ladder " +
+                "or go to a child directory by descending a ladder. " +
+                "You have to navigate the rooms like a directory tree. " +
+                "For example, to get from 'C:\\Users\\Neuro' to 'C:\\Users\\Vedal', you have to first ascend to 'C:\\Users' and then descend to 'C:\\Users\\Vedal'. " +
+                "Files can be picked up and used as cards to fight enemies. " +
+                "Cards with a larger file size usually deal and block more damage, and have stronger secondary effects."
+            );
+
             if(!skipIntro)
             {
                 yield return new WaitForSeconds(1.0f);
                 yield return FadeIn(Color.black);
 
+                NeuroActionHandler.RegisterActions(new SetObfuscateAction());
+                Context.Send("As a safety measure, you must activate streamer mode to start the game.");
+
                 while(!obfuscateSet) yield return null; // Wait for dialog complete
+
+                NeuroActionHandler.UnregisterActions(SetObfuscateAction.staticName);
 
                 yield return FadeOut(Color.black);
                 yield return new WaitForSeconds(1.0f);
@@ -354,6 +380,8 @@ namespace Assets.Scripts
             {
                 difficulty = 0;
                 dialogueUI.gameObject.SetActive(false);
+                currentObjectivePath = @"C:\Users\Vedal\source\repos";
+                currentObjectiveText = "Folders called 'source' and 'repos' in Vedal's user folder";
             }
 
             dialogueUI.background.color = Color.clear;
@@ -376,16 +404,24 @@ namespace Assets.Scripts
             room.ChangeRoom(startPath);
 
             yield return FadeIn(Color.black);
+
+            NeuroRoomStart();
         }
 
         private IEnumerator CTransitionRoom(string realPath)
         {
+            //IntegrationRoomEnd();
             sfxSource.PlayOneShot(sfx.ladder);
             gameMode = GameMode.Transition;
+
             yield return FadeOut(Color.black);
+
             room.ChangeRoom(realPath);
             gameMode = GameMode.Room;
+
             yield return FadeIn(Color.black);
+
+            NeuroRoomStart();
         }
 
         private IEnumerator CTransitionBattle(Enemy[] enemies, string encounterId, bool isSpecial, AudioClip music)
@@ -409,18 +445,21 @@ namespace Assets.Scripts
             battleUI.StopAllCoroutines();
             dialogueUI.StopAllCoroutines();
             dialogueUI.gameObject.SetActive(false);
+            battleUI.waitingForAction = false; // End action window
 
             yield return FadeOut(Color.black);
-            battleSource.Stop();
 
+            battleSource.Stop();
             battleUI.gameObject.SetActive(false);
+
             yield return new WaitForSeconds(1.0f);
 
             CreateTextEffect("<size=300><b>YOU DIED</b></size>\n<size=100>and lost some cards</size>", Color.red, player.transform.position, Vector3.zero);
+            Context.Send("You died and lost some cards.");
             yield return new WaitForSeconds(3.0f);
 
             deck = deck
-                .OrderBy(_ => UnityEngine.Random.value)
+                .OrderBy(_ => URandom.value)
                 .Take(deck.Count/2)
                 .ToList();
             hp = maxHp;
@@ -428,12 +467,16 @@ namespace Assets.Scripts
             roomSource.UnPause();
             room.ChangeRoom(startPath);
             gameMode = GameMode.Room;
+            NeuroRoomStart();
+
             yield return FadeIn(Color.black);
         }
 
         private IEnumerator CBattleWin(bool reward)
         {
             battleUI.StopAllCoroutines();
+
+            Context.Send("You have defeated the enemies and won the battle.");
 
             yield return FadeOut(Color.black);
             battleUI.gameObject.SetActive(false);
@@ -479,6 +522,8 @@ namespace Assets.Scripts
 
             gameMode = GameMode.Room;
             yield return FadeIn(Color.black);
+
+            NeuroRoomStart();
         }
 
         public IEnumerator FadeOut(Color color)
@@ -509,6 +554,97 @@ namespace Assets.Scripts
             Color c2 = fadeScreen.color;
             c2.a = 0f;
             fadeScreen.color = c2;
+        }
+
+        public void NeuroRoomStart()
+        {
+            if(GetComponent<ActionWindow>() != null)
+            {
+                Debug.LogError("Action window already exists.");
+            }
+
+            ActionWindow actionWindow = ActionWindow.Create(gameObject)
+                .AddAction(new ExploreRoomAction())
+                .AddAction(new RoomAscendAction())
+                .AddAction(new RoomDescendAction())
+                .AddAction(new RoomPickupItemAction());
+
+            // Can only engage the boss if this is a boss room and the boss is alive
+            if(room.isBossRoom && FindFirstObjectByType<BossTrigger>() != null)
+                actionWindow.AddAction(new EngageBossAction());
+
+            // Can only heal if there is a healing item in the room
+            if(room.displayPath.EndsWith("Desktop"))
+                actionWindow.AddAction(new HealAction());
+
+            actionWindow
+                .SetEnd(() => gameMode != GameMode.Room)
+                .Register();
+
+            SendRoomContext();
+        }
+        //public void IntegrationRoomEnd()
+        //{
+        //    NeuroActionHandler.UnregisterActions(
+        //        ExploreRoomAction.staticName,
+        //        RoomAscendAction.staticName,
+        //        RoomDescendAction.staticName,
+        //        RoomPickupItemAction.staticName,
+        //        EngageBossAction.staticName,
+        //        HealAction.staticName
+        //    );
+        //}
+
+        public void SendRoomContext()
+        {
+            StringBuilder sb = new();
+
+            sb.AppendLine($"You are currently at {room.displayPath}.");
+
+            if(room.displayPath == currentObjectivePath)
+                sb.AppendLine("You have arrived at your target, the boss should be one level down from here.");
+            else if(room.displayPath.StartsWith(currentObjectivePath))
+                sb.AppendLine("The boss is in this room. Engage them if you feel strong enough to beat them.");
+            else if(!string.IsNullOrEmpty(currentObjectivePath))
+                sb.AppendLine($"Your next target is at {currentObjectivePath}.");
+
+            // Storage
+            sb.AppendLine($"\nYou currently have {Utils.FileSizeString(FreeStorage)} of free storage.");
+
+            // Nearby rooms
+            IEnumerable<string> nearbyRooms = room.groundObjects
+                .Select(go => go.GetComponent<GroundDir>())
+                .Where(dir => dir != null && !dir.locked && !dir.isUpDir && Vector2.Distance(dir.transform.position, player.transform.position) <= neuroVisionRange)
+                .Select(dir => dir.DisplayName);
+
+            if(nearbyRooms.Any())
+            {
+                sb.AppendLine("\nThe following rooms are nearby: ");
+                sb.AppendLine(string.Join("; ", nearbyRooms));
+            }
+            else
+                sb.AppendLine("\nThere are no rooms nearby that you can enter.");
+
+            // Nearby files
+            IEnumerable<string> nearbyFiles = room.groundObjects
+                .Select(go => go.GetComponent<GroundFile>())
+                .Where(file => file != null && Vector2.Distance(file.transform.position, player.transform.position) <= neuroVisionRange)
+                .Select(file => $"\"{file.DisplayName}\" ({Utils.FileSizeString(file.fileSize)})");
+
+            if(nearbyFiles.Any())
+            {
+                sb.AppendLine("\nThe following items are nearby: ");
+                sb.AppendLine(string.Join("; ", nearbyFiles));
+            }
+            else
+                sb.AppendLine("\nThere are no items nearby that you can pick up.");
+
+            // Healing item
+            if(FindFirstObjectByType<Heal>() != null)
+                sb.AppendLine("\nThere is a healing point in the room.");
+
+            // Send
+            Context.Send(sb.ToString());
         }
     }
 }

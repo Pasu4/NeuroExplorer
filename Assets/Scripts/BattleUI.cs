@@ -1,4 +1,8 @@
 ﻿using Assets.Scripts.CardEffects;
+using Assets.Scripts.Integration.Actions;
+using NeuroSdk.Actions;
+using NeuroSdk.Messages.Outgoing;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +34,7 @@ namespace Assets.Scripts
 
         public GameObject battleCardPrefab;
         public GameObject enemyPrefab;
+        public TextAsset neuroBattleTutorial;
 
         [Space(10)]
         public List<BattleCardUI> handCards;
@@ -45,6 +50,8 @@ namespace Assets.Scripts
         public string encounterId;
         public bool battleWon = false;
         public int turn = 0;
+        public bool waitingForAction = false;
+        private bool firstBattle = true;
 
         // Use this for initialization
         void Start()
@@ -154,7 +161,7 @@ namespace Assets.Scripts
 
             if(card.card.erase)
                 Erase(card);
-            else
+            else if(!card.card.async)
                 Discard(card);
 
             CheckGame();
@@ -266,6 +273,7 @@ namespace Assets.Scripts
 
         public void StartBattle(Enemy[] enemies, string encounterId, bool isSpecial)
         {
+            //GameManager.Instance.IntegrationRoomEnd();
             StopAllCoroutines(); // Just for safety
             StartCoroutine(CBattle(enemies, encounterId, isSpecial));
         }
@@ -330,12 +338,48 @@ namespace Assets.Scripts
             };
         }
 
+        public string GetActionState()
+        {
+            var state = new
+            {
+                enemies = enemies.Select(e => new
+                {
+                    e.enemy.name,
+                    hp = Utils.FileSizeString(e.enemy.hp),
+                    block = Utils.FileSizeString(e.enemy.block),
+                    nextAction = e.enemy.nextAction.Description
+                }),
+                handCards = handCards.Select((c, index) => new
+                {
+                    index,
+                    c.card.name,
+                    c.card.type,
+                    mpCost = Utils.FileSizeString(c.card.fileSize),
+                    c.card.requiresTarget,
+                    description = c.card.GetDescription().TrimRTF(),
+                }),
+                playerHp = Utils.FileSizeString(GameManager.Instance.hp),
+                playerMp = Utils.FileSizeString(GameManager.Instance.mp),
+                playerBlock = Utils.FileSizeString(GameManager.Instance.block),
+                drawPileCount = drawCards.Count,
+                discardPileCount = discardedCards.Count
+            };
+            return JsonConvert.SerializeObject(state, Formatting.None);
+        }
+
         private IEnumerator CBattle(Enemy[] enemies, string encounterId, bool isSpecial)
         {
             battleWon = false;
             turn = 0;
             this.encounterId = encounterId;
             this.isSpecial = isSpecial;
+            enemies = enemies.Select(e => e.Copy()).ToArray();
+
+            if(firstBattle)
+            {
+                firstBattle = false;
+                Context.Send(neuroBattleTutorial.text);
+            }
 
             // Delete old cards
             foreach(BattleCardUI c in deck)
@@ -373,8 +417,18 @@ namespace Assets.Scripts
 
             // Spawn new enemies
             int enemyCount = enemies.Length;
+            Dictionary<string, int> enemyIndices = enemies
+                .GroupBy(e => e.name, (name, es) => (name, es.Count()))
+                .Where(g => g.Item2 > 1)
+                .ToDictionary(g => g.name, _ => 0);
+
             for(int i = 0; i < enemyCount; i++)
             {
+                if(enemyIndices.ContainsKey(enemies[i].name))
+                {
+                    enemies[i].name += " " + (char) ('A' + enemyIndices[enemies[i].name]++);
+                }
+
                 GameObject go = Instantiate(enemyPrefab, enemyParent);
                 go.transform.localPosition = (i - (enemyCount - 1) / 2f) * enemyMaxDistance * Vector2.right;
                 EnemyUI e = go.GetComponent<EnemyUI>();
@@ -397,8 +451,10 @@ namespace Assets.Scripts
                 }
 
                 playerTurn = true;
+
+                // Wait for player to end the turn
                 while(playerTurn && !battleWon)
-                    yield return null; // Wait for player to end the turn
+                    yield return CPlayerAction();
 
                 if(battleWon)
                     yield break;
@@ -434,6 +490,21 @@ namespace Assets.Scripts
 
                 turn++;
             }
+        }
+
+        private IEnumerator CPlayerAction()
+        {
+            waitingForAction = true;
+            ActionWindow.Create(gameObject)
+                .AddAction(new PlayCardAction(this))
+                .AddAction(new EndTurnAction())
+                .SetForce(0, "Either play a card or end your turn. Only end your turn if you don't want to play any more cards this turn.", GetActionState(), true)
+                .SetEnd(() => !(waitingForAction && playerTurn && !battleWon))
+                .Register();
+
+            while(waitingForAction && playerTurn && !battleWon) yield return null;
+
+            yield return null; // Wait for actions to be unregistered
         }
 
         private IEnumerator CDraw(int count)

@@ -50,13 +50,18 @@ namespace Assets.Scripts
             }
         }
 
-        public void OnPointerDown(PointerEventData ev)
+        public void Click()
         {
             if(battleUI.selectedCard != null)
             {
                 battleUI.targetEnemy = this;
                 battleUI.PlayCard(battleUI.selectedCard);
             }
+        }
+
+        public void OnPointerDown(PointerEventData ev)
+        {
+            Click();
         }
 
         public void SetEnemy(Enemy enemy)

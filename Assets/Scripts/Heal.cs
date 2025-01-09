@@ -9,13 +9,18 @@ namespace Assets.Scripts
 {
     public class Heal : MonoBehaviour
     {
-        private void OnMouseDown()
+        public void Click()
         {
             if(GameManager.Instance.gameMode != GameMode.Room) return;
 
             GameManager.Instance.sfxSource.PlayOneShot(GameManager.Instance.sfx.heal);
             GameManager.Instance.CreateTextEffect("Fully healed", Color.green, GameManager.Instance.player.transform.position);
             GameManager.Instance.hp = GameManager.Instance.maxHp;
+        }
+
+        private void OnMouseDown()
+        {
+            Click();
         }
     }
 }

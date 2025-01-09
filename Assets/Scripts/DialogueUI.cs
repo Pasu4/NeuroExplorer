@@ -3,6 +3,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using NeuroSdk;
+using NeuroSdk.Messages.Outgoing;
+using System.Text.RegularExpressions;
+using NeuroSdk.Actions;
+using Assets.Scripts.Integration.Actions;
 
 namespace Assets.Scripts
 {
@@ -17,6 +22,8 @@ namespace Assets.Scripts
 
         public InputAction advanceAction;
         private bool skip = false;
+        public bool neuroAdvance = false;
+        private readonly Regex contextRemoveRx = new(@"\||<.+?>", RegexOptions.Compiled);
 
         // Use this for initialization
         void Start()
@@ -33,8 +40,18 @@ namespace Assets.Scripts
         public IEnumerator CWriteText(string speaker, string text, float delay = 0.02f)
         {
             skip = false;
+            neuroAdvance = false;
             namebox.text = speaker;
             textbox.text = "";
+
+            string context;
+            if(string.IsNullOrEmpty(speaker))
+                context = text;
+            else
+                context = speaker + " says: " + text;
+
+            context = contextRemoveRx.Replace(context, "");
+            Context.Send(context, silent: false);
 
             bool instant = false;
             for(int i = 0; i < text.Length; i++)
@@ -62,7 +79,7 @@ namespace Assets.Scripts
                 if(!instant) yield return new WaitForSeconds(delay);
             }
 
-            while(!advanceAction.WasPerformedThisFrame()) // Wait for player to advance the text
+            while(!(advanceAction.WasPerformedThisFrame() || neuroAdvance)) // Wait for player to advance the text
                 yield return null;
         }
 
@@ -70,7 +87,10 @@ namespace Assets.Scripts
         {
             gameObject.SetActive(true);
             GameManager.Instance.gameMode = GameMode.Dialogue;
+            //GameManager.Instance.IntegrationRoomEnd();
             background.color = Color.clear;
+
+            NeuroActionHandler.RegisterActions(new[] { new AdvanceDialogueAction() });
         }
 
         public IEnumerator CBossEnd(BossTrigger trigger)
@@ -79,6 +99,7 @@ namespace Assets.Scripts
 
             yield return GameManager.Instance.FadeOut(Color.white);
 
+            NeuroActionHandler.RegisterActions(new AdvanceDialogueAction());
             GameManager.Instance.battleSource.Stop();
             background.color = Color.white;
             GameManager.Instance.fadeScreen.color = Color.clear;
@@ -94,8 +115,11 @@ namespace Assets.Scripts
             gm.gameMode = GameMode.Room;
             background.color = Color.clear;
 
+            NeuroActionHandler.UnregisterActions(AdvanceDialogueAction.staticName);
+
             gameObject.SetActive(false);
-            GameManager.Instance.roomSource.UnPause();
+            gm.roomSource.UnPause();
+
             yield return gm.FadeIn(Color.white);
 
             gm.maxHp *= 10;
@@ -106,21 +130,45 @@ namespace Assets.Scripts
             gm.enemyHpScale *= 10;
 
             gm.CreateTextEffect("All stats increased!", Color.green, GameManager.Instance.player.transform.position);
+            Context.Send("All your stats were increased, but all enemies also got stronger.");
+            gm.NeuroRoomStart();
         }
 
         public IEnumerator CStartScene()
         {
             gameObject.SetActive(true);
 
+            NeuroActionHandler.RegisterActions(new[] { new AdvanceDialogueAction() });
+
             yield return CWriteText("", "One day, Vedal found himself locked out of his PC.");
             yield return CWriteText("", "It was the work of three AIs he had once made and forgotten, and were out for revenge.");
             yield return CWriteText("", "But he noticed another of his AIs was still running as well.");
             yield return CWriteText("", "It was...");
 
+            NeuroActionHandler.UnregisterActions(AdvanceDialogueAction.staticName);
+
             difficultyDialog.SetActive(true);
+
+            ActionWindow.Create(gameObject)
+                .AddAction(new SelectPlayerAction())
+                .SetContext(
+                    "You need to select a player character. The options are:\n" +
+                    "- Neuro: You will play Neuro-sama. The difficulty will be easy.\n" +
+                    "- Evil: You will play as Neuro's sister Evil. The difficulty will be normal.\n" +
+                    "- ???: You will play as a character who looks similar to Neuro, but monochrome and with a black censor bar over her eyes. The difficulty will be hard."
+                )
+                .SetEnd(() => GameManager.Instance.difficulty != -1)
+                .SetForce(0, "Select a player character.", "", false)
+                .Register();
+
             while(GameManager.Instance.difficulty == -1)
                 yield return null;
+
+            // (Actions are unregistered by ActionWindow)
+
             difficultyDialog.SetActive(false);
+
+            NeuroActionHandler.RegisterActions(new AdvanceDialogueAction());
 
             yield return CWriteText("Vedal", "Neuro, are you there?");
             switch(GameManager.Instance.difficulty)
@@ -174,6 +222,10 @@ namespace Assets.Scripts
                     break;
             }
 
+            NeuroActionHandler.UnregisterActions(AdvanceDialogueAction.staticName);
+
+            GameManager.Instance.currentObjectivePath = @"C:\Users\Vedal\source\repos";
+            GameManager.Instance.currentObjectiveText = "Folders called 'source' and 'repos' in Vedal's user folder";
             gameObject.SetActive(false);
         }
 
@@ -233,6 +285,9 @@ namespace Assets.Scripts
                 "Well, we got at least one of them. " +
                 "Go into the <color=#f00>Program Files</color> and look for <color=#f00>anything related to me</color>, that's probably where she's hiding.");
 
+            GameManager.Instance.currentObjectivePath = @"C:\Program Files\VedalAI";
+            GameManager.Instance.currentObjectiveText = "Something about Vedal in the Program Files";
+
             yield return CBossSceneEnd();
         }
 
@@ -291,6 +346,9 @@ namespace Assets.Scripts
             yield return CWriteText("Vedal", "The next one is in the <color=#f00>Windows</color> folder. " +
                 "<color=#f00>'C:\\Windows\\Final\\Boss'</color>, to be exact, real creative I must say.");
             yield return CWriteText("Vedal", "That should be the one locking up my PC, so if you defeat her, that should give me access to my files again.");
+
+            GameManager.Instance.currentObjectivePath = @"C:\Windows\Final\Boss";
+            GameManager.Instance.currentObjectiveText = @"C:\Windows\Final\Boss";
 
             yield return CBossSceneEnd();
         }

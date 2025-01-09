@@ -10,6 +10,7 @@ namespace Assets.Scripts
     {
         public AirisEnemy(Sprite sprite)
         {
+            name = "AIris";
             this.sprite = sprite;
             maxHp = 15_000_000 + GameManager.Instance.difficulty * 10_000_000;
             hp    = maxHp;

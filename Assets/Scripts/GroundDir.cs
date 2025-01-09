@@ -9,6 +9,7 @@ namespace Assets.Scripts
     public class GroundDir : GroundObject
     {
         public bool locked = false;
+        public bool isUpDir = false;
 
         // Use this for initialization
         protected override void Start()
@@ -22,9 +23,9 @@ namespace Assets.Scripts
             base.Update();
         }
 
-        protected override void OnMouseDown()
+        public override void Click()
         {
-            base.OnMouseDown();
+            base.Click();
 
             if(GameManager.Instance.gameMode != GameMode.Room) return;
 
@@ -60,8 +61,9 @@ namespace Assets.Scripts
 
         public void SetUpDir()
         {
-            GetComponentInChildren<TextMeshProUGUI>(true).text = "Back to " + Path.GetFileName(displayPath);
+            GetComponentInChildren<TextMeshProUGUI>(true).text = "Back to " + DisplayName;
             GetComponent<SpriteRenderer>().sprite = GameManager.Instance.upDirSprite;
+            isUpDir = true;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using NeuroSdk.Messages.Outgoing;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -35,6 +36,7 @@ namespace Assets.Scripts
             if(collision.gameObject.CompareTag("Player"))
             {
                 GameManager.Instance.StartBattle(enemies, encounterId, false, GameManager.Instance.battleClip);
+                Context.Send("You ran into an enemy!");
                 Destroy(gameObject);
             }
         }

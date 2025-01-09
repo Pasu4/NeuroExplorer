@@ -104,5 +104,21 @@ namespace Assets.Scripts
             float t = ((float) index) / (count - 1);
             return Vector2.LerpUnclamped(start, end, t);
         }
+
+        public static string TrimRTF(this string str)
+        {
+            bool skip = false;
+
+            return new string(str.Where(c =>
+            {
+                if(c == '<') skip = true;
+                else if(c == '>')
+                {
+                    skip = false;
+                    return false;
+                }
+                return !skip;
+            }).ToArray());
+        }
     }
 }

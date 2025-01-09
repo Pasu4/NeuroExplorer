@@ -16,6 +16,7 @@ namespace Assets.Scripts
         [Min(1)]
         public float maxRoomAspectRatio = 4.0f;
         public float minRoomArea = 25f;
+        public Rect walkableRect;
 
         public GameObject filePrefab;
         public GameObject dirPrefab;
@@ -35,6 +36,7 @@ namespace Assets.Scripts
         public List<GameObject> encounters;
         public string realPath;
         public string displayPath;
+        public bool isBossRoom;
 
         SpriteRenderer spriteRenderer;
 
@@ -77,6 +79,7 @@ namespace Assets.Scripts
             realPath = newPath;
             displayPath = GameManager.Instance.obfuscate ? GameManager.Instance.ObfuscatePath(realPath, true) : realPath;
             System.Random random = GameManager.Instance.CreatePathRandom(newPath, "RoomLayout");
+            isBossRoom = false;
 
             // Destroy old ground objects
             foreach(GameObject go in groundObjects)
@@ -311,6 +314,7 @@ namespace Assets.Scripts
 
             if(path == @"C:\Users\Vedal\source\repos\FilAIn")
             {
+                isBossRoom = true;
                 SetSize(new Vector2(10, 10));
                 exit.transform.position = player.transform.position = Vector2.down * 4;
 
@@ -338,6 +342,7 @@ namespace Assets.Scripts
             }
             else if(path == @"C:\Program Files\VedalAI\AImila")
             {
+                isBossRoom = true;
                 SetSize(new Vector2(20, 20));
                 exit.transform.position = player.transform.position = Vector2.down * 9;
 
@@ -381,6 +386,7 @@ namespace Assets.Scripts
             }
             else if(path == @"C:\Windows\Final\Boss\AIris")
             {
+                isBossRoom = true;
                 SetSize(new Vector2(5, 25));
                 exit.transform.position = player.transform.position = Vector2.down * 11;
 
@@ -397,6 +403,14 @@ namespace Assets.Scripts
         {
             spriteRenderer.size = size;
             SetWallPositions();
+
+            // Leave enough space for the player
+            walkableRect = new Rect(
+                -spriteRenderer.size.x / 2f + 1f,
+                -spriteRenderer.size.y / 2f + 2f,
+                spriteRenderer.size.x - 2f,
+                spriteRenderer.size.y - 5f
+            );
         }
 
         void SetWallPositions()

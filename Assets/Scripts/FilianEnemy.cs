@@ -10,6 +10,7 @@ namespace Assets.Scripts
     {
         public FilianEnemy(Sprite sprite)
         {
+            name = "FilAIn";
             this.sprite = sprite;
             maxHp = 150_000 + GameManager.Instance.difficulty * 100_000;
             hp    = maxHp;

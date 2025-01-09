@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using NeuroSdk.Messages.Outgoing;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace Assets.Scripts
     [System.Serializable]
     public class Enemy
     {
+        public string name;
         public long strength;
         public long hp = 100000;
         public long maxHp = 100000;
@@ -83,12 +85,14 @@ namespace Assets.Scripts
             for(int i = 0; i < action.times; i++)
             {
                 ctx.battleUI.AttackPlayer(action.damage);
+                Context.Send($"{name} deals {Utils.FileSizeString(action.damage)} of damage to you.");
             }
         }
 
         public virtual void DoDefendAction(BattleContext ctx, DefendAction action)
         {
             block = action.block;
+            Context.Send($"{name} prepares to block {Utils.FileSizeString(action.block)} of damage.");
         }
 
         public virtual void DoTrojanAction(BattleContext ctx, TrojanAction action)
@@ -100,6 +104,7 @@ namespace Assets.Scripts
                 else
                     ctx.battleUI.CreateDiscardedCard(trojanCard, ctx.activeEnemy.transform.position);
             }
+            Context.Send($"{name} creates {trojanCount} '{trojanCard.name}' card(s) in your {(targetDrawPile ? "draw pile" : "discard pile")}.");
         }
 
         public virtual EnemyAction ChooseNextAction(BattleContext context)

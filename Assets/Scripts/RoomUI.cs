@@ -26,6 +26,8 @@ namespace Assets.Scripts
             storageBar.value = gm.UsedStorage;
 
             locationText.text = $"Location: {GameManager.Instance.room.displayPath}";
+            if(!string.IsNullOrEmpty(GameManager.Instance.currentObjectiveText))
+                locationText.text += "\n" + GameManager.Instance.currentObjectiveText;
         }
     }
 }

@@ -10,7 +10,7 @@
         "com.endel.nativewebsocket": "1.1.4",
         "com.unity.modules.unitywebrequest": "1.0.0"
       },
-      "hash": "8d70af03640dc37661384e7f49701674db57b72e"
+      "hash": "69e8979365e6a1579402ce3adb88de7db4aa10e0"
     },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",

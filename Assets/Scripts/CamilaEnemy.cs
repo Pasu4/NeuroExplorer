@@ -12,6 +12,7 @@ namespace Assets.Scripts
 
         public CamilaEnemy(Sprite sprite)
         {
+            name = "AImila";
             this.sprite = sprite;
             maxHp = 1_500_000 + GameManager.Instance.difficulty * 1_000_000;
             hp    = maxHp;

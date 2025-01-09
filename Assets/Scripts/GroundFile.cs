@@ -31,9 +31,9 @@ namespace Assets.Scripts
             base.OnMouseEnter();
         }
 
-        protected override void OnMouseDown()
+        public override void Click()
         {
-            base.OnMouseDown();
+            base.Click();
 
             if(GameManager.Instance.gameMode != GameMode.Room) return;
 

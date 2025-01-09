@@ -2268,14 +2268,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameMode: 0
   startPath: 
+  currentObjectiveText: 
+  currentObjectivePath: 
   obfuscate: 1
   gameSeed: 0
   difficulty: -1
   progress: 0
   obfuscateSet: 0
-  skipIntro: 0
+  skipIntro: 1
   defaultEnemyStrength: 20000
   enemyHpScale: 1
+  neuroVisionRange: 10
   inventoryUI: {fileID: 1829585123}
   roomUI: {fileID: 1699627474}
   battleUI: {fileID: 1623202601}
@@ -2360,7 +2363,8 @@ MonoBehaviour:
   enemyActionTrojanSprite: {fileID: 21300000, guid: 0fce4477d1624cb42a9af3c13e2e45ca, type: 3}
   enemyActionDoNothingSprite: {fileID: 21300000, guid: 9adf6aff0a51df449981657c5fe6b4ed, type: 3}
   enemies:
-  - strength: 0
+  - name: Drone
+    strength: 0
     hp: 40000
     maxHp: 40000
     block: 0
@@ -2375,7 +2379,8 @@ MonoBehaviour:
     maxMulti: 2
     trojanId: error
     targetDrawPile: 0
-  - strength: 0
+  - name: Gymbag Drone
+    strength: 0
     hp: 60000
     maxHp: 60000
     block: 0
@@ -2390,7 +2395,8 @@ MonoBehaviour:
     maxMulti: 2
     trojanId: null_pointer
     targetDrawPile: 0
-  - strength: 0
+  - name: Neuro Yukkuri
+    strength: 0
     hp: 30000
     maxHp: 30000
     block: 0
@@ -2791,6 +2797,67 @@ RectTransform:
   m_AnchoredPosition: {x: 3, y: -10}
   m_SizeDelta: {x: 120, y: 10}
   m_Pivot: {x: 0, y: 1}
+--- !u!1001 &970833512
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 771739009483407203, guid: 15d3af725b5c6044e927c896ea002a8b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 771739009483407203, guid: 15d3af725b5c6044e927c896ea002a8b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 771739009483407203, guid: 15d3af725b5c6044e927c896ea002a8b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 771739009483407203, guid: 15d3af725b5c6044e927c896ea002a8b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 771739009483407203, guid: 15d3af725b5c6044e927c896ea002a8b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 771739009483407203, guid: 15d3af725b5c6044e927c896ea002a8b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 771739009483407203, guid: 15d3af725b5c6044e927c896ea002a8b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 771739009483407203, guid: 15d3af725b5c6044e927c896ea002a8b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 771739009483407203, guid: 15d3af725b5c6044e927c896ea002a8b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 771739009483407203, guid: 15d3af725b5c6044e927c896ea002a8b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5408655375867258371, guid: 15d3af725b5c6044e927c896ea002a8b, type: 3}
+      propertyPath: m_Name
+      value: NeuroSdk
+      objectReference: {fileID: 0}
+    - target: {fileID: 9157478159272699649, guid: 15d3af725b5c6044e927c896ea002a8b, type: 3}
+      propertyPath: game
+      value: NeuroExplorer
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 15d3af725b5c6044e927c896ea002a8b, type: 3}
 --- !u!1 &991187447
 GameObject:
   m_ObjectHideFlags: 0
@@ -2899,6 +2966,12 @@ MonoBehaviour:
   placementRandomness: 0.8
   maxRoomAspectRatio: 4
   minRoomArea: 25
+  walkableRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   filePrefab: {fileID: 7692058437814042887, guid: 10dc05140085bc444a3d002897debaf5, type: 3}
   dirPrefab: {fileID: 695065937936220920, guid: fd0bad764b2758443b1c81f116eb1806, type: 3}
   chestPrefab: {fileID: 695065937936220920, guid: 8aade47c9a08a8c4680e44706bc8480a, type: 3}
@@ -2915,6 +2988,7 @@ MonoBehaviour:
   encounters: []
   realPath: 
   displayPath: 
+  isBossRoom: 0
 --- !u!1 &1001406665
 GameObject:
   m_ObjectHideFlags: 0
@@ -3819,6 +3893,7 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
+  neuroAdvance: 0
 --- !u!114 &1339502660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4040,7 +4115,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Location: C:\Users\Vedal\OneDrive\Desktop'
+  m_text: 'Location: C:\Users\Vedal\OneDrive\Desktop
+
+    Objective: Folders called
+    ''source'' and ''repos'' in Vedal''s user folder'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d9fa11dc8fa7ad845bc53c11f00f1d73, type: 2}
   m_sharedMaterial: {fileID: -5374285569836882533, guid: d9fa11dc8fa7ad845bc53c11f00f1d73, type: 2}
@@ -4686,6 +4764,7 @@ MonoBehaviour:
   enemyParent: {fileID: 1971128538}
   battleCardPrefab: {fileID: 6784929768767005728, guid: 69a40ec2cd0a5c94ebfdde011f455447, type: 3}
   enemyPrefab: {fileID: 3010081294859958711, guid: e847c0d6833ceb743ba4fd63dabe7910, type: 3}
+  neuroBattleTutorial: {fileID: 4900000, guid: 9f4df3e8c6544e74fae2cf39c0630d7b, type: 3}
   handCards: []
   drawCards: []
   discardedCards: []
@@ -4698,6 +4777,7 @@ MonoBehaviour:
   encounterId: 
   battleWon: 0
   turn: 0
+  waitingForAction: 0
 --- !u!114 &1623202602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7676,3 +7756,4 @@ SceneRoots:
   - {fileID: 1799617799}
   - {fileID: 4254066090325382690}
   - {fileID: 240127145}
+  - {fileID: 970833512}

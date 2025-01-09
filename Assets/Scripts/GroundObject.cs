@@ -16,7 +16,7 @@ namespace Assets.Scripts
 
         public GameObject label;
 
-        public string DisplayName => Path.GetFileName(displayPath);
+        public string DisplayName => displayPath == "C:" ? "C:" : Path.GetFileName(displayPath);
 
         protected System.Random random;
         protected Room room;
@@ -33,7 +33,7 @@ namespace Assets.Scripts
 
         }
 
-        protected virtual void OnMouseDown()
+        public virtual void Click()
         {
             if(GameManager.Instance.gameMode != GameMode.Room) return;
 
@@ -42,6 +42,11 @@ namespace Assets.Scripts
             {
                 GameManager.Instance.CreateTextEffect("Too far", Color.red, transform.position);
             }
+        }
+
+        protected void OnMouseDown()
+        {
+            Click();
         }
 
         protected virtual void OnMouseEnter()
