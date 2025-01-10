@@ -2314,9 +2314,9 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 3c34e39762f1d5b45b627b59fa6868be, type: 3}
   - fileExtension: .lnk;.url
     sprite: {fileID: 21300000, guid: 55e8f4e19381a4947bfdfe5fe35d46b0, type: 3}
-  - fileExtension: .c;.h;.cs;.csproj;.cpp;.hpp;.hxx;.java;.js;.pl;.r;.py;.rpy;.rb;.rs;.sln
+  - fileExtension: .c;.h;.cs;.csproj;.cpp;.hpp;.hxx;.java;.js;.pl;.r;.py;.rpy;.rb;.rs;.sln;.ini
     sprite: {fileID: 21300000, guid: 1db4555c4b5fca647b09f06c3de21ffa, type: 3}
-  - fileExtension: .c;.h;.cs;.csproj;.cpp;.hpp;.hxx;.java;.js;.pl;.r;.py;.rpy;.rb;.rs;.sln
+  - fileExtension: .c;.h;.cs;.csproj;.cpp;.hpp;.hxx;.java;.js;.pl;.r;.py;.rpy;.rb;.rs;.sln;.ini
     sprite: {fileID: 21300000, guid: bd7f21d25df330c478a94eb999140850, type: 3}
   - fileExtension: .wav;.flac;.mp3;.ogg;.midi
     sprite: {fileID: 21300000, guid: 86e1b15a1db3498489e26ec3e9ca0b70, type: 3}
@@ -2324,9 +2324,9 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: aee03db61662b0a41a0237976fa464b7, type: 3}
   - fileExtension: .wav;.flac;.mp3;.ogg;.midi
     sprite: {fileID: 21300000, guid: c6b83d0e63bffed4aab0d42bff54f56d, type: 3}
-  - fileExtension: .txt;.md
+  - fileExtension: .txt;.md;.log
     sprite: {fileID: 21300000, guid: 2f00a161b88fcbd4da537831d7df30fa, type: 3}
-  - fileExtension: .txt;.md
+  - fileExtension: .txt;.md;.log
     sprite: {fileID: 21300000, guid: 9117ebe7f9146ec4abb29d4481906c50, type: 3}
   - fileExtension: .bmp;.ico;.jpg;.jpeg;.png;.psd;.svg;.webp
     sprite: {fileID: 21300000, guid: 1cbc47721ae92c84f821f326225428c9, type: 3}
@@ -2362,6 +2362,9 @@ MonoBehaviour:
   enemyActionDefendSprite: {fileID: 21300000, guid: 76475445cb0d0a7478393e57dd697c0a, type: 3}
   enemyActionTrojanSprite: {fileID: 21300000, guid: 0fce4477d1624cb42a9af3c13e2e45ca, type: 3}
   enemyActionDoNothingSprite: {fileID: 21300000, guid: 9adf6aff0a51df449981657c5fe6b4ed, type: 3}
+  enemyActionSummonSprite: {fileID: 21300000, guid: adaef6562429eb34cb0d0d86691a2be9, type: 3}
+  enemyActionBuffSprite: {fileID: 21300000, guid: 450ea9d7ffc51694c8a53aa170343856, type: 3}
+  enemyActionHealSprite: {fileID: 21300000, guid: a7224a51f07664b419ccad9be69e6b3e, type: 3}
   enemies:
   - name: Drone
     strength: 0
@@ -2418,6 +2421,9 @@ MonoBehaviour:
   battleClip: {fileID: 8300000, guid: 2138f562cbd9a6347b5a5b430928b41c, type: 3}
   bossClip: {fileID: 8300000, guid: 0bb3f8b4f30cca64cae0b98e55683fb6, type: 3}
   finalBossClip: {fileID: 8300000, guid: 18b02b030f0a7094fa50b2abf9563a8a, type: 3}
+  fakeDirText: {fileID: 4900000, guid: 3be175b87aad6614ab046f07532e935f, type: 3}
+  fakeFileText: {fileID: 4900000, guid: dae839c2cb1985345931f6608eba832d, type: 3}
+  fakeDirs: []
   sfxSource: {fileID: 240127144}
   sfx: {fileID: 11400000, guid: b033858fe7349e240a2dcce4e1e2e217, type: 2}
   textEffectPrefab: {fileID: 4677727198014242819, guid: 4088414dc7d07684780d5217f9d929ec, type: 3}
@@ -7618,7 +7624,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 6.3125
+  orthographic size: 6.296875
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

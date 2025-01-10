@@ -289,7 +289,6 @@ namespace Assets.Scripts
         {
             int lastSeperator = path.LastIndexOf(Path.DirectorySeparatorChar);
             string parentPath = path.Remove(lastSeperator);
-            Debug.Log(parentPath);
 
             GameObject dirObj = Instantiate(dirPrefab, transform);
             groundObjects.Add(dirObj);

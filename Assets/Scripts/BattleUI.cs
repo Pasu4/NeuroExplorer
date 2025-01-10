@@ -297,6 +297,19 @@ namespace Assets.Scripts
             bc.battleUI = this;
         }
 
+        public EnemyUI CreateEnemy(Enemy enemy, Vector2 position)
+        {
+            enemy = enemy.Copy();
+
+            GameObject go = Instantiate(enemyPrefab, enemyParent);
+            go.transform.position = position;
+            EnemyUI e = go.GetComponent<EnemyUI>();
+            e.SetEnemy(enemy);
+            e.battleUI = this;
+            enemies.Add(e);
+            return e;
+        }
+
         public void AttackPlayer(long damage)
         {
             GameManager.Instance.sfxSource.PlayOneShot(GameManager.Instance.sfx.hit);
@@ -347,7 +360,7 @@ namespace Assets.Scripts
                     e.enemy.name,
                     hp = Utils.FileSizeString(e.enemy.hp),
                     block = Utils.FileSizeString(e.enemy.block),
-                    nextAction = e.enemy.nextAction.Description
+                    nextAction = e.enemy.nextAction.NeuroDescription
                 }),
                 handCards = handCards.Select((c, index) => new
                 {
@@ -429,12 +442,7 @@ namespace Assets.Scripts
                     enemies[i].name += " " + (char) ('A' + enemyIndices[enemies[i].name]++);
                 }
 
-                GameObject go = Instantiate(enemyPrefab, enemyParent);
-                go.transform.localPosition = (i - (enemyCount - 1) / 2f) * enemyMaxDistance * Vector2.right;
-                EnemyUI e = go.GetComponent<EnemyUI>();
-                e.SetEnemy(enemies[i]);
-                e.battleUI = this;
-                this.enemies.Add(e);
+                CreateEnemy(enemies[i], enemyParent.position);
             }
             targetEnemy = this.enemies[0];
 

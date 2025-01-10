@@ -17,6 +17,8 @@ namespace Assets.Scripts
             return enumerable.ElementAt(random.Next(len));
         }
 
+        public static T Choose<T>(this System.Random random, params T[] array) => array[random.Next(array.Length)];
+
         public static IEnumerable<T> ChooseMany<T>(this System.Random random, IEnumerable<T> enumerable, int count)
         {
             int len = enumerable.Count();

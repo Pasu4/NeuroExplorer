@@ -11,6 +11,8 @@ namespace Assets.Scripts
         public bool locked = false;
         public bool isUpDir = false;
 
+        public override string DisplayName => displayPath == "C:" ? "C:" : Path.GetFileName(displayPath);
+
         // Use this for initialization
         protected override void Start()
         {

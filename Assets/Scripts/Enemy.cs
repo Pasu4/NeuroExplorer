@@ -56,55 +56,10 @@ namespace Assets.Scripts
         public virtual void DoTurn(BattleContext ctx)
         {
             block = 0;
-            if(nextAction is AttackAction aAct)
-            {
-                GameManager.Instance.CreateTextEffect("Attack", Color.blue, ctx.activeEnemy.transform.position);
-                DoAttackAction(ctx, aAct);
-            }
-            else if(nextAction is DefendAction dAct)
-            {
-                GameManager.Instance.CreateTextEffect("Defend", Color.blue, ctx.activeEnemy.transform.position);
-                DoDefendAction(ctx, dAct);
-            }
-            else if(nextAction is TrojanAction tAct)
-            {
-                GameManager.Instance.CreateTextEffect("Trojan", Color.blue, ctx.activeEnemy.transform.position);
-                DoTrojanAction(ctx, tAct);
-            }
-            else if(nextAction is DoNothingAction)
-            {
-                // Do nothing
-                GameManager.Instance.CreateTextEffect("Skip", Color.blue, ctx.activeEnemy.transform.position);
-            }
+
+            nextAction.Execute(ctx);
 
             nextAction = ChooseNextAction(ctx);
-        }
-
-        public virtual void DoAttackAction(BattleContext ctx, AttackAction action)
-        {
-            for(int i = 0; i < action.times; i++)
-            {
-                ctx.battleUI.AttackPlayer(action.damage);
-                Context.Send($"{name} deals {Utils.FileSizeString(action.damage)} of damage to you.");
-            }
-        }
-
-        public virtual void DoDefendAction(BattleContext ctx, DefendAction action)
-        {
-            block = action.block;
-            Context.Send($"{name} prepares to block {Utils.FileSizeString(action.block)} of damage.");
-        }
-
-        public virtual void DoTrojanAction(BattleContext ctx, TrojanAction action)
-        {
-            for(int i = 0; i < trojanCount; i++)
-            {
-                if(targetDrawPile)
-                    ctx.battleUI.CreateDrawCard(trojanCard, ctx.activeEnemy.transform.position);
-                else
-                    ctx.battleUI.CreateDiscardedCard(trojanCard, ctx.activeEnemy.transform.position);
-            }
-            Context.Send($"{name} creates {trojanCount} '{trojanCard.name}' card(s) in your {(targetDrawPile ? "draw pile" : "discard pile")}.");
         }
 
         public virtual EnemyAction ChooseNextAction(BattleContext context)

@@ -14,6 +14,8 @@ namespace Assets.Scripts
 
         public Card card;
 
+        public override string DisplayName => Path.GetFileName(displayPath);
+
         // Use this for initialization
         protected override void Start()
         {

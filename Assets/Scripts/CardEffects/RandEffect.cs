@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
+using Random = System.Random;
 using UnityEngine;
+using System.Linq;
 
 namespace Assets.Scripts.CardEffects
 {
@@ -16,10 +18,15 @@ namespace Assets.Scripts.CardEffects
 
         public override void OnPlay(BattleContext ctx)
         {
+            Random random = new();
+
+            string ext = random.Choose(GameManager.Instance.fakeFilesByExt.Keys.ToArray());
+            string fileName = random.Choose(GameManager.Instance.fakeFilesByExt[ext]);
+
             Card card = new Card(
-                Random.value.ToString("F7", CultureInfo.InvariantCulture)[2..] + ".log",
+                fileName + ext,
                 fileSize,
-                GameManager.Instance.GetFileSprite(".log")
+                GameManager.Instance.GetFileSprite(ext)
             );
             ctx.battleUI.CreateHandCard(card);
         }

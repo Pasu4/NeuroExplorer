@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Integration.Actions;
 using NeuroSdk.Actions;
 using NeuroSdk.Messages.Outgoing;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections;
@@ -15,6 +16,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using SRandom = System.Random;
 using URandom = UnityEngine.Random;
 
 namespace Assets.Scripts
@@ -65,6 +67,9 @@ namespace Assets.Scripts
         public Sprite enemyActionDefendSprite;
         public Sprite enemyActionTrojanSprite;
         public Sprite enemyActionDoNothingSprite;
+        public Sprite enemyActionSummonSprite;
+        public Sprite enemyActionBuffSprite;
+        public Sprite enemyActionHealSprite;
         public Enemy[] enemies;
         public Sprite lockedDirSprite;
         public Sprite upDirSprite;
@@ -73,6 +78,10 @@ namespace Assets.Scripts
         public AudioClip battleClip;
         public AudioClip bossClip;
         public AudioClip finalBossClip;
+        public TextAsset fakeDirText;
+        public TextAsset fakeFileText;
+        public string[] fakeDirs;
+        public Dictionary<string, string[]> fakeFilesByExt;
 
         public AudioSource sfxSource;
         public SoundEffectsResources sfx;
@@ -116,15 +125,7 @@ namespace Assets.Scripts
 
             allowedFolderPathRegex = new Regex(@"
                 ^C:(?:
-                    \\Windows (?:
-                        \\Final (?:
-                            \\Boss (?:
-                                \\AIris (?:
-                                    \\.+
-                                )?
-                            )?
-                        )?
-                    )?
+                    \\Windows.+
                     | \\Users (?:
                         \\Vedal
                         | \\\w+ (?:
@@ -163,6 +164,10 @@ namespace Assets.Scripts
                 )$
                 | .*\\desktop\.ini$
             ", RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase);
+
+            fakeDirs = fakeDirText.text.Split(new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            fakeFilesByExt = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(fakeFileText.text);
+
             roomSource.Stop();
             battleSource.Stop();
 
@@ -214,32 +219,60 @@ namespace Assets.Scripts
 
             if(split.Length == 0) return ext;
 
-            StringBuilder obfuscatedPathBuilder = new(split[0]);
+            StringBuilder fakePathBuilder = new(split[0]);
             StringBuilder realPathBuilder = new(split[0]);
 
-            foreach(string s in split[1..])
+            int end = isDir ? 0 : 1;
+
+            foreach(string s in split[1..^end])
             {
                 realPathBuilder.Append(Path.DirectorySeparatorChar);
-                obfuscatedPathBuilder.Append(Path.DirectorySeparatorChar);
+                fakePathBuilder.Append(Path.DirectorySeparatorChar);
+
+                bool isUserDir = realPathBuilder.ToString() == "C:\\Users\\";
 
                 realPathBuilder.Append(s);
+
+                SRandom random = CreatePathRandom(realPathBuilder.ToString(), "obfuscate_dir");
 
                 // Obfuscate only if the folder path is not on the list
                 if(allowedFolderPathRegex.IsMatch(realPathBuilder.ToString()))
                 {
-                    obfuscatedPathBuilder.Append(s);
+                    fakePathBuilder.Append(s);
                 }
                 else
                 {
-                    obfuscatedPathBuilder.Append(ObfuscateString(s));
+                    if(isUserDir)
+                        fakePathBuilder.Append(random.Choose("Vedal", "Neuro", "Evil", "Anny", "Alex", "Tony", "Kayori", "Samantha"));
+                    else
+                        fakePathBuilder.Append(random.Choose(fakeDirs));
                 }
             }
 
-            // Correct extension
-            obfuscatedPathBuilder.Length -= ext.Length;
-            obfuscatedPathBuilder.Append(ext);
+            if(!isDir)
+            {
+                realPathBuilder.Append(Path.DirectorySeparatorChar);
+                fakePathBuilder.Append(Path.DirectorySeparatorChar);
 
-            return obfuscatedPathBuilder.ToString();
+                realPathBuilder.Append(Path.GetFileName(realPath));
+
+                if(allowedFolderPathRegex.IsMatch(realPathBuilder.ToString()))
+                {
+                    fakePathBuilder.Append(Path.GetFileName(realPath));
+                }
+                else
+                {
+                    SRandom random = CreatePathRandom(realPathBuilder.ToString(), "obfuscate_file");
+
+                    if(!fakeFilesByExt.TryGetValue(ext, out string[] possibleNames))
+                        possibleNames = new[] { random.NextDouble().ToString("F7", CultureInfo.InvariantCulture)[2..] };
+
+                    fakePathBuilder.Append(random.Choose(possibleNames));
+                    fakePathBuilder.Append(ext);
+                }
+            }
+
+            return fakePathBuilder.ToString();
         }
 
         private string ObfuscateString(string str)
@@ -575,7 +608,7 @@ namespace Assets.Scripts
 
             // Can only heal if there is a healing item in the room
             if(room.displayPath.EndsWith("Desktop"))
-                actionWindow.AddAction(new HealAction());
+                actionWindow.AddAction(new UseHealPointAction());
 
             actionWindow
                 .SetEnd(() => gameMode != GameMode.Room)

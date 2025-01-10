@@ -16,7 +16,7 @@ namespace Assets.Scripts
 
         public GameObject label;
 
-        public string DisplayName => displayPath == "C:" ? "C:" : Path.GetFileName(displayPath);
+        public abstract string DisplayName { get; }
 
         protected System.Random random;
         protected Room room;
@@ -65,7 +65,6 @@ namespace Assets.Scripts
             this.room = room;
             this.realPath = realPath;
             displayPath = GameManager.Instance.obfuscate ? GameManager.Instance.ObfuscatePath(realPath, this is GroundDir) : realPath;
-
             InitRandom();
 
             //// Generate position

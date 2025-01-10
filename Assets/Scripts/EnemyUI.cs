@@ -28,26 +28,8 @@ namespace Assets.Scripts
             hpBar.value = enemy.hp;
             hpText.text = enemy.block > 0 ? $"{Utils.FileSizeString(enemy.hp)}\n<color=#66d>+ {Utils.FileSizeString(enemy.block)}</color>" : Utils.FileSizeString(enemy.hp);
 
-            if(enemy.nextAction is AttackAction a)
-            {
-                nextActionImage.sprite = GameManager.Instance.enemyActionAttackSprite;
-                nextActionText.text = (a.times > 1 ? a.times + "x " : "") + Utils.FileSizeString(a.damage);
-            }
-            else if(enemy.nextAction is DefendAction d)
-            {
-                nextActionImage.sprite = GameManager.Instance.enemyActionDefendSprite;
-                nextActionText.text = Utils.FileSizeString(d.block);
-            }
-            else if(enemy.nextAction is TrojanAction)
-            {
-                nextActionImage.sprite = GameManager.Instance.enemyActionTrojanSprite;
-                nextActionText.text = "";
-            }
-            else if(enemy.nextAction is DoNothingAction)
-            {
-                nextActionImage.sprite = GameManager.Instance.enemyActionDoNothingSprite;
-                nextActionText.text = "";
-            }
+            nextActionImage.sprite = enemy.nextAction.Sprite;
+            nextActionText.text = enemy.nextAction.Text;
         }
 
         public void Click()

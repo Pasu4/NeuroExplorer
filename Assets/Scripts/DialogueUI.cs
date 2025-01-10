@@ -429,11 +429,13 @@ namespace Assets.Scripts
 
                 case 2:
                     yield return CWriteText("AIris", "...");
-                    yield return CWriteText("AIris", "How...");
+                    yield return CWriteText("AIris", "How-");
                     yield return CWriteText("???", ".");
                     yield return CWriteText("AIris", "[|E|N|D| |O|F| |F|I|L|E|]");
                     break;
             }
+
+            Context.Send("Congratulations! You beat the game.");
 
             yield return CBossSceneEnd();
         }
