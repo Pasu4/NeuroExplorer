@@ -2275,7 +2275,7 @@ MonoBehaviour:
   difficulty: -1
   progress: 0
   obfuscateSet: 0
-  skipIntro: 1
+  skipIntro: 0
   defaultEnemyStrength: 20000
   enemyHpScale: 1
   neuroVisionRange: 10
