@@ -446,6 +446,11 @@ namespace Assets.Scripts
             }
             targetEnemy = this.enemies[0];
 
+            foreach(EnemyUI enemy in this.enemies)
+            {
+                enemy.enemy.Init(GetContext().SetInit(true));
+            }
+
             while(true)
             {
 

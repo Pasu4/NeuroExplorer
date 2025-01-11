@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using UnityEngine;
 
+using URandom = UnityEngine.Random;
 namespace Assets.Scripts
 {
     public abstract class EnemyAction
@@ -29,9 +30,9 @@ namespace Assets.Scripts
 
         public override Sprite Sprite => GameManager.Instance.enemyActionAttackSprite;
 
-        public AttackAction(long damage, int times = 1)
+        public AttackAction(long damage, int times = 1, float variance = 0.15f)
         {
-            this.damage = damage;
+            this.damage = (long) (damage * URandom.Range(1f - variance, 1f + variance));
             this.times = times;
         }
 
@@ -56,9 +57,9 @@ namespace Assets.Scripts
 
         public override Sprite Sprite => GameManager.Instance.enemyActionDefendSprite;
 
-        public DefendAction(long block)
+        public DefendAction(long block, float variance = 0.15f)
         {
-            this.block = block;
+            this.block = (long) (block * URandom.Range(1f - variance, 1f + variance));
         }
 
         public override void Execute(BattleContext ctx)
@@ -71,24 +72,41 @@ namespace Assets.Scripts
 
     public class TrojanAction : EnemyAction
     {
+        Card[] cards;
+        bool targetDrawPile;
+
         public override string NeuroDescription => "The enemy intends to add one or more negative cards to your deck.";
 
         public override Sprite Sprite => GameManager.Instance.enemyActionTrojanSprite;
+
+        public TrojanAction(bool targetDrawPile, params Card[] cards)
+        {
+            this.targetDrawPile = targetDrawPile;
+            this.cards = cards;
+        }
+
+        public TrojanAction(params Card[] cards) : this(false, cards) { }
+        public TrojanAction(Card card, int count, bool targetDrawPile = false)
+        {
+            this.targetDrawPile = targetDrawPile;
+            cards = new Card[count];
+            Array.Fill(cards, card);
+        }
 
         public override void Execute(BattleContext ctx)
         {
             Enemy enemy = ctx.activeEnemy.enemy;
             GameManager.Instance.CreateTextEffect("Trojan", Color.black, ctx.activeEnemy.transform.position);
 
-            for(int i = 0; i < ctx.activeEnemy.enemy.trojanCount; i++)
+            foreach(Card card in cards)
             {
-                if(enemy.targetDrawPile)
-                    ctx.battleUI.CreateDrawCard(enemy.trojanCard, ctx.activeEnemy.transform.position);
+                if(targetDrawPile)
+                    ctx.battleUI.CreateDrawCard(card, ctx.activeEnemy.transform.position);
                 else
-                    ctx.battleUI.CreateDiscardedCard(enemy.trojanCard, ctx.activeEnemy.transform.position);
+                    ctx.battleUI.CreateDiscardedCard(card, ctx.activeEnemy.transform.position);
             }
-            string s = enemy.trojanCount == 1 ? "" : "s";
-            Context.Send($"{enemy.name} creates {enemy.trojanCount} '{enemy.trojanCard.name}' card{s} in your {(ctx.activeEnemy.enemy.targetDrawPile ? "draw pile" : "discard pile")}.");
+            string s = cards.Length == 1 ? "" : "s";
+            Context.Send($"{enemy.name} creates {cards.Length} trojan card{s} in your {(targetDrawPile ? "draw pile" : "discard pile")}.");
         }
     }
 
@@ -106,19 +124,25 @@ namespace Assets.Scripts
 
     public class SummonAction : EnemyAction
     {
-        Enemy enemy;
+        Enemy summonedEnemy;
+
         public override string NeuroDescription => "The enemy intends to summon an ally.";
 
         public override Sprite Sprite => GameManager.Instance.enemyActionSummonSprite;
+
+        public SummonAction(Enemy summonedEnemy)
+        {
+            this.summonedEnemy = summonedEnemy;
+        }
 
         public override void Execute(BattleContext ctx)
         {
             GameManager.Instance.CreateTextEffect("Summon", new Color(1.0f, 0.0f, 0.5f), ctx.activeEnemy.transform.position);
 
-            EnemyUI spawned = ctx.battleUI.CreateEnemy(enemy, ctx.activeEnemy.transform.position);
+            EnemyUI spawned = ctx.battleUI.CreateEnemy(summonedEnemy, ctx.activeEnemy.transform.position);
             spawned.enemy.nextAction = new DoNothingAction(); // Prevent enemy from immediately acting
 
-            Context.Send($"{ctx.activeEnemy.enemy.name} summons a {enemy.name}.");
+            Context.Send($"{ctx.activeEnemy.enemy.name} summons a {summonedEnemy.name}.");
         }
     }
 

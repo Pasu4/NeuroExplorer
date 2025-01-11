@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    [CreateAssetMenu(menuName = "Sound Effect Resources")]
+    [CreateAssetMenu(menuName = "Resources/Sound Effect Resources")]
     public class SoundEffectsResources : ScriptableObject
     {
         public AudioClip hit;

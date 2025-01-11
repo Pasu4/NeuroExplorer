@@ -53,8 +53,6 @@ namespace Assets.Scripts
             GetComponent<Image>().sprite = enemy.sprite;
             hpBar.maxValue = enemy.maxHp;
             hpBar.value = enemy.hp;
-
-            enemy.Init();
         }
     }
 }

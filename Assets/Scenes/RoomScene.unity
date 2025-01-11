@@ -2365,55 +2365,6 @@ MonoBehaviour:
   enemyActionSummonSprite: {fileID: 21300000, guid: adaef6562429eb34cb0d0d86691a2be9, type: 3}
   enemyActionBuffSprite: {fileID: 21300000, guid: 450ea9d7ffc51694c8a53aa170343856, type: 3}
   enemyActionHealSprite: {fileID: 21300000, guid: a7224a51f07664b419ccad9be69e6b3e, type: 3}
-  enemies:
-  - name: Drone
-    strength: 0
-    hp: 40000
-    maxHp: 40000
-    block: 0
-    sprite: {fileID: 21300000, guid: 7689cdf425055ca49a9adae3c459bb95, type: 3}
-    attackWeight: 10
-    defenseWeight: 10
-    trojanWeight: 0
-    attackFactor: 1
-    defendFactor: 1
-    trojanCount: 1
-    multiChance: 0
-    maxMulti: 2
-    trojanId: error
-    targetDrawPile: 0
-  - name: Gymbag Drone
-    strength: 0
-    hp: 60000
-    maxHp: 60000
-    block: 0
-    sprite: {fileID: 21300000, guid: 31395c072f3358e4ba6be7ee61880b50, type: 3}
-    attackWeight: 10
-    defenseWeight: 10
-    trojanWeight: 10
-    attackFactor: 0.5
-    defendFactor: 1
-    trojanCount: 3
-    multiChance: 0
-    maxMulti: 2
-    trojanId: null_pointer
-    targetDrawPile: 0
-  - name: Neuro Yukkuri
-    strength: 0
-    hp: 30000
-    maxHp: 30000
-    block: 0
-    sprite: {fileID: 21300000, guid: 527a02dc22e63424bb4172e364c70cf7, type: 3}
-    attackWeight: 5
-    defenseWeight: 10
-    trojanWeight: 15
-    attackFactor: 0.5
-    defendFactor: 2
-    trojanCount: 3
-    multiChance: 0
-    maxMulti: 2
-    trojanId: memory_leak
-    targetDrawPile: 0
   lockedDirSprite: {fileID: 21300000, guid: 170acf9d58f21284dad4b43e9ae0ce10, type: 3}
   upDirSprite: {fileID: 21300000, guid: ff3afe7c38448ad42a59e3ac7f4dbcea, type: 3}
   roomSource: {fileID: 1801706346}
@@ -2425,12 +2376,13 @@ MonoBehaviour:
   fakeFileText: {fileID: 4900000, guid: dae839c2cb1985345931f6608eba832d, type: 3}
   fakeDirs: []
   sfxSource: {fileID: 240127144}
-  sfx: {fileID: 11400000, guid: b033858fe7349e240a2dcce4e1e2e217, type: 2}
   textEffectPrefab: {fileID: 4677727198014242819, guid: 4088414dc7d07684780d5217f9d929ec, type: 3}
   neuroPlayer: {fileID: 743139686381384140, guid: 20c971f0ec43f0845896a129ce9ba2b7, type: 3}
   evilPlayer: {fileID: 743139686381384140, guid: cd1d45f3e7b5ad54488569d818a8a1f5, type: 3}
   argPlayer: {fileID: 743139686381384140, guid: 801d23408a032914da2bb5404ae54453, type: 3}
   defeatedEncounters: []
+  sfx: {fileID: 11400000, guid: b033858fe7349e240a2dcce4e1e2e217, type: 2}
+  enemySprites: {fileID: 11400000, guid: eb22557f971e1074986caedf9fccd6f5, type: 2}
 --- !u!4 &775382105
 Transform:
   m_ObjectHideFlags: 0

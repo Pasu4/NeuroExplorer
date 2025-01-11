@@ -333,8 +333,8 @@ namespace Assets.Scripts
                 obj1.transform.position = new Vector2(-1.5f, 2);
                 obj2.transform.position = new Vector2(1.5f, 2);
 
-                Card card1 = CardResources.GetCard("filian_attack");
-                Card card2 = CardResources.GetCard("filian_defense");
+                Card card1 = CardResources.FilianAttack;
+                Card card2 = CardResources.FilianDefense;
 
                 obj1.GetComponent<GroundFile>().InitWithCard(this, realPath + "\\" + card1.name, card1);
                 obj2.GetComponent<GroundFile>().InitWithCard(this, realPath + "\\" + card2.name, card2);
@@ -361,8 +361,8 @@ namespace Assets.Scripts
                 obj1.transform.position = new Vector2(-1.5f, 7);
                 obj2.transform.position = new Vector2(1.5f, 7);
 
-                Card card1 = CardResources.GetCard("camila_attack");
-                Card card2 = CardResources.GetCard("camila_defense");
+                Card card1 = CardResources.CamilaAttack;
+                Card card2 = CardResources.CamilaDefense;
 
                 obj1.GetComponent<GroundFile>().InitWithCard(this, realPath + "\\" + card1.name, card1);
                 obj2.GetComponent<GroundFile>().InitWithCard(this, realPath + "\\" + card2.name, card2);

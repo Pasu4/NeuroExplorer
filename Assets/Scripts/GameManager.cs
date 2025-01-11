@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Integration.Actions;
+﻿using Assets.Scripts.Enemies;
+using Assets.Scripts.Integration.Actions;
 using NeuroSdk.Actions;
 using NeuroSdk.Messages.Outgoing;
 using Newtonsoft.Json;
@@ -70,6 +71,7 @@ namespace Assets.Scripts
         public Sprite enemyActionSummonSprite;
         public Sprite enemyActionBuffSprite;
         public Sprite enemyActionHealSprite;
+        [HideInInspector]
         public Enemy[] enemies;
         public Sprite lockedDirSprite;
         public Sprite upDirSprite;
@@ -84,7 +86,6 @@ namespace Assets.Scripts
         public Dictionary<string, string[]> fakeFilesByExt;
 
         public AudioSource sfxSource;
-        public SoundEffectsResources sfx;
 
         public GameObject textEffectPrefab;
         public GameObject neuroPlayer;
@@ -99,6 +100,11 @@ namespace Assets.Scripts
 
         public List<string> defeatedEncounters;
 
+        [Space(20)]
+        [Header("Resources")]
+        public SoundEffectsResources sfx;
+        public EnemySpriteResources enemySprites;
+
         private void Awake()
         {
 #if UNITY_EDITOR
@@ -109,6 +115,8 @@ namespace Assets.Scripts
 
             inventoryAction = InputSystem.actions.FindAction("Inventory");
             cancelAction = InputSystem.actions.FindAction("Cancel");
+
+            enemies = new Enemy[] { EnemyResources.Drone, EnemyResources.GymbagDrone, EnemyResources.NeuroYukkuri };
         }
 
         // Use this for initialization
@@ -427,11 +435,11 @@ namespace Assets.Scripts
             enemyHpScale += enemyHpScale * difficulty / 2f;
             defaultEnemyStrength += (long) (defaultEnemyStrength * difficulty / 2f);
 
-            deck.AddRange(new[] { "osu", "minecraft", "slay_the_spire", "desktop_ini", "prompt", "neuro_log" }.Select(id => CardResources.GetCard(id)));
+            deck.AddRange(new Card[] { CardResources.Osu, CardResources.Minecraft, CardResources.SlayTheSpire, CardResources.DesktopIni, CardResources.Prompt, CardResources.NeuroLog });
 
-            if(difficulty == 0)      deck.Add(CardResources.GetCard("gymbag"));
-            else if(difficulty == 1) deck.Add(CardResources.GetCard("metal_pipe"));
-            else if(difficulty == 2) deck.Add(CardResources.GetCard("hiyori"));
+            if(difficulty == 0)      deck.Add(CardResources.Gymbag);
+            else if(difficulty == 1) deck.Add(CardResources.MetalPipe);
+            else if(difficulty == 2) deck.Add(CardResources.Arg);
 
             gameMode = GameMode.Room;
             room.ChangeRoom(startPath);

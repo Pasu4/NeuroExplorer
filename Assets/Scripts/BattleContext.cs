@@ -10,5 +10,12 @@ namespace Assets.Scripts
     {
         public BattleUI battleUI;
         public EnemyUI activeEnemy;
+        public bool isInit = false;
+
+        public BattleContext SetInit(bool value)
+        {
+            isInit = value;
+            return this;
+        }
     }
 }

@@ -18,6 +18,8 @@ namespace Assets.Scripts
         }
 
         public static T Choose<T>(this System.Random random, params T[] array) => array[random.Next(array.Length)];
+        public static T ChooseRandom<T>(IEnumerable<T> enumerable) => new System.Random().Choose(enumerable);
+        public static T ChooseRandom<T>(params T[] array) => new System.Random().Choose(array);
 
         public static IEnumerable<T> ChooseMany<T>(this System.Random random, IEnumerable<T> enumerable, int count)
         {
@@ -75,17 +77,19 @@ namespace Assets.Scripts
             };
         }
 
-        public static T ChooseWeighted<T>(System.Random random, params (int Weight, T Obj)[] weightedActions)
+        public static T ChooseWeighted<T>(System.Random random, params (int Weight, T Obj)[] weightedResults)
         {
-            int totalWeight = weightedActions.Sum(a => a.Weight);
+            int totalWeight = weightedResults.Sum(a => a.Weight);
             int selection = random.Next(totalWeight);
-            foreach(var (weight, obj) in weightedActions)
+            foreach(var (weight, obj) in weightedResults)
             {
                 selection -= weight;
                 if(selection < 0) return obj;
             }
             throw new Exception("Unreachable");
         }
+
+        public static T ChooseWeightedRandom<T>(params (int Weight, T Obj)[] weightedResults) => ChooseWeighted(new System.Random(), weightedResults);
 
         public static Vector2 DistributeBetweenCentered(Vector2 start, Vector2 end, int count, int index, float maxDistance = Mathf.Infinity)
         {
