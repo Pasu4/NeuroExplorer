@@ -98,7 +98,8 @@ namespace Assets.Scripts
                 type = Card.CardType.Attack,
                 fileSize = 75337,
                 attack = 274_475,
-                async = true,
+                requiresTarget = true,
+                erase = true,
                 sprite = GameManager.Instance.GetFileSprite(".py"),
                 cardEffects = new[] { new ForkEffect("filian_attack") }
             },
@@ -126,6 +127,7 @@ namespace Assets.Scripts
                 type = Card.CardType.Tool, // Not really defense but eh
                 fileSize = 9_137_697,
                 erase = true,
+                requiresTarget = true,
                 sprite = GameManager.Instance.GetFileSprite(".zip"),
                 cardEffects = new[] { new ContinueEffect() }
             },
