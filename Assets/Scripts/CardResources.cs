@@ -123,6 +123,7 @@ namespace Assets.Scripts
             type = Card.CardType.Attack,
             fileSize = 9_846_868,
             attack = 3_137_971 * 12/10,
+            requiresTarget = true,
             sprite = GameManager.Instance.GetFileSprite(".model"),
             cardEffects = new[] { new MutexEffect() }
         };

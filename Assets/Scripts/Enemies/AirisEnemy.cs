@@ -11,7 +11,7 @@ namespace Assets.Scripts
         {
             name = "AIris";
             this.sprite = sprite;
-            maxHp = 15_000_000 + GameManager.Instance.difficulty * 10_000_000;
+            maxHp = 50_000_000 + GameManager.Instance.difficulty * 10_000_000;
             strength = 2_000_000 + GameManager.Instance.difficulty * 1_000_000;
             attackFactor = 1.0f;
             defendFactor = 1.0f;
@@ -21,7 +21,7 @@ namespace Assets.Scripts
         {
             if(ctx.battleUI.enemies.Count == 1)
             {
-                return new SummonAction(EnemyResources.NeuroYukkuri);
+                return new SummonAction(EnemyResources.Drone);
             }
 
             switch(count++)

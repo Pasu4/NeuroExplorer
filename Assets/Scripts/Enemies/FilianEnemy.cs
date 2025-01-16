@@ -14,7 +14,7 @@ namespace Assets.Scripts
         {
             name = "FilAIn";
             this.sprite = sprite;
-            maxHp = 150_000 + GameManager.Instance.difficulty * 100_000;
+            maxHp = 300_000 + GameManager.Instance.difficulty * 100_000;
             strength = 20_000 + GameManager.Instance.difficulty * 10_000;
             attackFactor = 1.0f;
             defendFactor = 1.0f;
@@ -22,7 +22,12 @@ namespace Assets.Scripts
 
         public override EnemyAction ChooseNextAction(BattleContext ctx)
         {
-            switch(count)
+            if(ctx.battleUI.enemies.Count == 1)
+            {
+                return new SummonAction(EnemyResources.Drone);
+            }
+
+            switch(count++)
             {
                 case 0:
                     return new TrojanAction(CardResources.ForkBomb, 2);

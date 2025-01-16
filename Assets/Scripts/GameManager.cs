@@ -72,7 +72,7 @@ namespace Assets.Scripts
         public Sprite enemyActionBuffSprite;
         public Sprite enemyActionHealSprite;
         [HideInInspector]
-        public Enemy[] enemies;
+        public Enemy[] Enemies => new Enemy[] { EnemyResources.Drone, EnemyResources.GymbagDrone, EnemyResources.NeuroYukkuri };
         public Sprite lockedDirSprite;
         public Sprite upDirSprite;
         public AudioSource roomSource;
@@ -115,8 +115,6 @@ namespace Assets.Scripts
 
             inventoryAction = InputSystem.actions.FindAction("Inventory");
             cancelAction = InputSystem.actions.FindAction("Cancel");
-
-            enemies = new Enemy[] { EnemyResources.Drone, EnemyResources.GymbagDrone, EnemyResources.NeuroYukkuri };
         }
 
         // Use this for initialization
@@ -133,7 +131,7 @@ namespace Assets.Scripts
 
             allowedFolderPathRegex = new Regex(@"
                 ^C:(?:
-                    \\Windows.+
+                    \\Windows(\\.+)?
                     | \\Users (?:
                         \\Vedal
                         | \\\w+ (?:

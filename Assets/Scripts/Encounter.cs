@@ -51,7 +51,7 @@ namespace Assets.Scripts
             detectionRange = random.Range(2, 5);
 
             int enemyCount = random.Next(1, 4 + GameManager.Instance.difficulty);
-            enemies = random.ChooseMany(GameManager.Instance.enemies, enemyCount).Select(e => e.Copy()).ToArray();
+            enemies = random.ChooseMany(GameManager.Instance.Enemies, enemyCount).Select(e => e.Copy()).ToArray();
             foreach(Enemy enemy in enemies)
             {
                 enemy.strength = strength;

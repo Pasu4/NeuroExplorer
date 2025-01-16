@@ -224,12 +224,12 @@ namespace Assets.Scripts
             }
         }
 
-        public void Draw(int count)
+        public void Draw(int count, bool allowShuffle = false)
         {
             for(int i = 0; i < count; i++)
             {
                 // Cannot draw more cards
-                if(drawCards.Count == 0 && discardedCards.Count == 0)
+                if(drawCards.Count == 0 && (discardedCards.Count == 0 || !allowShuffle))
                     break;
 
                 if(drawCards.Count == 0)
@@ -456,7 +456,7 @@ namespace Assets.Scripts
 
                 GameManager.Instance.mp = GameManager.Instance.maxMp;
                 GameManager.Instance.block = 0;
-                yield return CDraw(5);
+                yield return CDraw(5, true);
 
                 if(deck.Count(c => c.card.cardEffects.Any(e => e is SemaphoreEffect)) >= 4)
                 {
@@ -520,11 +520,11 @@ namespace Assets.Scripts
             yield return null; // Wait for actions to be unregistered
         }
 
-        private IEnumerator CDraw(int count)
+        private IEnumerator CDraw(int count, bool allowShuffle = false)
         {
             for(int i = 0; i < count; i++)
             {
-                Draw(1);
+                Draw(1, allowShuffle);
                 yield return new WaitForSeconds(0.25f);
             }
         }

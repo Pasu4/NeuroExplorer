@@ -126,8 +126,8 @@ namespace Assets.Scripts
             gm.hp = gm.maxHp;
             gm.maxMp *= 100;
             gm.inventorySpace *= 100;
-            gm.defaultEnemyStrength *= 10;
-            gm.enemyHpScale *= 10;
+            gm.defaultEnemyStrength *= 12;
+            gm.enemyHpScale *= 12;
 
             gm.CreateTextEffect("All stats increased!", Color.green, GameManager.Instance.player.transform.position);
             Context.Send("All your stats were increased, but all enemies also got stronger.");
@@ -270,7 +270,7 @@ namespace Assets.Scripts
                     break;
             }
 
-            GameManager.Instance.StartBattle(new Enemy[] { new FilianEnemy(trigger.sprite) }, "filian", true, GameManager.Instance.bossClip);
+            GameManager.Instance.StartBattle(new Enemy[] { new FilianEnemy(trigger.sprite), EnemyResources.Drone }, "filian", true, GameManager.Instance.bossClip);
 
             while(!GameManager.Instance.battleUI.battleWon) yield return null;
 
@@ -331,7 +331,7 @@ namespace Assets.Scripts
                     break;
             }
 
-            GameManager.Instance.StartBattle(new Enemy[] { new CamilaEnemy(trigger.sprite) }, "camila", true, GameManager.Instance.bossClip);
+            GameManager.Instance.StartBattle(new Enemy[] { new CamilaEnemy(trigger.sprite), EnemyResources.NeuroYukkuri }, "camila", true, GameManager.Instance.bossClip);
 
             while(!GameManager.Instance.battleUI.battleWon) yield return null;
 
@@ -406,7 +406,7 @@ namespace Assets.Scripts
                     break;
             }
 
-            GameManager.Instance.StartBattle(new Enemy[] { new AirisEnemy(trigger.sprite) }, "airis", true, GameManager.Instance.finalBossClip);
+            GameManager.Instance.StartBattle(new Enemy[] { EnemyResources.NeuroYukkuri, new AirisEnemy(trigger.sprite), EnemyResources.NeuroYukkuri }, "airis", true, GameManager.Instance.finalBossClip);
 
             while(!GameManager.Instance.battleUI.battleWon) yield return null;
 

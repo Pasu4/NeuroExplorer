@@ -68,8 +68,8 @@ namespace Assets.Scripts
             {
                 <.35 => CardType.Attack,  // (35%) Attack card
                 <.70 => CardType.Defense, // (35%) Defense card
-                <.95 => CardType.Tool,    // (25%) Tool card
-                _ => CardType.Resource    // ( 5%) Resource card
+                _ => CardType.Tool,       // (30%) Tool card
+                // _ => CardType.Resource    // ( 0%) Resource card
             };
 
             // Based on file extension

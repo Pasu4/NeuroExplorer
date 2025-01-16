@@ -15,7 +15,7 @@ namespace Assets.Scripts
         {
             name = "AImila";
             this.sprite = sprite;
-            maxHp = 1_500_000 + GameManager.Instance.difficulty * 1_000_000;
+            maxHp = 4_000_000 + GameManager.Instance.difficulty * 1_000_000;
             strength = 200_000 + GameManager.Instance.difficulty * 100_000;
             attackFactor = 1.0f;
             defendFactor = 1.0f;
@@ -37,10 +37,15 @@ namespace Assets.Scripts
 
         public override EnemyAction ChooseNextAction(BattleContext ctx)
         {
+            if(ctx.battleUI.enemies.Count == 1)
+            {
+                return new SummonAction(EnemyResources.NeuroYukkuri);
+            }
+
             // Phase 1
             if(phase == 1)
             {
-                switch(count)
+                switch(count++)
                 {
                     case 0:
                         return new TrojanAction(CardResources.Mutex);
@@ -66,7 +71,7 @@ namespace Assets.Scripts
             // Phase 2
             else
             {
-                switch(count)
+                switch(count++)
                 {
                     case 0:
                         return new TrojanAction(CardResources.Mutex, 2);

@@ -17,7 +17,7 @@ namespace Assets.Scripts.CardEffects
             {
                 ctx.battleUI.Discard(card);
             }
-            ctx.battleUI.Draw(handCards.Count); // Count of copied list
+            ctx.battleUI.Draw(handCards.Count, false); // Count of copied list
         }
     }
 }

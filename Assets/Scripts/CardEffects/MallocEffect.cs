@@ -21,7 +21,7 @@ namespace Assets.Scripts.CardEffects
         {
             base.OnPlay(ctx);
 
-            ctx.battleUI.Draw(count);
+            ctx.battleUI.Draw(count, false);
         }
     }
 }

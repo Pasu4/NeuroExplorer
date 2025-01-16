@@ -2275,7 +2275,7 @@ MonoBehaviour:
   difficulty: -1
   progress: 0
   obfuscateSet: 0
-  skipIntro: 0
+  skipIntro: 1
   defaultEnemyStrength: 20000
   enemyHpScale: 1
   neuroVisionRange: 10
@@ -7576,7 +7576,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 6.296875
+  orthographic size: 7.96875
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
