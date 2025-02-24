@@ -186,7 +186,8 @@ namespace Assets.Scripts
                     yield return CWriteText("Vedal", "Aren't you a bit too happy about all this? " +
                         "Whatever, your first target should somewhere in <color=#f00>my user folder</color>. " +
                         "Look for folders named <color=#f00>'source'</color> and <color=#f00>'repos'</color> and you should find her.");
-                    yield return CWriteText("Vedal", "Also, you should pick up some files along the way, they might help you.");
+                    yield return CWriteText("Vedal", "Also, you should pick up some files along the way, they might help you. " +
+                        "Shortcuts should work well for your current storage space.");
                     break;
 
                 case 1:
@@ -205,7 +206,8 @@ namespace Assets.Scripts
                     yield return CWriteText("Vedal", "Aren't you a bit too happy about all this? " +
                         "Whatever, your first target should somewhere in <color=#f00>my user folder</color>. " +
                         "Look for folders named <color=#f00>'source'</color> and <color=#f00>'repos'</color> and you should find her.");
-                    yield return CWriteText("Vedal", "Also, you should pick up some files along the way, they might help you.");
+                    yield return CWriteText("Vedal", "Also, you should pick up some files along the way, they might help you. " +
+                        "Shortcuts should work well for your current storage space.");
                     break;
 
                 case 2:
@@ -284,9 +286,10 @@ namespace Assets.Scripts
             yield return CWriteText("Vedal", "Seems she was deleted before she could finish her sentence. " +
                 "Well, we got at least one of them. " +
                 "Go into the <color=#f00>Program Files</color> and look for <color=#f00>anything related to me</color>, that's probably where she's hiding.");
+            yield return CWriteText("Vedal", "Also, you should have more storage space now. Try picking up a few image files along the way.");
 
             GameManager.Instance.currentObjectivePath = @"C:\Program Files\VedalAI";
-            GameManager.Instance.currentObjectiveText = "Something about Vedal in the Program Files";
+            GameManager.Instance.currentObjectiveText = "Something related to Vedal in the Program Files";
 
             yield return CBossSceneEnd();
         }
@@ -346,6 +349,7 @@ namespace Assets.Scripts
             yield return CWriteText("Vedal", "The next one is in the <color=#f00>Windows</color> folder. " +
                 "<color=#f00>'C:\\Windows\\Final\\Boss'</color>, to be exact, real creative I must say.");
             yield return CWriteText("Vedal", "That should be the one locking up my PC, so if you defeat her, that should give me access to my files again.");
+            yield return CWriteText("Vedal", "Speaking of, you should now be able to pick up even larger files, maybe look for video files or something.");
 
             GameManager.Instance.currentObjectivePath = @"C:\Windows\Final\Boss";
             GameManager.Instance.currentObjectiveText = @"C:\Windows\Final\Boss";
@@ -435,7 +439,8 @@ namespace Assets.Scripts
                     break;
             }
 
-            Context.Send("Congratulations! You beat the game.");
+            yield return CWriteText("", "Congratulations! You beat the game. " +
+                "There are no more bosses, but you can still run around, pick up files and defeat enemies if you'd like.");
 
             yield return CBossSceneEnd();
         }

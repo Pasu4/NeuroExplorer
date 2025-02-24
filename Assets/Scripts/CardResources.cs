@@ -202,7 +202,5 @@ namespace Assets.Scripts
             fileSize = 1_000_000_000_000L,
             sprite = GameManager.Instance.GetFileSprite("error")
         };
-
-        public static Card GetCard(string a) => Error;
     }
 }
