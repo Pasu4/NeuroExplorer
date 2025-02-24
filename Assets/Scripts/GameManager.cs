@@ -85,6 +85,7 @@ namespace Assets.Scripts
         public TextAsset fakeFileText;
         public string[] fakeDirs;
         public Dictionary<string, string[]> fakeFilesByExt;
+        public string defaultUser;
 
         public AudioSource sfxSource;
 
@@ -122,6 +123,9 @@ namespace Assets.Scripts
         void Start()
         {
             startPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            Regex defaultUserRx = new Regex(@"C:\\Users\\(\w+)");
+            defaultUser = defaultUserRx.Match(startPath).Groups[1].Value;
+
             if(gameSeed < 0)
             {
                 RandomNumberGenerator secureRng = RandomNumberGenerator.Create();
@@ -221,6 +225,7 @@ namespace Assets.Scripts
 
         public string ObfuscatePath(string realPath, bool isDir)
         {
+            realPath = ReplaceName(realPath);
             string ext = isDir ? "" : Path.GetExtension(realPath);
 
             string[] split = realPath.Split(Path.DirectorySeparatorChar);
@@ -251,7 +256,10 @@ namespace Assets.Scripts
                 else
                 {
                     if(isUserDir)
-                        fakePathBuilder.Append(random.Choose("Vedal", "Neuro", "Evil", "Anny", "Alex", "Tony", "Kayori", "Samantha"));
+                        fakePathBuilder.Append(random.Choose(
+                            "Neuro", "Evil", "Anny", "Alex", "Tony", "Kayori", "Samantha", "Randy", "Cerber",
+                            "Mikado", "Miniko", "Abber", "Staz", "Toma", "Camila", "Joker"
+                        ));
                     else
                         fakePathBuilder.Append(random.Choose(fakeDirs));
                 }
@@ -683,6 +691,14 @@ namespace Assets.Scripts
 
             // Send
             Context.Send(sb.ToString());
+        }
+
+        public string ReplaceName(string path)
+        {
+            string cut = "C:\\Users\\" + defaultUser;
+            if(path.StartsWith(cut))
+                return "C:\\Users\\Vedal" + path.Substring(cut.Length);
+            return path;
         }
     }
 }

@@ -64,7 +64,7 @@ namespace Assets.Scripts
         {
             this.room = room;
             this.realPath = realPath;
-            displayPath = GameManager.Instance.obfuscate ? GameManager.Instance.ObfuscatePath(realPath, this is GroundDir) : realPath;
+            displayPath = GameManager.Instance.obfuscate ? GameManager.Instance.ObfuscatePath(realPath, this is GroundDir) : GameManager.Instance.ReplaceName(realPath);
             InitRandom();
 
             //// Generate position

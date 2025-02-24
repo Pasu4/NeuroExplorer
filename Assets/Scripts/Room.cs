@@ -44,12 +44,13 @@ namespace Assets.Scripts
             ^C:\\Users\\\w+(?:\\OneDrive)?\\Desktop$
         ", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled);
 
-        readonly List<FakeDir> fakeDirs = new()
+        // REAL PATHS
+        private List<FakeDir> GetFakeDirs() => new()
         {
-            new(@"C:\Users", "Vedal"),
-            new(@"C:\Users\Vedal", "source"),
-            new(@"C:\Users\Vedal\source", "repos"),
-            new(@"C:\Users\Vedal\source\repos", "FilAIn"),
+            //new(@"C:\Users", realUserName),
+            new(@$"C:\Users\{GameManager.Instance.defaultUser}", "source"),
+            new(@$"C:\Users\{GameManager.Instance.defaultUser}\source", "repos"),
+            new(@$"C:\Users\{GameManager.Instance.defaultUser}\source\repos", "FilAIn"),
 
             new(@"C:\Program Files", "VedalAI"),
             new(@"C:\Program Files\VedalAI", "AImila"),
@@ -75,10 +76,12 @@ namespace Assets.Scripts
 
         public void ChangeRoom(string newPath)
         {
+            GameManager gm = GameManager.Instance;
+
             string fromPath = realPath;
             realPath = newPath;
-            displayPath = GameManager.Instance.obfuscate ? GameManager.Instance.ObfuscatePath(realPath, true) : realPath;
-            System.Random random = GameManager.Instance.CreatePathRandom(newPath, "RoomLayout");
+            displayPath = gm.obfuscate ? gm.ObfuscatePath(realPath, true) : gm.ReplaceName(realPath);
+            System.Random random = gm.CreatePathRandom(newPath, "RoomLayout");
             isBossRoom = false;
 
             // Destroy old ground objects
@@ -90,7 +93,7 @@ namespace Assets.Scripts
                 Destroy(go);
             encounters.Clear();
 
-            if(newPath == @"C:\Users\Vedal\source\repos\FilAIn")
+            if(newPath == @$"C:\Users\{gm.defaultUser}\source\repos\FilAIn")
             {
                 SpecialRoom(@"C:\Users\Vedal\source\repos\FilAIn");
                 return;
@@ -140,7 +143,10 @@ namespace Assets.Scripts
             }
 
             // Add fake dirs
-            dirs.AddRange(fakeDirs.Where(d => d.location == newPath).Select(d => d.location + Path.DirectorySeparatorChar + d.name));
+            dirs.AddRange(GetFakeDirs()
+                .Where(d => d.location == newPath)
+                .Select(d => d.location + Path.DirectorySeparatorChar + d.name)
+            );
 
             int objCount = files.Count + dirs.Count;
 
