@@ -14,8 +14,8 @@ namespace Assets.Scripts
         {
             name = "FilAIn";
             this.sprite = sprite;
-            maxHp = 300_000 + GameManager.Instance.difficulty * 100_000;
-            strength = 20_000 + GameManager.Instance.difficulty * 10_000;
+            maxHp = 300.kB() + GameManager.Instance.difficulty * 100.kB();
+            strength = 20.kB() + GameManager.Instance.difficulty * 10.kB();
             attackFactor = 1.0f;
             defendFactor = 1.0f;
         }

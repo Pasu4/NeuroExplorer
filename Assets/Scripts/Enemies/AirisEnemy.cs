@@ -11,8 +11,8 @@ namespace Assets.Scripts
         {
             name = "AIris";
             this.sprite = sprite;
-            maxHp = 50_000_000 + GameManager.Instance.difficulty * 10_000_000;
-            strength = 2_000_000 + GameManager.Instance.difficulty * 1_000_000;
+            maxHp = 50.MB() + GameManager.Instance.difficulty * 10.MB();
+            strength = 2.MB() + GameManager.Instance.difficulty * 1.MB();
             attackFactor = 1.0f;
             defendFactor = 1.0f;
         }

@@ -15,8 +15,8 @@ namespace Assets.Scripts
         {
             name = "AImila";
             this.sprite = sprite;
-            maxHp = 4_000_000 + GameManager.Instance.difficulty * 1_000_000;
-            strength = 200_000 + GameManager.Instance.difficulty * 100_000;
+            maxHp = 4.MB() + GameManager.Instance.difficulty * 1.MB();
+            strength = 200.kB() + GameManager.Instance.difficulty * 100.kB();
             attackFactor = 1.0f;
             defendFactor = 1.0f;
         }

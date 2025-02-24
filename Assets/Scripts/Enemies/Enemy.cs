@@ -12,8 +12,8 @@ namespace Assets.Scripts
     {
         public string name;
         public long strength;
-        public long hp = 100000;
-        public long maxHp = 100000;
+        public long hp = 100.kB();
+        public long maxHp = 100.kB();
         public long block = 0;
         public Sprite sprite;
         public float attackFactor = 1.0f;

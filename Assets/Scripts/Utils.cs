@@ -126,5 +126,20 @@ namespace Assets.Scripts
                 return !skip;
             }).ToArray());
         }
+
+#pragma warning disable IDE1006 // Naming Styles
+        public static long kB(this double value) => (long) (value * 1_000L);
+        public static long kB(this float value) => (long) (value * 1_000L);
+        public static long kB(this int value) => (value * 1_000L);
+        public static long MB(this double value) => (long) (value * 1_000_000L);
+        public static long MB(this float value) => (long) (value * 1_000_000L);
+        public static long MB(this int value) => (value * 1_000_000L);
+        public static long GB(this double value) => (long) (value * 1_000_000_000L);
+        public static long GB(this float value) => (long) (value * 1_000_000_000L);
+        public static long GB(this int value) => (value * 1_000_000_000L);
+        public static long TB(this double value) => (long) (value * 1_000_000_000_000L);
+        public static long TB(this float value) => (long) (value * 1_000_000_000_000L);
+        public static long TB(this int value) => (value * 1_000_000_000_000L);
+#pragma warning restore IDE1006 // Naming Styles
     }
 }

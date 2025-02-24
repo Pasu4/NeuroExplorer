@@ -121,8 +121,8 @@ namespace Assets.Scripts
             name = "AImila.model",
             filePath = @"C:\Program Files\VedalAI\AImila\AImila.model",
             type = Card.CardType.Attack,
-            fileSize = 9_846_868,
-            attack = 3_137_971 * 12/10,
+            fileSize = 9.846f.MB(),
+            attack = 3.138f.MB() * 12/10,
             requiresTarget = true,
             sprite = GameManager.Instance.GetFileSprite(".model"),
             cardEffects = new[] { new MutexEffect() }
@@ -132,7 +132,7 @@ namespace Assets.Scripts
             name = "camila_voice.zip",
             filePath = @"C:\Program Files\VedalAI\AImila\camila_voice.zip",
             type = Card.CardType.Tool, // Not really defense but eh
-            fileSize = 9_137_697,
+            fileSize = 9.137f.MB(),
             erase = true,
             requiresTarget = true,
             sprite = GameManager.Instance.GetFileSprite(".zip"),
@@ -199,7 +199,7 @@ namespace Assets.Scripts
             name = "Error",
             type = Card.CardType.Trojan,
             @volatile = true,
-            fileSize = 1_000_000_000_000L,
+            fileSize = 1.TB(),
             sprite = GameManager.Instance.GetFileSprite("error")
         };
     }

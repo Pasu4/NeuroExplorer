@@ -8,7 +8,7 @@ namespace Assets.Scripts
         public static Enemy Drone => new SimpleEnemy
         {
             name = "Drone",
-            maxHp = (long) (60000 * GameManager.Instance.enemyHpScale * Random.Range(0.8f, 1.2f)),
+            maxHp = (long) (60.kB() * GameManager.Instance.enemyHpScale * Random.Range(0.8f, 1.2f)),
             sprite = GameManager.Instance.enemySprites.drone,
             attackFactor = 1f,
             defendFactor = 1f,
@@ -21,7 +21,7 @@ namespace Assets.Scripts
         public static Enemy GymbagDrone => new SimpleEnemy
         {
             name = "Gymbag Drone",
-            maxHp = (long) (90000 * GameManager.Instance.enemyHpScale * Random.Range(0.8f, 1.2f)),
+            maxHp = (long) (90.kB() * GameManager.Instance.enemyHpScale * Random.Range(0.8f, 1.2f)),
             sprite = GameManager.Instance.enemySprites.gymbagDrone,
             attackFactor = 1f,
             defendFactor = 1f,
@@ -36,7 +36,7 @@ namespace Assets.Scripts
         public static Enemy NeuroYukkuri => new SimpleEnemy
         {
             name = "Neuro Yukkuri",
-            maxHp = (long) (55000 * GameManager.Instance.enemyHpScale * Random.Range(0.8f, 1.2f)),
+            maxHp = (long) (55.kB() * GameManager.Instance.enemyHpScale * Random.Range(0.8f, 1.2f)),
             sprite = GameManager.Instance.enemySprites.neuroYukkuri,
             attackFactor = 0.5f,
             defendFactor = 2.0f,
