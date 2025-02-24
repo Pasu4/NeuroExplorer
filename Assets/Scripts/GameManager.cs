@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Enemies;
+using Assets.Scripts.Integration;
 using Assets.Scripts.Integration.Actions;
 using NeuroSdk.Actions;
 using NeuroSdk.Messages.Outgoing;
@@ -189,6 +190,7 @@ namespace Assets.Scripts
                 gameMode = GameMode.Inventory;
                 inventoryUI.gameObject.SetActive(true);
                 inventoryUI.Init();
+                inventoryUI.InitActionWindow();
             }
             else if((inventoryAction.WasPerformedThisFrame() || cancelAction.WasPerformedThisFrame()) && gameMode == GameMode.Inventory)
             {
@@ -597,42 +599,39 @@ namespace Assets.Scripts
 
         public void NeuroRoomStart()
         {
+            GameManager gm = GameManager.Instance;
+
             if(GetComponent<ActionWindow>() != null)
             {
                 Debug.LogError("Action window already exists.");
             }
 
-            ActionWindow actionWindow = ActionWindow.Create(gameObject)
+            ActionWindow.Create(gameObject)
                 .AddAction(new ExploreRoomAction())
-                .AddAction(new RoomAscendAction())
-                .AddAction(new RoomDescendAction())
-                .AddAction(new RoomPickupItemAction());
-
-            // Can only engage the boss if this is a boss room and the boss is alive
-            if(room.isBossRoom && FindFirstObjectByType<BossTrigger>() != null)
-                actionWindow.AddAction(new EngageBossAction());
-
-            // Can only heal if there is a healing item in the room
-            if(room.displayPath.EndsWith("Desktop"))
-                actionWindow.AddAction(new UseHealPointAction());
-
-            actionWindow
+                .AddAction(new OpenInventoryAction())
+                // Can only ascend if the path is not the root folder
+                .AddActionIf(new RoomAscendAction(), gm.room.realPath != "C:")
+                // Can only descend into visible non-locked rooms
+                .AddActionIf(new RoomDescendAction(),
+                    gm.room.groundObjects
+                    .Select(go => go.GetComponent<GroundDir>())
+                    .Any(dir => dir != null && !dir.isUpDir && dir.CanNeuroDescend())
+                )
+                // Can only pick up items that are visible and fit in inventory
+                .AddActionIf(new RoomPickupItemAction(),
+                    gm.room.groundObjects
+                    .Select(go => go.GetComponent<GroundFile>())
+                    .Any(f => f != null && f.CanNeuroPickUp())
+                )
+                // Can only engage the boss if this is a boss room and the boss is alive
+                .AddActionIf(new EngageBossAction(), room.isBossRoom && FindFirstObjectByType<BossTrigger>() != null)
+                // Can only heal if there is a healing item in the room
+                .AddActionIf(new UseHealPointAction(), room.displayPath.EndsWith("Desktop"))
                 .SetEnd(() => gameMode != GameMode.Room)
                 .Register();
-
+                
             SendRoomContext();
         }
-        //public void IntegrationRoomEnd()
-        //{
-        //    NeuroActionHandler.UnregisterActions(
-        //        ExploreRoomAction.staticName,
-        //        RoomAscendAction.staticName,
-        //        RoomDescendAction.staticName,
-        //        RoomPickupItemAction.staticName,
-        //        EngageBossAction.staticName,
-        //        HealAction.staticName
-        //    );
-        //}
 
         public void SendRoomContext()
         {

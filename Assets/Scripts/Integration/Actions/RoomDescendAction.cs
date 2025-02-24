@@ -26,7 +26,7 @@ namespace Assets.Scripts.Integration.Actions
             {
                 ["name"] = QJS.Enum(GameManager.Instance.room.groundObjects
                     .Select(go => go.GetComponent<GroundDir>())
-                    .Where(dir => dir != null && !dir.locked && Vector2.Distance(dir.transform.position, GameManager.Instance.player.transform.position) < GameManager.Instance.neuroVisionRange)
+                    .Where(dir => dir != null && dir.CanNeuroDescend())
                     .Select(dir => dir.DisplayName)
                 )
             }
@@ -45,7 +45,7 @@ namespace Assets.Scripts.Integration.Actions
 
             // Check for game mode
             if(GameManager.Instance.gameMode != GameMode.Room)
-                return ExecutionResult.Failure("Someone tell Pasu4 there is a problem with his code.");
+                return ExecutionResult.Success("Someone tell Pasu4 there is a problem with his code.");
 
             // Check if the name is null
             if(name is null)

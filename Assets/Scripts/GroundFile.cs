@@ -44,9 +44,9 @@ namespace Assets.Scripts
             if(Vector2.Distance(player.transform.position, transform.position) > player.interactionRange)
                 return;
 
-            if(gm.deck.Any(c => c.filePath == displayPath))
+            if(gm.deck.Any(c => c.name == card.name))
             {
-                gm.CreateTextEffect("Already copied", Color.red, transform.position);
+                gm.CreateTextEffect("Name already exists", Color.red, transform.position);
                 return;
             }
 
@@ -54,6 +54,11 @@ namespace Assets.Scripts
             {
                 gm.CreateTextEffect($"File too large\n({Utils.FileSizeString(card.fileSize)})", Color.red, transform.position);
                 return;
+            }
+
+            if(!CanPickUp())
+            {
+                gm.CreateTextEffect("Cannot pick up this file", Color.red, transform.position);
             }
 
             gm.sfxSource.PlayOneShot(gm.sfx.pickup);
@@ -91,6 +96,20 @@ namespace Assets.Scripts
         protected override void InitRandom()
         {
             random = GameManager.Instance.CreatePathRandom(DisplayName, "InitFile");
+        }
+
+        public bool CanPickUp()
+        {
+            return fileSize <= GameManager.Instance.FreeStorage
+                && Vector2.Distance(transform.position, GameManager.Instance.player.transform.position) <= GameManager.Instance.player.interactionRange
+                && !GameManager.Instance.deck.Any(c => c.name == card.name);
+        }
+
+        public bool CanNeuroPickUp()
+        {
+            return fileSize <= GameManager.Instance.FreeStorage
+                && Vector2.Distance(transform.position, GameManager.Instance.player.transform.position) <= GameManager.Instance.neuroVisionRange
+                && !GameManager.Instance.deck.Any(c => c.name == card.name);
         }
     }
 }

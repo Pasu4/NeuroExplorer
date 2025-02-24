@@ -23,12 +23,8 @@ namespace Assets.Scripts.Integration.Actions
             {
                 ["name"] = QJS.Enum(GameManager.Instance.room.groundObjects
                     .Select(go => go.GetComponent<GroundFile>())
-                    .Where(file => 
-                        file != null
-                        && file.fileSize <= GameManager.Instance.FreeStorage
-                        && Vector2.Distance(file.transform.position, GameManager.Instance.player.transform.position) < GameManager.Instance.neuroVisionRange
-                    )
-                    .Select(dir => dir.DisplayName)
+                    .Where(file => file != null && file.CanNeuroPickUp())
+                    .Select(file => file.DisplayName)
                 )
             }
         };

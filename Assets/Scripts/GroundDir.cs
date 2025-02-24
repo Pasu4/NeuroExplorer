@@ -41,6 +41,12 @@ namespace Assets.Scripts
                 return;
             }
 
+            if(!CanEnter())
+            {
+                GameManager.Instance.CreateTextEffect("Cannot enter", Color.red, transform.position);
+                return;
+            }
+
             GameManager.Instance.TransitionRoom(realPath);
         }
 
@@ -66,6 +72,21 @@ namespace Assets.Scripts
             GetComponentInChildren<TextMeshProUGUI>(true).text = "Back to " + DisplayName;
             GetComponent<SpriteRenderer>().sprite = GameManager.Instance.upDirSprite;
             isUpDir = true;
+        }
+
+        public bool CanEnter()
+        {
+            GameManager gm = GameManager.Instance;
+            return !locked
+                && Vector2.Distance(gm.player.transform.position, transform.position) <= gm.player.interactionRange;
+        }
+
+        public bool CanNeuroDescend()
+        {
+            GameManager gm = GameManager.Instance;
+            return !locked
+                && !isUpDir
+                && Vector2.Distance(transform.position, GameManager.Instance.player.transform.position) < GameManager.Instance.neuroVisionRange;
         }
     }
 }

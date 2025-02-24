@@ -159,6 +159,7 @@ namespace Assets.Scripts
                 )
                 .SetEnd(() => GameManager.Instance.difficulty != -1)
                 .SetForce(0, "Select a player character.", "", false)
+                .SetEnd(() => !difficultyDialog.activeSelf)
                 .Register();
 
             while(GameManager.Instance.difficulty == -1)
